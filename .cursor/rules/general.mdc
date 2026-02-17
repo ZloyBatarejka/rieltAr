@@ -1,0 +1,68 @@
+---
+description: Общие правила проекта RieltAr
+globs: 
+alwaysApply: true
+---
+
+# Проект: RieltAr
+
+Система управления арендой недвижимости. Менеджер ведёт учёт аренды объектов собственников, собственник видит свои финансы в личном кабинете.
+
+## Стек
+
+- **Backend:** NestJS, TypeScript, Prisma ORM, PostgreSQL
+- **Frontend:** React, TypeScript, Vite, Ant Design (antd)
+- **Авторизация:** JWT + bcrypt
+- **Язык общения:** русский
+
+## Структура проекта
+
+- `backend/` — NestJS API (порт 8070, префикс `/api`)
+- `frontend/` — React SPA (порт 3070)
+- `swagger/` — актуальная OpenAPI-спецификация (swagger.json)
+- `PLAN.md` — план разработки по фазам
+- `TECHNICAL_SPEC.md` — техническое задание
+
+## Соглашения
+
+- Всегда использовать TypeScript (strict)
+- Backend модули: `src/modules/<name>/` — module, service, controller, dto/
+- Prisma — единственный способ работы с БД
+- Все API-эндпоинты под префиксом `/api`
+- DTO валидировать через class-validator + class-transformer
+- Frontend компоненты — Ant Design, минимум кастомных стилей
+- Формы — через Ant Design Form
+- API-запросы — axios с interceptor для JWT
+- После билда backend — удалять папку `dist/` (не коммитить в репо)
+- Frontend — **mobile first**: сначала мобильная вёрстка, потом адаптация под десктоп
+- Перед началом работы сверяйся с `PLAN.md`
+- В `PLAN.md`: `[x]` перед номером шага означает, что шаг выполнен; `[ ]` — ещё не сделан
+
+## Swagger / API-контракт
+
+- Backend отвечает за генерацию OpenAPI-спецификации через `@nestjs/swagger`
+- При изменении API backend **обязан** экспортировать актуальный `swagger/swagger.json` в корень проекта
+- Frontend **генерирует** API-клиенты и сервисы на основе `swagger/swagger.json` (через кодогенератор, например `openapi-generator` или `orval`)
+- Frontend **не пишет** API-вызовы вручную — только использует сгенерированные клиенты
+- Сгенерированный код фронтенда хранится в `frontend/src/api/generated/`
+
+## Безопасность (XSS-защита на фронте)
+
+- **Запрещено** использовать `dangerouslySetInnerHTML`
+- **Запрещено** использовать `innerHTML` напрямую (через ref или DOM API)
+- **Запрещено** использовать `javascript:` и `data:` в URL (href, src, action)
+- **Запрещено** рендерить сырой HTML, полученный с бэкенда
+- Все данные от пользователя и API отображать только через текстовые React-ноды
+
+## Проверка качества кода
+
+После каждого завершённого шага **обязательно** прогонять lint и typecheck в обоих проектах:
+- Backend: `npm run lint` и `npm run typecheck` (в папке `backend/`)
+- Frontend: `npm run lint` и `npm run typecheck` (в папке `frontend/`)
+- Шаг считается завершённым только если оба скрипта проходят без ошибок
+
+## Тестирование
+
+- Backend: покрывать тестами ключевой функционал — сервисы, бизнес-логику, эндпоинты (Jest + supertest)
+- Frontend: покрывать тестами ключевые сценарии — формы, авторизацию, критичные компоненты (Vitest + React Testing Library)
+- Каждый новый модуль/фича должен содержать базовые тесты для основных сценариев

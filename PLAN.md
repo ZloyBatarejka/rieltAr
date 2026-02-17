@@ -8,7 +8,7 @@
 
 | # | Фаза | Описание | Статус |
 |---|------|----------|--------|
-| 1 | Инициализация проекта | Скелет backend + frontend + БД | ⬜ |
+| 1 | Инициализация проекта | Скелет backend + frontend + БД | ✅ |
 | 2 | Авторизация | JWT, guards, логин, роутинг | ⬜ |
 | 3 | CRUD сущностей (Backend) | Все API-эндпоинты | ⬜ |
 | 4 | Dashboard + баланс | Агрегация финансов | ⬜ |
@@ -24,28 +24,28 @@
 
 ### Шаги
 
-- [ ] **1.1** Создать NestJS backend
+- [x] **1.1** Создать NestJS backend
   - `nest new backend`
   - Удалить лишнее, настроить `main.ts` (CORS, global prefix `/api`)
   - Создать `PrismaModule` + `PrismaService`
 
-- [ ] **1.2** Настроить Prisma
+- [x] **1.2** Настроить Prisma
   - `npm install prisma @prisma/client`
   - `npx prisma init`
   - Написать `schema.prisma` со всеми моделями (User, Owner, Property, Stay, Transaction, Payout)
   - `npx prisma migrate dev --name init` — первая миграция
 
-- [ ] **1.3** Создать React frontend
+- [x] **1.3** Создать React frontend
   - `npm create vite@latest frontend -- --template react-ts`
   - Установить зависимости: `antd`, `@ant-design/icons`, `axios`, `react-router-dom`
   - Настроить базовую структуру папок
 
-- [ ] **1.4** Настроить Ant Design
+- [x] **1.4** Настроить Ant Design
   - Подключить `ConfigProvider` с темой
   - Реализовать переключатель светлая/тёмная тема
   - Настроить русскую локаль
 
-- [ ] **1.5** Настроить окружение
+- [x] **1.5** Настроить окружение
   - `.env` и `.env.example` для backend и frontend
   - `.gitignore` (node_modules, dist, .env, prisma/*.db)
   - Проверить что оба сервера запускаются
@@ -74,18 +74,24 @@
   - `@Public()` — пометка открытых эндпоинтов
   - `@CurrentUser()` — извлечение пользователя из токена
 
-- [ ] **2.3** Seed-скрипт
+- [ ] **2.3** Swagger + автогенерация API-клиента
+  - Backend: подключить `@nestjs/swagger`, настроить генерацию `swagger.json` в папку `swagger/`
+  - Frontend: настроить кодогенератор (orval / openapi-generator) на основе `swagger/swagger.json`
+  - Сгенерированный код → `frontend/src/api/generated/`
+  - Скрипт `npm run api:generate` для перегенерации
+
+- [ ] **2.4** Seed-скрипт
   - `prisma/seed.ts` — создание менеджера по умолчанию
   - Настроить `prisma.seed` в `package.json`
 
-- [ ] **2.4** Фронтенд: авторизация
+- [ ] **2.5** Фронтенд: авторизация
   - `AuthContext` — хранение токена и пользователя
   - Страница логина с формой (Ant Design)
   - `PrivateRoute` — редирект неавторизованных
   - Axios interceptor — автоподстановка `Authorization: Bearer`
   - Роутинг: менеджер → `/manager/*`, собственник → `/owner/*`
 
-- [ ] **2.5** Layouts
+- [ ] **2.6** Layouts
   - `ManagerLayout` — сайдбар с навигацией менеджера
   - `OwnerLayout` — сайдбар с навигацией собственника
 
@@ -328,5 +334,6 @@
 2. По завершении шага — отметить чекбокс `[x]`
 3. При изменении требований — обновить ТЗ (`TECHNICAL_SPEC.md`) и этот план
 4. Каждая фаза заканчивается проверяемым результатом
+
 
 
