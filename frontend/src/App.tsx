@@ -1,3 +1,4 @@
+import type { ReactElement } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import { ConfigProvider, theme, Typography, Button, Space, App as AntApp } from 'antd';
 import { BulbOutlined, BulbFilled } from '@ant-design/icons';
@@ -7,7 +8,7 @@ import { useThemeMode } from './theme/useThemeMode';
 
 const { Title, Text } = Typography;
 
-function App() {
+function App(): ReactElement {
   const { toggleMode, isDark } = useThemeMode();
 
   return (

@@ -60,12 +60,20 @@
 
 ### Шаги
 
-- [ ] **2.1** Auth модуль (Backend)
+- [x] **2.1** Auth модуль — базовая структура (Backend)
   - Установить: `@nestjs/jwt`, `@nestjs/passport`, `passport-jwt`, `bcrypt`
   - `AuthModule`, `AuthService`, `AuthController`
-  - `POST /api/auth/login` — вход, возврат JWT
+  - `POST /api/auth/login` — вход, возврат access + refresh токенов
   - `GET /api/auth/me` — текущий пользователь
-  - `JwtStrategy` — валидация токена
+  - `JwtStrategy` — валидация access-токена
+
+- [x] **2.1.1** Refresh-токены (Backend)
+  - Модель `RefreshToken` в Prisma (tokenHash, userId, expiresAt)
+  - Миграция БД
+  - `POST /api/auth/refresh` — обновление пары токенов (ротация)
+  - `POST /api/auth/logout` — удаление refresh-токена из БД
+  - При логине: удаление старых refresh-токенов, генерация нового
+  - Хэширование refresh-токена (SHA-256) перед сохранением в БД
 
 - [ ] **2.2** Guards и декораторы
   - `JwtAuthGuard` — глобальный guard
@@ -85,17 +93,19 @@
   - Настроить `prisma.seed` в `package.json`
 
 - [ ] **2.5** Фронтенд: авторизация
-  - `AuthContext` — хранение токена и пользователя
+  - `AuthStore` (MobX) — хранение access-токена в памяти, refresh-токена в localStorage
   - Страница логина с формой (Ant Design)
   - `PrivateRoute` — редирект неавторизованных
   - Axios interceptor — автоподстановка `Authorization: Bearer`
+  - Axios interceptor — при `401` автоматический refresh и retry запроса
+  - Кнопка «Выйти» — вызов `POST /api/auth/logout` + очистка токенов
   - Роутинг: менеджер → `/manager/*`, собственник → `/owner/*`
 
 - [ ] **2.6** Layouts
   - `ManagerLayout` — сайдбар с навигацией менеджера
   - `OwnerLayout` — сайдбар с навигацией собственника
 
-**Результат:** можно залогиниться, увидеть разные layout-ы для менеджера и собственника.
+**Результат:** можно залогиниться (access + refresh), автообновление токена, logout, разные layout-ы для менеджера и собственника.
 
 ---
 

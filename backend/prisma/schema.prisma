@@ -33,7 +33,8 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner Owner?
+  owner         Owner?
+  refreshTokens RefreshToken[]
 
   @@map("users")
 }
@@ -112,4 +113,17 @@ model Payout {
   transactions Transaction[]
 
   @@map("payouts")
+}
+
+model RefreshToken {
+  id        String   @id @default(uuid())
+  tokenHash String   @unique
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("refresh_tokens")
 }

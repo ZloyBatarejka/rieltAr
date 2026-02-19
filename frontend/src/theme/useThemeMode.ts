@@ -4,7 +4,13 @@ type ThemeMode = 'light' | 'dark';
 
 const STORAGE_KEY = 'rieltar-theme';
 
-export function useThemeMode() {
+interface UseThemeModeReturn {
+  mode: ThemeMode;
+  toggleMode: () => void;
+  isDark: boolean;
+}
+
+export function useThemeMode(): UseThemeModeReturn {
   const [mode, setMode] = useState<ThemeMode>(() => {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved === 'light' || saved === 'dark') return saved;
@@ -20,10 +26,9 @@ export function useThemeMode() {
     localStorage.setItem(STORAGE_KEY, mode);
   }, [mode]);
 
-  const toggleMode = () => {
+  const toggleMode = (): void => {
     setMode((prev) => (prev === 'light' ? 'dark' : 'light'));
   };
 
   return { mode, toggleMode, isDark: mode === 'dark' };
 }
-

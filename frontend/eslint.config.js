@@ -20,7 +20,24 @@ export default defineConfig([
       globals: globals.browser,
     },
     rules: {
-      // XSS protection
+      // ─── Строгая типизация ────────────────────────────────
+      '@typescript-eslint/no-explicit-any': 'error',
+      '@typescript-eslint/consistent-type-assertions': [
+        'error',
+        { assertionStyle: 'never' },
+      ],
+      '@typescript-eslint/explicit-function-return-type': [
+        'error',
+        {
+          allowExpressions: true,
+          allowTypedFunctionExpressions: true,
+          allowHigherOrderFunctions: true,
+          allowDirectConstAssertionInArrowFunctions: true,
+          allowConciseArrowFunctionExpressionsStartingWithVoid: true,
+        },
+      ],
+
+      // ─── XSS-защита ──────────────────────────────────────
       'no-restricted-properties': ['error',
         {
           object: 'document',
@@ -28,7 +45,6 @@ export default defineConfig([
           message: 'innerHTML запрещён — используй React-компоненты для рендеринга.',
         },
         {
-          object: 'element',
           property: 'innerHTML',
           message: 'innerHTML запрещён — используй React-компоненты для рендеринга.',
         },

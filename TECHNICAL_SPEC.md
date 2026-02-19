@@ -141,13 +141,31 @@
 
 **Бизнес-логика:** При создании выплаты автоматически создаётся операция с типом `PAYOUT`.
 
-### 3.7 Диаграмма связей
+### 3.7 RefreshToken (Токен обновления)
+
+| Поле | Тип | Описание |
+|------|-----|----------|
+| id | UUID | Уникальный идентификатор |
+| tokenHash | String, unique | SHA-256 хэш refresh-токена |
+| userId | UUID | Связь с User |
+| expiresAt | DateTime | Дата истечения токена |
+| createdAt | DateTime | Дата создания |
+
+**Связи:** User (N:1)
+
+**Бизнес-логика:**
+- При логине создаётся новый refresh-токен, старые токены пользователя удаляются
+- При refresh — ротация: старый токен удаляется, выдаётся новый
+- При logout — токен удаляется из БД
+- Хранится **хэш** токена, а не сам токен (аналогично паролю)
+
+### 3.8 Диаграмма связей
 
 ```
 User 1──1 Owner 1──N Property 1──N Stay 1──N Transaction
-                │                                  │
-                │                                  │
-                └──N Payout 1──────────────────N───┘
+  │             │                                  │
+  │             │                                  │
+  └──N RefreshToken   └──N Payout 1────────────N───┘
 ```
 
 ---
@@ -168,7 +186,9 @@ User 1──1 Owner 1──N Property 1──N Stay 1──N Transaction
 
 | Метод | Путь | Доступ | Описание |
 |-------|------|--------|----------|
-| POST | `/api/auth/login` | Публичный | Вход по email + пароль, возврат JWT |
+| POST | `/api/auth/login` | Публичный | Вход по email + пароль, возврат access + refresh токенов |
+| POST | `/api/auth/refresh` | Публичный | Обновление access-токена по refresh-токену |
+| POST | `/api/auth/logout` | Авторизованный | Выход — инвалидация refresh-токена |
 | GET | `/api/auth/me` | Авторизованный | Получить текущего пользователя |
 
 ### 5.2 Пользователи
@@ -264,16 +284,26 @@ User 1──1 Owner 1──N Property 1──N Stay 1──N Transaction
 
 - Вход по **email + пароль**
 - Пароли хэшируются через **bcrypt** (salt rounds: 10)
-- При успешном входе возвращается **JWT access token**
-- Токен передаётся в заголовке: `Authorization: Bearer <token>`
-- Время жизни токена: **24 часа**
+- Схема **access + refresh tokens**:
+
+| Токен | Время жизни | Хранение (фронт) | Назначение |
+|-------|-------------|-------------------|------------|
+| Access | 15 минут | Память (переменная) | Авторизация запросов |
+| Refresh | 7 дней | localStorage | Обновление access-токена |
+
+- Access-токен передаётся в заголовке: `Authorization: Bearer <token>`
+- Refresh-токен передаётся в теле `POST /api/auth/refresh`
+- Refresh-токен хранится в БД в виде **SHA-256 хэша** (аналогично паролю)
+- При каждом refresh выполняется **ротация**: старый refresh-токен удаляется, выдаётся новая пара
+- При logout refresh-токен удаляется из БД (серверная инвалидация)
+- При логине старые refresh-токены пользователя удаляются (один сеанс)
 
 ### 6.2 Авторизация
 
 - **RolesGuard** — проверка роли пользователя на уровне эндпоинта
 - **OwnershipGuard** — собственник имеет доступ только к своим данным
 - Декоратор `@Roles(Role.MANAGER)` — ограничение для менеджеров
-- Декоратор `@Public()` — открытый эндпоинт (логин)
+- Декоратор `@Public()` — открытый эндпоинт (логин, refresh)
 
 ### 6.3 Создание учётных записей
 
@@ -362,6 +392,8 @@ User 1──1 Owner 1──N Property 1──N Stay 1──N Transaction
 | Frontend runtime | React | 18+ |
 | Frontend bundler | Vite | 5+ |
 | Frontend UI | Ant Design | 5+ |
+| Frontend state | MobX + mobx-react-lite | 6+ |
+| Frontend архитектура | Feature-Sliced Design (FSD) | — |
 | Frontend язык | TypeScript | 5+ |
 | Backend framework | NestJS | 10+ |
 | Backend runtime | Node.js | 18+ |
@@ -411,52 +443,55 @@ rieltAr/
 │   ├── tsconfig.json
 │   └── package.json
 │
-├── frontend/
+├── frontend/                       # Архитектура: Feature-Sliced Design (FSD)
 │   ├── src/
 │   │   ├── main.tsx
-│   │   ├── App.tsx
-│   │   ├── api/
-│   │   │   ├── client.ts          # Axios instance с JWT interceptor
-│   │   │   ├── auth.api.ts
-│   │   │   ├── owners.api.ts
-│   │   │   ├── properties.api.ts
-│   │   │   ├── stays.api.ts
-│   │   │   ├── transactions.api.ts
-│   │   │   ├── payouts.api.ts
-│   │   │   └── dashboard.api.ts
-│   │   ├── auth/
-│   │   │   ├── AuthContext.tsx
-│   │   │   ├── PrivateRoute.tsx
-│   │   │   └── useAuth.ts
-│   │   ├── layouts/
-│   │   │   ├── ManagerLayout.tsx
-│   │   │   └── OwnerLayout.tsx
-│   │   ├── pages/
-│   │   │   ├── LoginPage.tsx
+│   │   ├── app/                    # [FSD: app] — инициализация, провайдеры, роутинг
+│   │   │   ├── App.tsx
+│   │   │   ├── providers/          # ThemeProvider, RouterProvider
+│   │   │   ├── routes/             # Конфигурация роутов
+│   │   │   └── styles/
+│   │   │
+│   │   ├── pages/                  # [FSD: pages] — страницы (композиции виджетов/фич)
+│   │   │   ├── login/
 │   │   │   ├── manager/
-│   │   │   │   ├── OwnersListPage.tsx
-│   │   │   │   ├── OwnerDetailPage.tsx
-│   │   │   │   ├── PropertiesPage.tsx
-│   │   │   │   ├── CreateStayPage.tsx
-│   │   │   │   ├── TransactionsPage.tsx
-│   │   │   │   └── PayoutsPage.tsx
+│   │   │   │   ├── owners-list/
+│   │   │   │   ├── owner-detail/
+│   │   │   │   ├── properties/
+│   │   │   │   ├── create-stay/
+│   │   │   │   ├── transactions/
+│   │   │   │   └── payouts/
 │   │   │   └── owner/
-│   │   │       ├── DashboardPage.tsx
-│   │   │       ├── MyPropertiesPage.tsx
-│   │   │       ├── StaysPage.tsx
-│   │   │       ├── TransactionsPage.tsx
-│   │   │       └── PayoutsPage.tsx
-│   │   ├── components/
-│   │   │   ├── BalanceCard.tsx
-│   │   │   ├── StatCard.tsx
-│   │   │   ├── TransactionList.tsx
-│   │   │   └── ...
-│   │   ├── hooks/
-│   │   │   └── useApi.ts
-│   │   ├── theme/
-│   │   │   └── themeConfig.ts
-│   │   └── types/
-│   │       └── index.ts
+│   │   │       ├── dashboard/
+│   │   │       ├── properties/
+│   │   │       ├── stays/
+│   │   │       ├── transactions/
+│   │   │       └── payouts/
+│   │   │
+│   │   ├── widgets/                # [FSD: widgets] — композитные блоки UI
+│   │   │   ├── manager-layout/     # Сайдбар + шапка менеджера
+│   │   │   └── owner-layout/       # Сайдбар + шапка собственника
+│   │   │
+│   │   ├── features/               # [FSD: features] — пользовательские действия
+│   │   │   ├── auth/               # model/ (MobX store), ui/ (LoginForm)
+│   │   │   ├── create-stay/
+│   │   │   ├── create-payout/
+│   │   │   └── create-owner/
+│   │   │
+│   │   ├── entities/               # [FSD: entities] — бизнес-сущности
+│   │   │   ├── owner/              # model/ (MobX store), ui/ (OwnerCard)
+│   │   │   ├── property/
+│   │   │   ├── stay/
+│   │   │   ├── transaction/
+│   │   │   └── payout/
+│   │   │
+│   │   └── shared/                 # [FSD: shared] — переиспользуемый код
+│   │       ├── api/                # Axios client + generated/ (автогенерация)
+│   │       ├── ui/                 # BalanceCard, StatCard, TransactionList
+│   │       ├── lib/                # Утилиты (formatCurrency и т.д.)
+│   │       ├── config/             # Тема, константы
+│   │       └── types/              # Общие типы
+│   │
 │   ├── .env
 │   ├── .env.example
 │   ├── vite.config.ts
@@ -476,8 +511,8 @@ rieltAr/
 ### 10.1 Локальная разработка
 
 - PostgreSQL запущен локально или в Docker
-- Backend на порту 3000
-- Frontend на порту 5173 (Vite dev server)
+- Backend на порту 8070
+- Frontend на порту 3070 (Vite dev server)
 - Переменные окружения через `.env` файлы
 
 ### 10.2 Продакшен
@@ -503,6 +538,8 @@ rieltAr/
 - Ошибки возвращаются в едином формате `{ statusCode, message, error }`
 - Пагинация для списков (page, limit)
 - API-ответы оборачиваются в единый формат
+
+
 
 
 

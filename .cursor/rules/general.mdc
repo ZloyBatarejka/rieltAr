@@ -11,7 +11,7 @@ alwaysApply: true
 ## Стек
 
 - **Backend:** NestJS, TypeScript, Prisma ORM, PostgreSQL
-- **Frontend:** React, TypeScript, Vite, Ant Design (antd)
+- **Frontend:** React, TypeScript, Vite, Ant Design (antd), MobX, Feature-Sliced Design (FSD)
 - **Авторизация:** JWT + bcrypt
 - **Язык общения:** русский
 
@@ -30,6 +30,9 @@ alwaysApply: true
 - Prisma — единственный способ работы с БД
 - Все API-эндпоинты под префиксом `/api`
 - DTO валидировать через class-validator + class-transformer
+- Frontend архитектура — **Feature-Sliced Design (FSD)**: `app/`, `pages/`, `widgets/`, `features/`, `entities/`, `shared/`
+- Frontend state management — **MobX** (`mobx` + `mobx-react-lite`), stores живут в `model/` внутри слайсов FSD
+- FSD правило импортов: слой может импортировать только из нижестоящих слоёв (shared ← entities ← features ← widgets ← pages ← app)
 - Frontend компоненты — Ant Design, минимум кастомных стилей
 - Формы — через Ant Design Form
 - API-запросы — axios с interceptor для JWT
@@ -53,6 +56,14 @@ alwaysApply: true
 - **Запрещено** использовать `javascript:` и `data:` в URL (href, src, action)
 - **Запрещено** рендерить сырой HTML, полученный с бэкенда
 - Все данные от пользователя и API отображать только через текстовые React-ноды
+
+## Строгая типизация
+
+- **Запрещён** `any` — всегда указывать конкретный тип
+- **Запрещён** `as` (type assertion) — если нужно приведение типа, реализовать type guard (`value is T`)
+- **Обязательны** явные возвращаемые типы у функций и методов (кроме callback-выражений и void)
+- Для runtime-валидации и type narrowing на фронте использовать `zod`, на бэке — type guard функции или `class-validator`
+- Эти правила закреплены в ESLint обоих проектов (`no-explicit-any`, `consistent-type-assertions`, `explicit-function-return-type`)
 
 ## Проверка качества кода
 
