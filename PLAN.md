@@ -75,14 +75,14 @@
   - При логине: удаление старых refresh-токенов, генерация нового
   - Хэширование refresh-токена (SHA-256) перед сохранением в БД
 
-- [ ] **2.2** Guards и декораторы
+- [x] **2.2** Guards и декораторы
   - `JwtAuthGuard` — глобальный guard
   - `RolesGuard` — проверка роли
   - `@Roles(Role.MANAGER)` — декоратор
   - `@Public()` — пометка открытых эндпоинтов
   - `@CurrentUser()` — извлечение пользователя из токена
 
-- [ ] **2.3** Swagger + автогенерация API-клиента
+- [x] **2.3** Swagger + автогенерация API-клиента
   - Backend: подключить `@nestjs/swagger`, настроить генерацию `swagger.json` в папку `swagger/`
   - Frontend: настроить кодогенератор (orval / openapi-generator) на основе `swagger/swagger.json`
   - Сгенерированный код → `frontend/src/api/generated/`

@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { AppModule } from './app.module';
+import { setupSwagger } from './config/swagger.config';
 
 async function bootstrap(): Promise<void> {
   const app = await NestFactory.create(AppModule);
@@ -20,8 +21,12 @@ async function bootstrap(): Promise<void> {
     credentials: true,
   });
 
+  // Настройка Swagger
+  setupSwagger(app);
+
   const port = process.env.PORT ?? 8070;
   await app.listen(port);
   console.log(`🚀 Server running on http://localhost:${port}/api`);
+  console.log(`📚 Swagger docs: http://localhost:${port}/api/docs`);
 }
 void bootstrap();
