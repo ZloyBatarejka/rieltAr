@@ -151,7 +151,7 @@
   - `DELETE /api/manager-properties/:id` — снять назначение
   - `GET /api/manager-properties` — список назначений (фильтр userId, propertyId)
 
-- [ ] **3.1.2** PropertyScopeService (остаток ADMIN_ROLE_PLAN, фаза C)
+- [x] **3.1.2** PropertyScopeService (остаток ADMIN_ROLE_PLAN, фаза C)
   - Утилита: получение `assignedPropertyIds` для менеджера
   - Метод `getScopeWhere(userId, role)` — Prisma `where` для фильтрации
   - Использовать в Owners, Properties, Stays, Transactions, Payouts, Dashboard
