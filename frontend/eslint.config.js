@@ -39,24 +39,29 @@ export default defineConfig([
       ],
 
       // ─── XSS-защита ──────────────────────────────────────
-      'no-restricted-properties': ['error',
+      'no-restricted-properties': [
+        'error',
         {
           object: 'document',
           property: 'innerHTML',
-          message: 'innerHTML запрещён — используй React-компоненты для рендеринга.',
+          message:
+            'innerHTML запрещён — используй React-компоненты для рендеринга.',
         },
         {
           property: 'innerHTML',
-          message: 'innerHTML запрещён — используй React-компоненты для рендеринга.',
+          message:
+            'innerHTML запрещён — используй React-компоненты для рендеринга.',
         },
       ],
-      'no-restricted-syntax': ['error',
+      'no-restricted-syntax': [
+        'error',
         {
           selector: 'JSXAttribute[name.name="dangerouslySetInnerHTML"]',
           message: 'dangerouslySetInnerHTML запрещён — риск XSS.',
         },
         {
-          selector: 'JSXAttribute[name.name="href"][value.value=/^javascript:/]',
+          selector:
+            'JSXAttribute[name.name="href"][value.value=/^javascript:/]',
           message: 'javascript: в href запрещён — риск XSS.',
         },
         {

@@ -1,0 +1,27 @@
+---
+description: Правила бэкенда — NestJS, Prisma, DTO, структура модулей
+globs: backend/src/**/*.ts
+alwaysApply: false
+---
+
+# Backend-правила
+
+## Структура модулей
+
+- Модули: `src/modules/<name>/` — module, service, controller, `dto/`
+- Все API-эндпоинты под префиксом `/api`
+
+## База данных
+
+- **Prisma** — единственный способ работы с БД
+- После билда — удалять папку `dist/` (не коммитить в репо)
+
+## Валидация
+
+- DTO валидировать через `class-validator` + `class-transformer`
+- Для type narrowing — type guard функции
+
+## Swagger
+
+- Декорировать контроллеры и DTO через `@nestjs/swagger`
+- При изменении API — экспортировать актуальный `swagger/swagger.json`

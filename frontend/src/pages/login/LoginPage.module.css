@@ -1,0 +1,36 @@
+.wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 16px;
+  background: var(--chakra-colors-bg-page);
+}
+
+.card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.header {
+  text-align: center;
+  padding-bottom: 0;
+}
+
+.subtitle {
+  margin-top: 4px;
+  font-size: 14px;
+  color: var(--chakra-colors-text-secondary);
+}
+
+.alert {
+  border-radius: 6px;
+}
+
+.alertText {
+  flex: 1;
+}
+
+.submitButton {
+  width: 100%;
+}

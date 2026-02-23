@@ -1,0 +1,68 @@
+---
+globs: frontend/src/**/*.tsx,frontend/src/**/*.ts,frontend/src/**/*.css
+alwaysApply: false
+description: Правила стилизации — Chakra UI + CSS Modules, запрет inline-стилей и style-пропов
+---
+
+# Стилизация фронтенда — Chakra UI + CSS Modules
+
+## Принцип
+
+Chakra UI — для компонентов (что рендерить). CSS Modules — для стилей (как выглядит).
+
+## Запрет inline-стилей и style-пропов
+
+- **Запрещено** `style={{ }}` на любых элементах
+- **Запрещены** Chakra style-пропы для визуального оформления:
+  - Цвета: `color="gray.500"`, `bg="white"`, `borderColor="red.200"`
+  - Отступы: `m={4}`, `mt={2}`, `p={3}`, `px={6}`, `py={4}`
+  - Размеры: `w="full"`, `maxW="400px"`, `h="100vh"`, `minH="100vh"`
+  - Типографика: `fontSize="sm"`, `fontWeight="bold"`, `lineHeight="tall"`
+  - Flexbox/Grid: `display="flex"`, `alignItems="center"`, `justifyContent="space-between"`, `gap={4}`
+  - Остальные: `textAlign="center"`, `flex="1"`, `overflow="hidden"`
+- **Допустимые** Chakra-пропы (логика компонента, а не стиль):
+  - `size="lg"`, `variant="ghost"`, `colorScheme="blue"`
+  - `isLoading`, `isDisabled`, `isInvalid`, `isRequired`
+  - `status="error"`, `placement="top"`
+  - `as="form"`, `as="nav"` (полиморфизм)
+  - `spacing` на `VStack`/`HStack`/`Stack` (это часть компонента-контейнера)
+
+## CSS Modules
+
+- Файл: `ComponentName.module.css` рядом с компонентом
+- Импорт: `import styles from './ComponentName.module.css'`
+- Именование классов — **camelCase** (`.wrapper`, `.card`, `.headerIcon`)
+- Условные классы — шаблонные строки или `clsx`
+- Цвета в CSS — через Chakra CSS-переменные: `var(--chakra-colors-...)`
+
+## Пример
+
+```tsx
+// ✅ Правильно
+import styles from './LoginPage.module.css'
+
+<Card className={styles.card}>
+  <Heading size="lg">RieltAr</Heading>
+  <Text className={styles.subtitle}>Подзаголовок</Text>
+</Card>
+```
+
+```css
+/* LoginPage.module.css */
+.card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.subtitle {
+  font-size: 14px;
+  color: var(--chakra-colors-text-secondary);
+}
+```
+
+```tsx
+// ❌ Неправильно — style-пропы вместо CSS Modules
+<Card w="full" maxW="400px">
+  <Text fontSize="sm" color="gray.500" mt={1}>Подзаголовок</Text>
+</Card>
+```

@@ -7,4 +7,10 @@ export default defineConfig({
   server: {
     port: 3070,
   },
+  css: {
+    modules: {
+      localsConvention: 'camelCase',
+      generateScopedName: '[local]_[hash:base64:2]',
+    },
+  },
 })

@@ -1,0 +1,53 @@
+import { PrismaClient, Role } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+
+const prisma = new PrismaClient();
+
+const SALT_ROUNDS = 10;
+
+interface SeedUser {
+  email: string;
+  password: string;
+  name: string;
+  role: Role;
+}
+
+const defaultManager: SeedUser = {
+  email: 'admin@rieltar.ru',
+  password: 'admin123',
+  name: 'Администратор',
+  role: Role.MANAGER,
+};
+
+async function main(): Promise<void> {
+  console.log('🌱 Запуск seed...');
+
+  const hashedPassword = await bcrypt.hash(
+    defaultManager.password,
+    SALT_ROUNDS,
+  );
+
+  const user = await prisma.user.upsert({
+    where: { email: defaultManager.email },
+    update: {},
+    create: {
+      email: defaultManager.email,
+      password: hashedPassword,
+      name: defaultManager.name,
+      role: defaultManager.role,
+    },
+  });
+
+  console.log(
+    `✅ Менеджер создан: ${user.email} (id: ${user.id}, role: ${user.role})`,
+  );
+}
+
+main()
+  .catch((e: unknown) => {
+    console.error('❌ Seed error:', e);
+    process.exit(1);
+  })
+  .finally(() => {
+    void prisma.$disconnect();
+  });

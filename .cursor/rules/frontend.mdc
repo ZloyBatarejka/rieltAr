@@ -1,0 +1,114 @@
+---
+description: Правила фронтенда — архитектура, стили, JSX, безопасность
+globs: frontend/src/**/*.tsx,frontend/src/**/*.ts
+alwaysApply: false
+---
+
+# Frontend-правила
+
+## Архитектура — Feature-Sliced Design (FSD)
+
+- Слои: `app/`, `pages/`, `widgets/`, `features/`, `entities/`, `shared/`
+- Импорт только из нижестоящих слоёв: shared ← entities ← features ← widgets ← pages ← app
+- State management — **MobX** (`mobx` + `mobx-react-lite`), stores в `model/` внутри слайсов
+- UI-компоненты — **Chakra UI v2** (`@chakra-ui/react`)
+- Формы — **React Hook Form** + **zod** (`react-hook-form`, `@hookform/resolvers`, `zod`)
+- API-запросы — axios с interceptor для JWT
+- **Mobile first:** сначала мобильная вёрстка, потом десктоп
+
+## Chakra UI + CSS Modules (гибридный подход)
+
+- Chakra-компоненты используем как строительные блоки (`Card`, `Button`, `Input`, `Alert`, `FormControl` и т.д.)
+- **Layout, позиционирование, кастомные отступы** — через CSS Modules (`className={styles.wrapper}`)
+- Chakra-пропы допустимы **только** для встроенной логики компонента: `size`, `variant`, `colorScheme`, `isLoading`, `isInvalid`, `isDisabled`, `status`, `borderRadius`
+- **Запрещены** Chakra style-пропы для цветов, отступов, размеров: `color="gray.500"`, `mt={4}`, `w="full"`, `py={4}`, `fontSize="sm"`
+- Вместо style-пропов — CSS Modules классы или семантические токены темы (CSS-переменные)
+- У каждого компонента должен быть свой `*.module.css` рядом
+
+```tsx
+// ❌ Плохо — inline style-пропы
+<Card w="full" maxW="400px">
+  <Text color="gray.500" fontSize="sm" mt={1}>Текст</Text>
+</Card>
+
+// ✅ Хорошо — Chakra для компонента, CSS Modules для стилей
+<Card className={styles.card}>
+  <Text className={styles.subtitle}>Текст</Text>
+</Card>
+```
+
+## Формы — React Hook Form + zod
+
+- Валидация через **zod-схемы**, подключённые через `zodResolver`
+- Типы формы выводить из схемы: `type FormValues = z.infer<typeof schema>`
+- Простые поля — через `register()` + Chakra `Input`, сложные — через `<Controller>`
+- Ошибки — через Chakra `FormControl isInvalid` + `FormErrorMessage`
+
+```tsx
+const schema = z.object({
+  email: z.string().min(1, 'Введите email').email('Некорректный email'),
+})
+type FormValues = z.infer<typeof schema>
+
+const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+  resolver: zodResolver(schema),
+  defaultValues: { email: '' },
+  mode: 'onChange',
+})
+
+<FormControl isInvalid={!!errors.email}>
+  <Input {...register('email')} type="email" placeholder="Email" />
+  <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
+</FormControl>
+```
+
+## Стилизация — CSS Modules
+
+- **Запрещены** inline-стили (`style={{ }}`)
+- **Запрещены** Chakra style-пропы для layout/цветов/отступов (см. раздел выше)
+- Все кастомные стили — через **CSS Modules** (`*.module.css`) рядом с компонентом
+- Цвета — через CSS-переменные семантических токенов Chakra (`var(--chakra-colors-text-secondary)`)
+- Импорт: `import styles from './Component.module.css'`
+- Условные классы — шаблонные строки или `clsx`/`classnames`
+- Именование классов — **camelCase** (`.wrapper`, `.headerIcon`)
+
+## Чистый JSX-шаблон
+
+- **Запрещено** размещать сложные литералы (массивы, объекты с 2+ ключами) в JSX-пропсах — выносить в константы
+- Допустимо inline: простые значения (`size="lg"`), однострочные выражения, callback-ы в 1 строку
+- Статические константы → на уровне модуля; динамические → внутри компонента перед `return`
+
+## Условный рендеринг — только `<Show>`
+
+- **Запрещён** условный рендеринг через `&&`, тернарный оператор (`? :`), `if/else` с присвоением JSX
+- Использовать компонент `<Show>` из `@/shared/ui/Show`
+
+```tsx
+// ❌
+{isLoading && <Spinner />}
+{user ? <Profile /> : <Login />}
+
+// ✅
+import { Show } from 'shared/ui/Show'
+
+<Show when={isLoading}>
+  <Spinner />
+</Show>
+
+<Show when={user} fallback={<Login />}>
+  <Profile />
+</Show>
+```
+
+## Роутинг — `GuardedRoute`
+
+- **Запрещено** проверять авторизацию внутри страниц
+- Доступ к роутам контролируется через `<GuardedRoute>` из `features/auth` в `App.tsx`
+- `mode="private"` — только для авторизованных; `requiredRole` для проверки роли
+- `mode="guest"` — только для неавторизованных (логин, регистрация)
+
+## Безопасность (XSS)
+
+- **Запрещено:** `dangerouslySetInnerHTML`, `innerHTML`, `javascript:`/`data:` в URL
+- **Запрещено** рендерить сырой HTML с бэкенда
+- Данные от пользователя и API — только через текстовые React-ноды

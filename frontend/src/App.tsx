@@ -1,53 +1,54 @@
-import type { ReactElement } from 'react';
-import { BrowserRouter } from 'react-router-dom';
-import { ConfigProvider, theme, Typography, Button, Space, App as AntApp } from 'antd';
-import { BulbOutlined, BulbFilled } from '@ant-design/icons';
-import ruRU from 'antd/locale/ru_RU';
-import { lightTheme, darkTheme } from './theme/themeConfig';
-import { useThemeMode } from './theme/useThemeMode';
+import { type ReactElement, useEffect } from 'react'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
+import { observer } from 'mobx-react-lite'
+import { authStore } from './entities/auth'
+import { GuardedRoute } from './features/auth'
+import LoginPage from './pages/login/LoginPage'
+import ManagerDashboardPage from './pages/manager/ManagerDashboardPage'
+import OwnerDashboardPage from './pages/owner/OwnerDashboardPage'
+import { ChakraProvider } from './providers'
 
-const { Title, Text } = Typography;
-
-function App(): ReactElement {
-  const { toggleMode, isDark } = useThemeMode();
+const AppContent = observer(function AppContent(): ReactElement {
+  useEffect(() => {
+    void authStore.checkAuth()
+  }, [])
 
   return (
-    <ConfigProvider
-      locale={ruRU}
-      theme={{
-        ...(isDark ? darkTheme : lightTheme),
-        algorithm: isDark ? theme.darkAlgorithm : theme.defaultAlgorithm,
-      }}
-    >
-      <AntApp>
-        <BrowserRouter>
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              minHeight: '100vh',
-              background: isDark ? '#141414' : '#f5f5f5',
-              transition: 'background 0.3s',
-            }}
-          >
-            <Space direction="vertical" align="center" size="large">
-              <Title style={{ margin: 0 }}>🏠 RieltAr</Title>
-              <Text type="secondary">Система управления арендой недвижимости</Text>
-              <Button
-                type="text"
-                icon={isDark ? <BulbFilled /> : <BulbOutlined />}
-                onClick={toggleMode}
-                size="large"
-              >
-                {isDark ? 'Светлая тема' : 'Тёмная тема'}
-              </Button>
-            </Space>
-          </div>
-        </BrowserRouter>
-      </AntApp>
-    </ConfigProvider>
-  );
+    <ChakraProvider>
+      <Routes>
+        <Route element={<GuardedRoute mode="guest" />}>
+          <Route path="/login" element={<LoginPage />} />
+        </Route>
+
+        <Route element={<GuardedRoute mode="private" requiredRole="MANAGER" />}>
+          <Route path="/manager" element={<ManagerDashboardPage />} />
+        </Route>
+
+        <Route element={<GuardedRoute mode="private" requiredRole="OWNER" />}>
+          <Route path="/owner" element={<OwnerDashboardPage />} />
+        </Route>
+
+        <Route path="/" element={<RootRedirect />} />
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </ChakraProvider>
+  )
+})
+
+const RootRedirect = observer(function RootRedirect(): ReactElement {
+  if (authStore.isAuthenticated) {
+    const path = authStore.isManager ? '/manager' : '/owner'
+    return <Navigate to={path} replace />
+  }
+  return <Navigate to="/login" replace />
+})
+
+function App(): ReactElement {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  )
 }
 
-export default App;
+export default App

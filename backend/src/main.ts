@@ -17,8 +17,10 @@ async function bootstrap(): Promise<void> {
   );
 
   app.enableCors({
-    origin: process.env.CORS_ORIGIN || 'http://localhost:3070',
-    credentials: true,
+    origin: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:3070'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    maxAge: 600,
   });
 
   // Настройка Swagger
