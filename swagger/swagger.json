@@ -144,6 +144,55 @@
           "Auth"
         ]
       }
+    },
+    "/api/users": {
+      "post": {
+        "operationId": "UsersController_createOwner",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateUserDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Собственник создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав (не менеджер)"
+          },
+          "409": {
+            "description": "Пользователь с таким email уже существует"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Создать собственника (только менеджер)",
+        "tags": [
+          "Users"
+        ]
+      }
     }
   },
   "info": {
@@ -299,6 +348,91 @@
         },
         "required": [
           "message"
+        ]
+      },
+      "CreateUserDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email собственника",
+            "example": "owner@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Пароль (минимум 6 символов)",
+            "example": "password123",
+            "minLength": 6
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя собственника",
+            "example": "Иван Иванов"
+          },
+          "phone": {
+            "type": "string",
+            "description": "Телефон собственника",
+            "example": "+7 999 123-45-67"
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "name"
+        ]
+      },
+      "UserResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID пользователя",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email пользователя",
+            "example": "owner@example.com"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя пользователя",
+            "example": "Иван Иванов"
+          },
+          "role": {
+            "type": "string",
+            "description": "Роль пользователя",
+            "enum": [
+              "MANAGER",
+              "OWNER"
+            ],
+            "example": "OWNER"
+          },
+          "ownerId": {
+            "type": "object",
+            "description": "ID собственника (если роль OWNER)",
+            "example": "123e4567-e89b-12d3-a456-426614174000",
+            "nullable": true
+          },
+          "phone": {
+            "type": "object",
+            "description": "Телефон собственника",
+            "example": "+7 999 123-45-67"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата создания",
+            "example": "2026-02-23T12:00:00.000Z"
+          }
+        },
+        "required": [
+          "id",
+          "email",
+          "name",
+          "role",
+          "ownerId",
+          "createdAt"
         ]
       }
     }
