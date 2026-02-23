@@ -21,14 +21,15 @@
 
 | Роль | Возможности |
 |------|-------------|
-| **Менеджер** | Создаёт собственников, объекты, заезды. Добавляет операции и выплаты. Управляет доступами. |
+| **Администратор** | Создаёт менеджеров и собственников, объекты. Назначает объекты на менеджеров. Суперпользователь — видит и может всё. |
+| **Менеджер** | Работает только с назначенными объектами: заезды, операции, выплаты. Видит собственников, у которых есть назначенные объекты. |
 | **Собственник** | Видит свои объекты, баланс, историю операций, заезды и выплаты. |
 
 ## Технологический стек
 
 | Слой | Технологии |
 |------|-----------|
-| **Frontend** | React, TypeScript, Ant Design, Vite |
+| **Frontend** | React, TypeScript, Chakra UI, Vite |
 | **Backend** | Node.js, NestJS, TypeScript |
 | **ORM** | Prisma |
 | **База данных** | PostgreSQL |
@@ -38,14 +39,16 @@
 
 ```
 balivi/
-├── backend/          # NestJS API
-│   ├── prisma/       # Схема БД и миграции
+├── backend/          # NestJS API (порт 8070)
+│   ├── prisma/       # Схема БД, миграции, seed
 │   └── src/          # Модули приложения
-├── frontend/         # React SPA
-│   └── src/          # Компоненты, страницы, API-клиент
+├── frontend/         # React SPA (порт 3070)
+│   └── src/          # FSD: entities, features, widgets, pages
+├── swagger/          # OpenAPI swagger.json
 ├── README.md
-├── TECHNICAL_SPEC.md # Техническое задание
-└── PLAN.md           # План разработки
+├── TECHNICAL_SPEC.md
+├── PLAN.md
+└── ADMIN_ROLE_PLAN.md # План роли ADMIN и скоупинга
 ```
 
 ## Быстрый старт
@@ -63,7 +66,8 @@ cd backend
 npm install
 cp .env.example .env        # Настроить подключение к БД
 npx prisma migrate dev      # Применить миграции
-npm run start:dev            # Запустить сервер (http://localhost:3000)
+npx prisma db seed          # Создать ADMIN (admin@balivi.ru / admin123)
+npm run start:dev            # Запустить сервер (http://localhost:8070)
 ```
 
 ### Frontend
@@ -72,7 +76,7 @@ npm run start:dev            # Запустить сервер (http://localhost
 cd frontend
 npm install
 cp .env.example .env        # Указать URL API
-npm run dev                  # Запустить dev-сервер (http://localhost:5173)
+npm run dev                  # Запустить dev-сервер (http://localhost:3070)
 ```
 
 ## Переменные окружения
@@ -88,7 +92,7 @@ JWT_EXPIRES_IN="1d"
 ### Frontend (`frontend/.env`)
 
 ```env
-VITE_API_URL="http://localhost:3000"
+VITE_API_URL="http://localhost:8070"
 ```
 
 ## Принципы
@@ -101,5 +105,6 @@ VITE_API_URL="http://localhost:3000"
 
 - [Техническое задание](./TECHNICAL_SPEC.md)
 - [План разработки](./PLAN.md)
+- [План роли ADMIN и скоупинга](./ADMIN_ROLE_PLAN.md)
 
 

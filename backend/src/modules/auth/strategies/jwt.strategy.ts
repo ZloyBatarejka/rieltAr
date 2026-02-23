@@ -40,6 +40,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       name: user.name,
       role: user.role,
       ownerId: user.owner?.id ?? null,
+      canCreateOwners: user.canCreateOwners,
+      canCreateProperties: user.canCreateProperties,
     };
   }
 }

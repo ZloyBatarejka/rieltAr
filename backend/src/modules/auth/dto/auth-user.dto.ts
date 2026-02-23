@@ -22,7 +22,7 @@ export class AuthUserDto {
 
   @ApiProperty({
     description: 'Роль пользователя',
-    enum: ['MANAGER', 'OWNER'],
+    enum: ['ADMIN', 'MANAGER', 'OWNER'],
     example: 'OWNER',
   })
   role: Role;
@@ -33,4 +33,16 @@ export class AuthUserDto {
     nullable: true,
   })
   ownerId: string | null;
+
+  @ApiProperty({
+    description: 'Может создавать собственников (делегировано админом)',
+    example: false,
+  })
+  canCreateOwners: boolean;
+
+  @ApiProperty({
+    description: 'Может создавать объекты (делегировано админом)',
+    example: false,
+  })
+  canCreateProperties: boolean;
 }

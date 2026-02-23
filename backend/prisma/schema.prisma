@@ -10,6 +10,7 @@ datasource db {
 // ─── Enums ───────────────────────────────────────────────
 
 enum Role {
+  ADMIN
   MANAGER
   OWNER
 }
@@ -25,16 +26,19 @@ enum TransactionType {
 // ─── Models ──────────────────────────────────────────────
 
 model User {
-  id        String   @id @default(uuid())
-  email     String   @unique
-  password  String
-  name      String
-  role      Role
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                  String   @id @default(uuid())
+  email               String   @unique
+  password            String
+  name                String
+  role                Role
+  canCreateOwners     Boolean  @default(false)
+  canCreateProperties Boolean  @default(false)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 
-  owner         Owner?
-  refreshTokens RefreshToken[]
+  owner              Owner?
+  refreshTokens      RefreshToken[]
+  managedProperties  ManagerProperty[]
 
   @@map("users")
 }
@@ -62,8 +66,11 @@ model Property {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  owner Owner  @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  stays Stay[]
+  owner        Owner             @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  stays        Stay[]
+  managers     ManagerProperty[]
+  transactions Transaction[]
+  payouts      Payout[]
 
   @@map("properties")
 }
@@ -85,34 +92,51 @@ model Stay {
 }
 
 model Transaction {
-  id        String          @id @default(uuid())
-  type      TransactionType
-  amount    Decimal         @db.Decimal(12, 2)
-  comment   String?
-  stayId    String?
-  ownerId   String
-  payoutId  String?
-  createdAt DateTime        @default(now())
+  id         String          @id @default(uuid())
+  type       TransactionType
+  amount     Decimal         @db.Decimal(12, 2)
+  comment    String?
+  stayId     String?
+  ownerId    String
+  propertyId String
+  payoutId   String?
+  createdAt  DateTime        @default(now())
 
-  stay   Stay?   @relation(fields: [stayId], references: [id], onDelete: Cascade)
-  owner  Owner   @relation(fields: [ownerId], references: [id], onDelete: Cascade)
-  payout Payout? @relation(fields: [payoutId], references: [id], onDelete: Cascade)
+  stay     Stay?    @relation(fields: [stayId], references: [id], onDelete: Cascade)
+  owner    Owner    @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  payout   Payout?  @relation(fields: [payoutId], references: [id], onDelete: Cascade)
 
   @@map("transactions")
 }
 
 model Payout {
-  id        String   @id @default(uuid())
-  ownerId   String
-  amount    Decimal  @db.Decimal(12, 2)
-  comment   String?
-  paidAt    DateTime
-  createdAt DateTime @default(now())
+  id         String   @id @default(uuid())
+  ownerId    String
+  propertyId String
+  amount     Decimal  @db.Decimal(12, 2)
+  comment    String?
+  paidAt     DateTime
+  createdAt  DateTime @default(now())
 
   owner        Owner         @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  property     Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
   @@map("payouts")
+}
+
+model ManagerProperty {
+  id         String   @id @default(uuid())
+  userId     String
+  propertyId String
+  assignedAt DateTime @default(now())
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, propertyId])
+  @@map("manager_properties")
 }
 
 model RefreshToken {

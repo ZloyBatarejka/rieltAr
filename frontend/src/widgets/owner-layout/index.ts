@@ -1,1 +1,1 @@
-export { default as OwnerLayout } from './ui/OwnerLayout'
+export { OwnerLayout } from './ui/OwnerLayout'

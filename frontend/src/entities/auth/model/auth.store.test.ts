@@ -30,6 +30,8 @@ const managerUser: AuthUserDto = {
   name: 'Test Manager',
   role: 'MANAGER',
   ownerId: null,
+  canCreateOwners: false,
+  canCreateProperties: false,
 }
 
 const ownerUser: AuthUserDto = {
@@ -38,6 +40,8 @@ const ownerUser: AuthUserDto = {
   name: 'Test Owner',
   role: 'OWNER',
   ownerId: null,
+  canCreateOwners: false,
+  canCreateProperties: false,
 }
 
 const loginResponse: LoginResponseDto = {

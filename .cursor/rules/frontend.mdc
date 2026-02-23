@@ -11,6 +11,27 @@ alwaysApply: false
 - Слои: `app/`, `pages/`, `widgets/`, `features/`, `entities/`, `shared/`
 - Импорт только из нижестоящих слоёв: shared ← entities ← features ← widgets ← pages ← app
 
+## Экспорт компонентов — `export const`
+
+- **Запрещён** паттерн `export default Component` + реэкспорт через `export { default as Component }` в index
+- Использовать **именованный экспорт**: `export const ComponentName`
+- Реэкспорт в index: `export { ComponentName } from './ui/ComponentName'`
+
+```tsx
+// ❌ Плохо
+// Component.tsx
+const Component = () => <div />
+export default Component
+// index.ts
+export { default as Component } from './ui/Component'
+
+// ✅ Хорошо
+// Component.tsx
+export const Component = () => <div />
+// index.ts
+export { Component } from './ui/Component'
+```
+
 ## Импорты — алиасы `@/`
 
 - Для **кросс-слойных** импортов (обращение к публичному API другого слайса) — **всегда** алиас `@/`

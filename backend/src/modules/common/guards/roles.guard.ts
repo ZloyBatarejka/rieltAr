@@ -35,6 +35,10 @@ export class RolesGuard implements CanActivate {
       throw new ForbiddenException('Пользователь не авторизован');
     }
 
+    if (user.role === 'ADMIN') {
+      return true;
+    }
+
     const hasRole = requiredRoles.some((role) => user.role === role);
 
     if (!hasRole) {

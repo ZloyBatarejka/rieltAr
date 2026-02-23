@@ -4,8 +4,10 @@ import { observer } from 'mobx-react-lite'
 import { authStore } from './entities/auth'
 import { GuardedRoute } from './features/auth'
 import LoginPage from './pages/login/LoginPage'
+import AdminDashboardPage from './pages/admin/AdminDashboardPage'
 import ManagerDashboardPage from './pages/manager/ManagerDashboardPage'
 import OwnerDashboardPage from './pages/owner/OwnerDashboardPage'
+import { AdminLayout } from './widgets/admin-layout'
 import { ManagerLayout } from './widgets/manager-layout'
 import { OwnerLayout } from './widgets/owner-layout'
 import { ChakraProvider } from './providers'
@@ -20,6 +22,12 @@ const AppContent = observer(function AppContent(): ReactElement {
       <Routes>
         <Route element={<GuardedRoute mode="guest" />}>
           <Route path="/login" element={<LoginPage />} />
+        </Route>
+
+        <Route element={<GuardedRoute mode="private" requiredRole="ADMIN" />}>
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboardPage />} />
+          </Route>
         </Route>
 
         <Route element={<GuardedRoute mode="private" requiredRole="MANAGER" />}>
@@ -41,10 +49,15 @@ const AppContent = observer(function AppContent(): ReactElement {
   )
 })
 
+function getAuthenticatedPath(): string {
+  if (authStore.isAdmin) return '/admin'
+  if (authStore.isManager) return '/manager'
+  return '/owner'
+}
+
 const RootRedirect = observer(function RootRedirect(): ReactElement {
   if (authStore.isAuthenticated) {
-    const path = authStore.isManager ? '/manager' : '/owner'
-    return <Navigate to={path} replace />
+    return <Navigate to={getAuthenticatedPath()} replace />
   }
   return <Navigate to="/login" replace />
 })

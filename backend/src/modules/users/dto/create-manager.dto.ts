@@ -1,4 +1,5 @@
 import {
+  IsBoolean,
   IsEmail,
   IsNotEmpty,
   IsOptional,
@@ -7,10 +8,10 @@ import {
 } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
-export class CreateUserDto {
+export class CreateManagerDto {
   @ApiProperty({
-    description: 'Email собственника',
-    example: 'owner@example.com',
+    description: 'Email менеджера',
+    example: 'manager@example.com',
   })
   @IsEmail({}, { message: 'Некорректный email' })
   @IsNotEmpty({ message: 'Email обязателен' })
@@ -26,18 +27,28 @@ export class CreateUserDto {
   password: string;
 
   @ApiProperty({
-    description: 'Имя собственника',
-    example: 'Иван Иванов',
+    description: 'Имя менеджера',
+    example: 'Петр Петров',
   })
   @IsString()
   @IsNotEmpty({ message: 'Имя обязательно' })
   name: string;
 
   @ApiPropertyOptional({
-    description: 'Телефон собственника',
-    example: '+7 999 123-45-67',
+    description: 'Может создавать собственников',
+    example: false,
+    default: false,
   })
   @IsOptional()
-  @IsString()
-  phone?: string;
+  @IsBoolean({ message: 'canCreateOwners должен быть boolean' })
+  canCreateOwners?: boolean;
+
+  @ApiPropertyOptional({
+    description: 'Может создавать объекты',
+    example: false,
+    default: false,
+  })
+  @IsOptional()
+  @IsBoolean({ message: 'canCreateProperties должен быть boolean' })
+  canCreateProperties?: boolean;
 }

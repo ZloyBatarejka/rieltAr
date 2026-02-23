@@ -11,12 +11,16 @@ interface GuardedRouteProps {
   requiredRole?: AuthUserDtoRoleEnum
 }
 
+function getHomePath(): string {
+  if (authStore.isAdmin) return '/admin'
+  if (authStore.isManager) return '/manager'
+  return '/owner'
+}
+
 const GuardedRoute = observer(function GuardedRoute({
   mode,
   requiredRole,
 }: GuardedRouteProps): ReactElement {
-  const redirectPath = authStore.isManager ? '/manager' : '/owner'
-
   if (authStore.isLoading) {
     return (
       <div className={styles.spinnerWrapper}>
@@ -25,9 +29,11 @@ const GuardedRoute = observer(function GuardedRoute({
     )
   }
 
+  const homePath = getHomePath()
+
   if (mode === 'guest') {
     return authStore.isAuthenticated ? (
-      <Navigate to={redirectPath} replace />
+      <Navigate to={homePath} replace />
     ) : (
       <Outlet />
     )
@@ -38,7 +44,7 @@ const GuardedRoute = observer(function GuardedRoute({
   }
 
   if (requiredRole && authStore.user?.role !== requiredRole) {
-    return <Navigate to={redirectPath} replace />
+    return <Navigate to={homePath} replace />
   }
 
   return <Outlet />

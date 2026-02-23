@@ -11,6 +11,8 @@ const managerUser = {
   name: 'Test Manager',
   role: 'MANAGER' as const,
   ownerId: null,
+  canCreateOwners: false,
+  canCreateProperties: false,
 }
 
 const ownerUser = {
@@ -19,6 +21,8 @@ const ownerUser = {
   name: 'Test Owner',
   role: 'OWNER' as const,
   ownerId: null,
+  canCreateOwners: false,
+  canCreateProperties: false,
 }
 
 function createMockApi(): AuthApi {

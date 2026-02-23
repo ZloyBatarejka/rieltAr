@@ -12,11 +12,11 @@ interface SeedUser {
   role: Role;
 }
 
-const defaultManager: SeedUser = {
-  email: 'admin@rieltar.ru',
+const defaultAdmin: SeedUser = {
+  email: 'admin@balivi.ru',
   password: 'admin123',
   name: 'Администратор',
-  role: Role.MANAGER,
+  role: Role.ADMIN,
 };
 
 async function main(): Promise<void> {
@@ -27,24 +27,21 @@ async function main(): Promise<void> {
     process.exit(0);
   }
 
-  const hashedPassword = await bcrypt.hash(
-    defaultManager.password,
-    SALT_ROUNDS,
-  );
+  const hashedPassword = await bcrypt.hash(defaultAdmin.password, SALT_ROUNDS);
 
   const user = await prisma.user.upsert({
-    where: { email: defaultManager.email },
-    update: {},
+    where: { email: defaultAdmin.email },
+    update: { role: Role.ADMIN },
     create: {
-      email: defaultManager.email,
+      email: defaultAdmin.email,
       password: hashedPassword,
-      name: defaultManager.name,
-      role: defaultManager.role,
+      name: defaultAdmin.name,
+      role: defaultAdmin.role,
     },
   });
 
   console.log(
-    `✅ Менеджер создан: ${user.email} (id: ${user.id}, role: ${user.role})`,
+    `✅ Админ создан: ${user.email} (id: ${user.id}, role: ${user.role})`,
   );
 }
 

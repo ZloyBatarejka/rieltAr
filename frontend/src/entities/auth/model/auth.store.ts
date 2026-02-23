@@ -49,6 +49,10 @@ export class AuthStore {
     return this.status === 'loading' || this.status === 'idle'
   }
 
+  get isAdmin(): boolean {
+    return this.user?.role === 'ADMIN'
+  }
+
   get isManager(): boolean {
     return this.user?.role === 'MANAGER'
   }

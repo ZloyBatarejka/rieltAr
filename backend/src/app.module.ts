@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { PrismaModule } from './modules/prisma/prisma.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { UsersModule } from './modules/users/users.module';
+import { ManagerPropertiesModule } from './modules/manager-properties/manager-properties.module';
 import { JwtAuthGuard, RolesGuard } from './modules/common/guards';
 
 @Module({
@@ -13,6 +14,7 @@ import { JwtAuthGuard, RolesGuard } from './modules/common/guards';
     PrismaModule,
     AuthModule,
     UsersModule,
+    ManagerPropertiesModule,
   ],
   controllers: [AppController],
   providers: [

@@ -13,7 +13,7 @@ const managerNavItems: NavItem[] = [
   { to: '/manager/payouts', label: 'Выплаты' },
 ]
 
-const ManagerLayout = observer(function ManagerLayout(): ReactElement {
+export const ManagerLayout = observer(function ManagerLayout(): ReactElement {
   const userName = authStore.user?.name ?? 'Менеджер'
 
   return (
@@ -24,5 +24,3 @@ const ManagerLayout = observer(function ManagerLayout(): ReactElement {
     />
   )
 })
-
-export default ManagerLayout

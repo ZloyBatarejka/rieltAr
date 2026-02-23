@@ -87,6 +87,8 @@ export class AuthService {
         name: user.name,
         role: user.role,
         ownerId: user.owner?.id ?? null,
+        canCreateOwners: user.canCreateOwners,
+        canCreateProperties: user.canCreateProperties,
       },
     };
   }
@@ -160,6 +162,8 @@ export class AuthService {
       name: user.name,
       role: user.role,
       ownerId: user.owner?.id ?? null,
+      canCreateOwners: user.canCreateOwners,
+      canCreateProperties: user.canCreateProperties,
     };
   }
 }

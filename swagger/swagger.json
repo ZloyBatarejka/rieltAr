@@ -145,7 +145,7 @@
         ]
       }
     },
-    "/api/users": {
+    "/api/users/owner": {
       "post": {
         "operationId": "UsersController_createOwner",
         "parameters": [],
@@ -154,7 +154,7 @@
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/CreateUserDto"
+                "$ref": "#/components/schemas/CreateOwnerDto"
               }
             }
           }
@@ -177,10 +177,10 @@
             "description": "Необходима авторизация"
           },
           "403": {
-            "description": "Недостаточно прав (не менеджер)"
+            "description": "Недостаточно прав"
           },
           "409": {
-            "description": "Пользователь с таким email уже существует"
+            "description": "Email уже существует"
           }
         },
         "security": [
@@ -188,9 +188,255 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Создать собственника (только менеджер)",
+        "summary": "Создать собственника (только админ)",
         "tags": [
           "Users"
+        ]
+      }
+    },
+    "/api/users/manager": {
+      "post": {
+        "operationId": "UsersController_createManager",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateManagerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Менеджер создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "409": {
+            "description": "Email уже существует"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Создать менеджера (только админ)",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/users/managers": {
+      "get": {
+        "operationId": "UsersController_getManagers",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Список менеджеров",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserResponseDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Список менеджеров (только админ)",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/users/{id}": {
+      "delete": {
+        "operationId": "UsersController_deleteManager",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Менеджер удалён"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Менеджер не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Удалить менеджера (только админ)",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
+    "/api/manager-properties": {
+      "post": {
+        "operationId": "ManagerPropertiesController_assign",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AssignPropertyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Назначение создано",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ManagerPropertyResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации"
+          },
+          "404": {
+            "description": "Менеджер или объект не найден"
+          },
+          "409": {
+            "description": "Объект уже назначен"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Назначить объект на менеджера",
+        "tags": [
+          "Manager Properties"
+        ]
+      },
+      "get": {
+        "operationId": "ManagerPropertiesController_findAll",
+        "parameters": [
+          {
+            "name": "userId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "propertyId",
+            "required": false,
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список назначений",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ManagerPropertyResponseDto"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Список назначений (фильтр по userId/propertyId)",
+        "tags": [
+          "Manager Properties"
+        ]
+      }
+    },
+    "/api/manager-properties/{id}": {
+      "delete": {
+        "operationId": "ManagerPropertiesController_unassign",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Назначение удалено"
+          },
+          "404": {
+            "description": "Назначение не найдено"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Снять назначение объекта",
+        "tags": [
+          "Manager Properties"
         ]
       }
     }
@@ -257,6 +503,7 @@
             "type": "string",
             "description": "Роль пользователя",
             "enum": [
+              "ADMIN",
               "MANAGER",
               "OWNER"
             ],
@@ -267,6 +514,16 @@
             "description": "ID собственника (если роль OWNER)",
             "example": "123e4567-e89b-12d3-a456-426614174000",
             "nullable": true
+          },
+          "canCreateOwners": {
+            "type": "boolean",
+            "description": "Может создавать собственников (делегировано админом)",
+            "example": false
+          },
+          "canCreateProperties": {
+            "type": "boolean",
+            "description": "Может создавать объекты (делегировано админом)",
+            "example": false
           }
         },
         "required": [
@@ -274,7 +531,9 @@
           "email",
           "name",
           "role",
-          "ownerId"
+          "ownerId",
+          "canCreateOwners",
+          "canCreateProperties"
         ]
       },
       "LoginResponseDto": {
@@ -350,7 +609,7 @@
           "message"
         ]
       },
-      "CreateUserDto": {
+      "CreateOwnerDto": {
         "type": "object",
         "properties": {
           "email": {
@@ -403,6 +662,7 @@
             "type": "string",
             "description": "Роль пользователя",
             "enum": [
+              "ADMIN",
               "MANAGER",
               "OWNER"
             ],
@@ -419,6 +679,16 @@
             "description": "Телефон собственника",
             "example": "+7 999 123-45-67"
           },
+          "canCreateOwners": {
+            "type": "boolean",
+            "description": "Может создавать собственников",
+            "example": false
+          },
+          "canCreateProperties": {
+            "type": "boolean",
+            "description": "Может создавать объекты",
+            "example": false
+          },
           "createdAt": {
             "format": "date-time",
             "type": "string",
@@ -432,7 +702,104 @@
           "name",
           "role",
           "ownerId",
+          "canCreateOwners",
+          "canCreateProperties",
           "createdAt"
+        ]
+      },
+      "CreateManagerDto": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string",
+            "description": "Email менеджера",
+            "example": "manager@example.com"
+          },
+          "password": {
+            "type": "string",
+            "description": "Пароль (минимум 6 символов)",
+            "example": "password123",
+            "minLength": 6
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя менеджера",
+            "example": "Петр Петров"
+          },
+          "canCreateOwners": {
+            "type": "boolean",
+            "description": "Может создавать собственников",
+            "example": false,
+            "default": false
+          },
+          "canCreateProperties": {
+            "type": "boolean",
+            "description": "Может создавать объекты",
+            "example": false,
+            "default": false
+          }
+        },
+        "required": [
+          "email",
+          "password",
+          "name"
+        ]
+      },
+      "AssignPropertyDto": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "ID менеджера",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "ID объекта",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "userId",
+          "propertyId"
+        ]
+      },
+      "ManagerPropertyResponseDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID назначения"
+          },
+          "userId": {
+            "type": "string",
+            "description": "ID менеджера"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "ID объекта"
+          },
+          "userName": {
+            "type": "string",
+            "description": "Имя менеджера"
+          },
+          "propertyTitle": {
+            "type": "string",
+            "description": "Название объекта"
+          },
+          "assignedAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата назначения"
+          }
+        },
+        "required": [
+          "id",
+          "userId",
+          "propertyId",
+          "userName",
+          "propertyTitle",
+          "assignedAt"
         ]
       }
     }

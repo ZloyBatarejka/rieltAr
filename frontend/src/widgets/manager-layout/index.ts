@@ -1,1 +1,1 @@
-export { default as ManagerLayout } from './ui/ManagerLayout'
+export { ManagerLayout } from './ui/ManagerLayout'

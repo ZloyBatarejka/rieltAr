@@ -8,6 +8,8 @@ export interface AuthUser {
   name: string;
   role: Role;
   ownerId: string | null;
+  canCreateOwners: boolean;
+  canCreateProperties: boolean;
 }
 
 export interface LoginResponse {

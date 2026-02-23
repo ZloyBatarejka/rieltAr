@@ -12,7 +12,7 @@ const ownerNavItems: NavItem[] = [
   { to: '/owner/payouts', label: 'Выплаты' },
 ]
 
-const OwnerLayout = observer(function OwnerLayout(): ReactElement {
+export const OwnerLayout = observer(function OwnerLayout(): ReactElement {
   const userName = authStore.user?.name ?? 'Собственник'
 
   return (
@@ -23,5 +23,3 @@ const OwnerLayout = observer(function OwnerLayout(): ReactElement {
     />
   )
 })
-
-export default OwnerLayout

@@ -22,7 +22,7 @@ export class UserResponseDto {
 
   @ApiProperty({
     description: 'Роль пользователя',
-    enum: ['MANAGER', 'OWNER'],
+    enum: ['ADMIN', 'MANAGER', 'OWNER'],
     example: 'OWNER',
   })
   role: Role;
@@ -39,6 +39,18 @@ export class UserResponseDto {
     example: '+7 999 123-45-67',
   })
   phone?: string | null;
+
+  @ApiProperty({
+    description: 'Может создавать собственников',
+    example: false,
+  })
+  canCreateOwners: boolean;
+
+  @ApiProperty({
+    description: 'Может создавать объекты',
+    example: false,
+  })
+  canCreateProperties: boolean;
 
   @ApiProperty({
     description: 'Дата создания',

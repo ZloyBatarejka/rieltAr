@@ -12,6 +12,8 @@ const managerUser = {
   name: 'Test Manager',
   role: 'MANAGER' as const,
   ownerId: null,
+  canCreateOwners: false,
+  canCreateProperties: false,
 }
 
 const loginResponse: LoginResponseDto = {
