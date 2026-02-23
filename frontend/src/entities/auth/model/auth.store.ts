@@ -30,6 +30,7 @@ export class AuthStore {
   user: AuthUserDto | null = null
   status: AuthStatus = 'idle'
   error: string | null = null
+  initialized: boolean = false
 
   private readonly api: AuthApi
 
@@ -132,17 +133,18 @@ export class AuthStore {
     }
   }
 
-  async checkAuth(): Promise<void> {
+  private async checkAuth(): Promise<void> {
     this.status = 'loading'
 
     const refreshToken = localStorage.getItem(REFRESH_TOKEN_KEY)
+
     if (!refreshToken) {
       runInAction(() => {
         this.status = 'unauthenticated'
       })
       return
     }
-
+    console.log('refreshToken', refreshToken)
     const refreshed = await this.refresh()
     if (!refreshed) return
 
@@ -160,6 +162,12 @@ export class AuthStore {
         this.status = 'unauthenticated'
       })
     }
+  }
+
+  public async initialize(): Promise<void> {
+    if (this.initialized) return
+    this.initialized = true
+    await this.checkAuth()
   }
 
   public clearError(): void {

@@ -10,7 +10,7 @@ import { ChakraProvider } from './providers'
 
 const AppContent = observer(function AppContent(): ReactElement {
   useEffect(() => {
-    void authStore.checkAuth()
+    void authStore.initialize()
   }, [])
 
   return (

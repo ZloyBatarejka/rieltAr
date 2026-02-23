@@ -22,6 +22,11 @@ const defaultManager: SeedUser = {
 async function main(): Promise<void> {
   console.log('🌱 Запуск seed...');
 
+  if (process.env.NODE_ENV === 'production') {
+    console.log('⛔ Seed запрещён в production');
+    process.exit(0);
+  }
+
   const hashedPassword = await bcrypt.hash(
     defaultManager.password,
     SALT_ROUNDS,

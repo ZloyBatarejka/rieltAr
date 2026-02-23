@@ -101,7 +101,7 @@ export class AuthService {
 
     if (!storedToken || storedToken.expiresAt < new Date()) {
       if (storedToken) {
-        await this.prisma.refreshToken.delete({
+        await this.prisma.refreshToken.deleteMany({
           where: { id: storedToken.id },
         });
       }
@@ -110,10 +110,16 @@ export class AuthService {
       );
     }
 
-    // Ротация: удаляем старый, создаём новый
-    await this.prisma.refreshToken.delete({
+    // Атомарная ротация: deleteMany не бросает если запись уже удалена (race condition)
+    const deleted = await this.prisma.refreshToken.deleteMany({
       where: { id: storedToken.id },
     });
+
+    if (deleted.count === 0) {
+      throw new UnauthorizedException(
+        'Недействительный или истёкший refresh-токен',
+      );
+    }
 
     const accessToken = this.generateAccessToken(storedToken.user);
     const newRefreshToken = randomBytes(64).toString('hex');

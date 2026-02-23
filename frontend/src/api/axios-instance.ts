@@ -5,7 +5,6 @@ import axios, {
 } from 'axios'
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:8070'
-console.log('API_URL23232323', API_URL, import.meta.env.VITE_API_URL)
 const ACCESS_TOKEN_KEY = 'accessToken'
 const REFRESH_TOKEN_KEY = 'refreshToken'
 
@@ -98,7 +97,7 @@ axiosInstance.interceptors.response.use(
 
       // Прямой axios.post — без interceptors, без цикла
       const response: AxiosResponse<unknown> = await axios.post(
-        `${API_URL}/auth/refresh`,
+        `${API_URL}/api/auth/refresh`,
         {
           refreshToken,
         },
