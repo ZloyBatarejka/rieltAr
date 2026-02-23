@@ -61,7 +61,7 @@ const LoginPage = observer(function LoginPage(): ReactElement {
     <div className={styles.wrapper}>
       <Card className={styles.card}>
         <CardHeader className={styles.header}>
-          <Heading size="lg">RieltAr</Heading>
+          <Heading size="lg">Balivi</Heading>
           <Text className={styles.subtitle}>
             Войдите в систему управления арендой
           </Text>

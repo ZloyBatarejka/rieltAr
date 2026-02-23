@@ -9,7 +9,7 @@ import { join } from 'path';
  */
 export function setupSwagger(app: INestApplication): void {
   const config = new DocumentBuilder()
-    .setTitle('RieltAr API')
+    .setTitle('Balivi API')
     .setDescription('API для управления арендой недвижимости')
     .setVersion('1.0')
     .addBearerAuth(

@@ -42,7 +42,7 @@ Chakra UI — для компонентов (что рендерить). CSS Mod
 import styles from './LoginPage.module.css'
 
 <Card className={styles.card}>
-  <Heading size="lg">RieltAr</Heading>
+  <Heading size="lg">Balivi</Heading>
   <Text className={styles.subtitle}>Подзаголовок</Text>
 </Card>
 ```

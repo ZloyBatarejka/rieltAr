@@ -1,4 +1,4 @@
-# Техническое задание — RieltAr
+# Техническое задание — Balivi
 
 > Версия: 1.0
 > Дата: 16.02.2026
@@ -408,7 +408,7 @@ User 1──1 Owner 1──N Property 1──N Stay 1──N Transaction
 ## 9. Структура проекта
 
 ```
-rieltAr/
+balivi/
 ├── backend/
 │   ├── prisma/
 │   │   ├── schema.prisma
