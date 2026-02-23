@@ -27,6 +27,43 @@ Chakra UI — для компонентов (что рендерить). CSS Mod
   - `as="form"`, `as="nav"` (полиморфизм)
   - `spacing` на `VStack`/`HStack`/`Stack` (это часть компонента-контейнера)
 
+## Mobile First
+
+- Базовые стили — **мобильные** (без медиазапросов)
+- Десктоп/планшет — через `@media (min-width: ...)`
+- Брейкпоинты (совпадают с Chakra):
+  - `sm`: `480px` — крупный мобильный
+  - `md`: `768px` — планшет
+  - `lg`: `992px` — десктоп
+  - `xl`: `1280px` — широкий десктоп
+- **Запрещены** `@media (max-width: ...)` — только `min-width`
+- Сайдбар: на мобильном — скрыт, открывается как drawer; на `md+` — всегда видим
+- Контент: на мобильном — `padding: 16px`; на `md+` — `padding: 24px 32px`
+
+```css
+/* ✅ Mobile first */
+.content {
+  padding: 16px;
+}
+
+@media (min-width: 768px) {
+  .content {
+    padding: 24px 32px;
+  }
+}
+
+/* ❌ Desktop first */
+.content {
+  padding: 24px 32px;
+}
+
+@media (max-width: 767px) {
+  .content {
+    padding: 16px;
+  }
+}
+```
+
 ## CSS Modules
 
 - Файл: `ComponentName.module.css` рядом с компонентом

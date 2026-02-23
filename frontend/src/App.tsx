@@ -6,6 +6,8 @@ import { GuardedRoute } from './features/auth'
 import LoginPage from './pages/login/LoginPage'
 import ManagerDashboardPage from './pages/manager/ManagerDashboardPage'
 import OwnerDashboardPage from './pages/owner/OwnerDashboardPage'
+import { ManagerLayout } from './widgets/manager-layout'
+import { OwnerLayout } from './widgets/owner-layout'
 import { ChakraProvider } from './providers'
 
 const AppContent = observer(function AppContent(): ReactElement {
@@ -21,11 +23,15 @@ const AppContent = observer(function AppContent(): ReactElement {
         </Route>
 
         <Route element={<GuardedRoute mode="private" requiredRole="MANAGER" />}>
-          <Route path="/manager" element={<ManagerDashboardPage />} />
+          <Route path="/manager" element={<ManagerLayout />}>
+            <Route index element={<ManagerDashboardPage />} />
+          </Route>
         </Route>
 
         <Route element={<GuardedRoute mode="private" requiredRole="OWNER" />}>
-          <Route path="/owner" element={<OwnerDashboardPage />} />
+          <Route path="/owner" element={<OwnerLayout />}>
+            <Route index element={<OwnerDashboardPage />} />
+          </Route>
         </Route>
 
         <Route path="/" element={<RootRedirect />} />

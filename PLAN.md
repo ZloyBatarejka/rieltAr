@@ -117,11 +117,11 @@
   - Кнопка «Выйти» — вызов `POST /api/auth/logout` + очистка токенов
   - Роутинг: менеджер → `/manager/*`, собственник → `/owner/*`
 
-- [ ] **2.9** Layouts
+- [x] **2.9** Layouts
   - `ManagerLayout` — сайдбар с навигацией менеджера
   - `OwnerLayout` — сайдбар с навигацией собственника
 
-- [ ] **2.10** Тесты авторизации (Frontend)
+- [x] **2.10** Тесты авторизации (Frontend)
   - Vitest + React Testing Library
   - `AuthStore` — unit-тесты (login, logout, refresh, состояния)
   - Страница логина — рендер формы, валидация, submit

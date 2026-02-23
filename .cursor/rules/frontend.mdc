@@ -10,11 +10,34 @@ alwaysApply: false
 
 - Слои: `app/`, `pages/`, `widgets/`, `features/`, `entities/`, `shared/`
 - Импорт только из нижестоящих слоёв: shared ← entities ← features ← widgets ← pages ← app
+
+## Импорты — алиасы `@/`
+
+- Для **кросс-слойных** импортов (обращение к публичному API другого слайса) — **всегда** алиас `@/`
+- Для **внутренних** импортов (внутри того же слайса, например `./model/store`) — **относительный** путь
+- Публичный API слайса = его `index.ts`. Импортировать только через него, не лезть вглубь
+
+```tsx
+// ✅ Кросс-слойный — алиас через публичный index.ts
+import { authStore } from '@/entities/auth'
+import { GuardedRoute } from '@/features/auth'
+import { Show } from '@/shared/ui/Show'
+
+// ✅ Внутренний — относительный путь внутри слайса
+import { AuthStore } from './model/auth.store'
+import styles from './LoginPage.module.css'
+
+// ❌ Кросс-слойный с относительным путём
+import { authStore } from '../../../entities/auth'
+
+// ❌ Импорт вглубь чужого слайса (мимо index.ts)
+import { AuthStore } from '@/entities/auth/model/auth.store'
+```
 - State management — **MobX** (`mobx` + `mobx-react-lite`), stores в `model/` внутри слайсов
 - UI-компоненты — **Chakra UI v2** (`@chakra-ui/react`)
 - Формы — **React Hook Form** + **zod** (`react-hook-form`, `@hookform/resolvers`, `zod`)
 - API-запросы — axios с interceptor для JWT
-- **Mobile first:** сначала мобильная вёрстка, потом десктоп
+- **Mobile first:** базовые стили = мобильные, расширение через `@media (min-width)`. Брейкпоинты: `sm` 480px, `md` 768px, `lg` 992px, `xl` 1280px. Подробности в `frontend-styles.mdc`
 
 ## Chakra UI + CSS Modules (гибридный подход)
 

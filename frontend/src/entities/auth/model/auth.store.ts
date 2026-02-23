@@ -22,7 +22,7 @@ const REFRESH_TOKEN_KEY = 'refreshToken'
 
 // ─── Types ──────────────────────────────────────────────
 
-type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated'
+export type AuthStatus = 'idle' | 'loading' | 'authenticated' | 'unauthenticated'
 
 // ─── Store ──────────────────────────────────────────────
 
@@ -77,7 +77,6 @@ export class AuthStore {
 
     try {
       const response = await this.api.login({ email, password })
-      console.log('response', response)
       runInAction(() => {
         this.user = response.user
         this.setTokens(response.accessToken, response.refreshToken)
@@ -144,7 +143,6 @@ export class AuthStore {
       })
       return
     }
-    console.log('refreshToken', refreshToken)
     const refreshed = await this.refresh()
     if (!refreshed) return
 

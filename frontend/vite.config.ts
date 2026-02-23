@@ -1,7 +1,7 @@
-import { defineConfig } from 'vite'
+import { defineConfig } from 'vitest/config'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
   server: {
@@ -11,6 +11,19 @@ export default defineConfig({
     modules: {
       localsConvention: 'camelCase',
       generateScopedName: '[local]_[hash:base64:2]',
+    },
+  },
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, 'src'),
+    },
+  },
+  test: {
+    globals: true,
+    environment: 'happy-dom',
+    setupFiles: './src/test/setup-tests.ts',
+    css: {
+      modules: { classNameStrategy: 'non-scoped' },
     },
   },
 })
