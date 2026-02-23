@@ -439,6 +439,209 @@
           "Manager Properties"
         ]
       }
+    },
+    "/api/owners": {
+      "get": {
+        "operationId": "OwnersController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы (1-based)",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Количество на странице",
+            "schema": {
+              "default": 20,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Поиск по имени собственника",
+            "schema": {
+              "example": "Иван",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список с пагинацией",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnersListResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Список собственников (Admin — все, Manager — доступные)",
+        "tags": [
+          "Owners"
+        ]
+      }
+    },
+    "/api/owners/{id}": {
+      "get": {
+        "operationId": "OwnersController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные собственника",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnerDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Собственник не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Карточка собственника с балансом",
+        "tags": [
+          "Owners"
+        ]
+      },
+      "patch": {
+        "operationId": "OwnersController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateOwnerDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Собственник обновлён",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OwnerDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Собственник не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Обновить данные собственника",
+        "tags": [
+          "Owners"
+        ]
+      },
+      "delete": {
+        "operationId": "OwnersController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Собственник удалён"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Собственник не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Удалить собственника (Admin, Manager)",
+        "tags": [
+          "Owners"
+        ]
+      }
     }
   },
   "info": {
@@ -801,6 +1004,125 @@
           "propertyTitle",
           "assignedAt"
         ]
+      },
+      "OwnerListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID собственника"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя"
+          },
+          "phone": {
+            "type": "object",
+            "description": "Телефон"
+          },
+          "propertiesCount": {
+            "type": "number",
+            "description": "Количество объектов"
+          },
+          "balance": {
+            "type": "number",
+            "description": "Текущий баланс"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата создания"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "propertiesCount",
+          "balance",
+          "createdAt"
+        ]
+      },
+      "OwnersListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Список собственников",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/OwnerListItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Всего записей"
+          },
+          "page": {
+            "type": "number",
+            "description": "Номер страницы"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Количество на странице"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit"
+        ]
+      },
+      "OwnerDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID собственника"
+          },
+          "name": {
+            "type": "string",
+            "description": "Имя"
+          },
+          "email": {
+            "type": "string",
+            "description": "Email"
+          },
+          "phone": {
+            "type": "object",
+            "description": "Телефон"
+          },
+          "propertiesCount": {
+            "type": "number",
+            "description": "Количество объектов"
+          },
+          "balance": {
+            "type": "number",
+            "description": "Текущий баланс"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата создания"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "email",
+          "propertiesCount",
+          "balance",
+          "createdAt"
+        ]
+      },
+      "UpdateOwnerDto": {
+        "type": "object",
+        "properties": {
+          "phone": {
+            "type": "string",
+            "description": "Телефон собственника",
+            "example": "+7 999 123-45-67"
+          }
+        }
       }
     }
   }

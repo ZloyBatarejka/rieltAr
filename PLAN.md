@@ -156,7 +156,7 @@
   - Метод `getScopeWhere(userId, role)` — Prisma `where` для фильтрации
   - Использовать в Owners, Properties, Stays, Transactions, Payouts, Dashboard
 
-- [ ] **3.2** Owners модуль (скоупинг через PropertyScopeService)
+- [x] **3.2** Owners модуль (скоупинг через PropertyScopeService)
   - `GET /api/owners` — список с пагинацией + поиск
   - ADMIN — все; Manager — только `ownerId IN (owners of assigned properties)`
   - `GET /api/owners/:id` — карточка собственника (с подсчётом баланса)
