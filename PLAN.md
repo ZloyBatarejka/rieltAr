@@ -168,7 +168,7 @@
   - Фильтрация по ownerId
   - ADMIN — все; Manager — только `id IN (assigned propertyIds)`; Owner — только свои
 
-- [ ] **3.4** Stays модуль (скоупинг: Manager — только назначенные объекты)
+- [x] **3.4** Stays модуль (скоупинг: Manager — только назначенные объекты)
   - `POST /api/stays` — создание заезда
     - Автоматическое создание транзакций: INCOME, COMMISSION (опц.), CLEANING (опц.)
     - Всё в одной Prisma-транзакции (`prisma.$transaction`)

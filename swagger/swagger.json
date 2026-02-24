@@ -902,6 +902,240 @@
           "Properties"
         ]
       }
+    },
+    "/api/stays": {
+      "post": {
+        "operationId": "StaysController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateStayDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Заезд создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StayDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Объект не найден или нет доступа"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Создать заезд (Admin, Manager). Автоматически создаёт связанные транзакции",
+        "tags": [
+          "Stays"
+        ]
+      },
+      "get": {
+        "operationId": "StaysController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы (1-based)",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Количество на странице",
+            "schema": {
+              "default": 20,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "propertyId",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по ID объекта",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerId",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по ID собственника",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Начало периода по датам заезда (checkIn >= from)",
+            "schema": {
+              "example": "2026-02-01T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Конец периода по датам выезда (checkOut <= to)",
+            "schema": {
+              "example": "2026-02-29T23:59:59.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "guestName",
+            "required": false,
+            "in": "query",
+            "description": "Поиск по имени гостя",
+            "schema": {
+              "example": "Иван",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список заездов с пагинацией. Admin — все, Manager — только назначенные объекты, Owner — только свои",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StaysListResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Список заездов с фильтрами (propertyId, ownerId, даты, имя гостя)",
+        "tags": [
+          "Stays"
+        ]
+      }
+    },
+    "/api/stays/{id}": {
+      "get": {
+        "operationId": "StaysController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные заезда с транзакциями",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/StayDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Заезд не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Детали заезда с вложенными транзакциями",
+        "tags": [
+          "Stays"
+        ]
+      },
+      "delete": {
+        "operationId": "StaysController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Заезд удалён"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Заезд не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Удалить заезд (Admin, Manager). Удаляет связанные транзакции",
+        "tags": [
+          "Stays"
+        ]
+      }
     }
   },
   "info": {
@@ -1534,6 +1768,265 @@
             "example": "123e4567-e89b-12d3-a456-426614174000"
           }
         }
+      },
+      "CreateStayDto": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "ID объекта, к которому относится заезд",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "guestName": {
+            "type": "string",
+            "description": "Имя гостя",
+            "example": "Иван Иванов"
+          },
+          "checkIn": {
+            "type": "string",
+            "description": "Дата заезда",
+            "example": "2026-02-24T15:00:00.000Z"
+          },
+          "checkOut": {
+            "type": "string",
+            "description": "Дата выезда",
+            "example": "2026-02-28T11:00:00.000Z"
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Общая сумма заезда (до комиссии и уборки)",
+            "example": 25000
+          },
+          "commissionPercent": {
+            "type": "number",
+            "description": "Процент комиссии менеджера (0-100)",
+            "example": 15
+          },
+          "cleaningAmount": {
+            "type": "number",
+            "description": "Сумма уборки",
+            "example": 1500
+          },
+          "incomeComment": {
+            "type": "string",
+            "description": "Комментарий к основной доходной операции",
+            "example": "Бронирование через Airbnb"
+          },
+          "commissionComment": {
+            "type": "string",
+            "description": "Комментарий к комиссии",
+            "example": "Комиссия 15% от суммы заезда"
+          },
+          "cleaningComment": {
+            "type": "string",
+            "description": "Комментарий к уборке",
+            "example": "Генеральная уборка после выезда гостя"
+          }
+        },
+        "required": [
+          "propertyId",
+          "guestName",
+          "checkIn",
+          "checkOut",
+          "totalAmount"
+        ]
+      },
+      "StayTransactionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID транзакции"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INCOME",
+              "COMMISSION",
+              "CLEANING",
+              "EXPENSE",
+              "PAYOUT"
+            ],
+            "description": "Тип транзакции"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Сумма транзакции"
+          },
+          "comment": {
+            "type": "object",
+            "description": "Комментарий"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата создания транзакции"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "amount",
+          "createdAt"
+        ]
+      },
+      "StayDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID заезда"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "ID объекта"
+          },
+          "propertyTitle": {
+            "type": "string",
+            "description": "Название объекта"
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "ID собственника"
+          },
+          "ownerName": {
+            "type": "string",
+            "description": "Имя собственника"
+          },
+          "guestName": {
+            "type": "string",
+            "description": "Имя гостя"
+          },
+          "checkIn": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата заезда"
+          },
+          "checkOut": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата выезда"
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Сумма заезда"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата создания"
+          },
+          "transactions": {
+            "description": "Транзакции, связанные с заездом",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StayTransactionDto"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "propertyId",
+          "propertyTitle",
+          "ownerId",
+          "ownerName",
+          "guestName",
+          "checkIn",
+          "checkOut",
+          "totalAmount",
+          "createdAt",
+          "transactions"
+        ]
+      },
+      "StayListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID заезда"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "ID объекта"
+          },
+          "propertyTitle": {
+            "type": "string",
+            "description": "Название объекта"
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "ID собственника"
+          },
+          "ownerName": {
+            "type": "string",
+            "description": "Имя собственника"
+          },
+          "guestName": {
+            "type": "string",
+            "description": "Имя гостя"
+          },
+          "checkIn": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата заезда"
+          },
+          "checkOut": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата выезда"
+          },
+          "totalAmount": {
+            "type": "number",
+            "description": "Сумма заезда"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата создания"
+          }
+        },
+        "required": [
+          "id",
+          "propertyId",
+          "propertyTitle",
+          "ownerId",
+          "ownerName",
+          "guestName",
+          "checkIn",
+          "checkOut",
+          "totalAmount",
+          "createdAt"
+        ]
+      },
+      "StaysListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Список заездов",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/StayListItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Всего записей"
+          },
+          "page": {
+            "type": "number",
+            "description": "Номер страницы"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Количество на странице"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit"
+        ]
       }
     }
   }

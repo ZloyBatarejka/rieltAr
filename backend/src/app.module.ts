@@ -10,6 +10,7 @@ import { PropertyScopeModule } from './modules/property-scope/property-scope.mod
 import { OwnersModule } from './modules/owners/owners.module';
 import { PropertiesModule } from './modules/properties/properties.module';
 import { JwtAuthGuard, RolesGuard } from './modules/common/guards';
+import { StaysModule } from './modules/stays/stays.module';
 
 @Module({
   imports: [
@@ -21,6 +22,7 @@ import { JwtAuthGuard, RolesGuard } from './modules/common/guards';
     PropertyScopeModule,
     OwnersModule,
     PropertiesModule,
+    StaysModule,
   ],
   controllers: [AppController],
   providers: [
