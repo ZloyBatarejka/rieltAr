@@ -2,6 +2,7 @@ import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Reflector } from '@nestjs/core';
 import { JwtAuthGuard } from './jwt-auth.guard';
+import type { AuthUser } from '../../auth/auth.types';
 
 describe('JwtAuthGuard', () => {
   let guard: JwtAuthGuard;
@@ -59,12 +60,20 @@ describe('JwtAuthGuard', () => {
   // ─── handleRequest() ───────────────────────────────────
 
   describe('handleRequest()', () => {
+    const mockUser: AuthUser = {
+      id: 'user-uuid',
+      email: 'test@test.ru',
+      name: 'Test',
+      role: 'MANAGER',
+      ownerId: null,
+      canCreateOwners: false,
+      canCreateProperties: false,
+    };
+
     it('should return user when valid', () => {
-      const user = { id: 'user-uuid', email: 'test@test.ru', role: 'MANAGER' };
+      const result = guard.handleRequest(null, mockUser, undefined);
 
-      const result = guard.handleRequest(null, user, undefined);
-
-      expect(result).toBe(user);
+      expect(result).toBe(mockUser);
     });
 
     it('should throw UnauthorizedException when err is present', () => {
@@ -80,11 +89,9 @@ describe('JwtAuthGuard', () => {
     });
 
     it('should throw UnauthorizedException when info contains error', () => {
-      const user = { id: 'user-uuid', email: 'test@test.ru', role: 'MANAGER' };
-
-      expect(() => guard.handleRequest(null, user, 'Token expired')).toThrow(
-        UnauthorizedException,
-      );
+      expect(() =>
+        guard.handleRequest(null, mockUser, 'Token expired'),
+      ).toThrow(UnauthorizedException);
     });
   });
 });

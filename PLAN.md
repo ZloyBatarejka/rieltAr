@@ -163,7 +163,7 @@
   - `PATCH /api/owners/:id` — обновление
   - `DELETE /api/owners/:id` — мягкое/жёсткое удаление
 
-- [ ] **3.3** Properties модуль (скоупинг через PropertyScopeService)
+- [x] **3.3** Properties модуль (скоупинг через PropertyScopeService)
   - CRUD для объектов (создание — только ADMIN)
   - Фильтрация по ownerId
   - ADMIN — все; Manager — только `id IN (assigned propertyIds)`; Owner — только свои

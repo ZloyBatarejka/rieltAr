@@ -2,6 +2,7 @@ import { ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Reflector } from '@nestjs/core';
 import { RolesGuard } from './roles.guard';
+import type { AuthUser } from '../../auth/auth.types';
 
 describe('RolesGuard', () => {
   let guard: RolesGuard;
@@ -23,9 +24,20 @@ describe('RolesGuard', () => {
     jest.clearAllMocks();
   });
 
-  function createMockContext(
-    user: Record<string, unknown> | null,
-  ): ExecutionContext {
+  function mockAuthUser(overrides: Partial<AuthUser>): AuthUser {
+    const defaults: AuthUser = {
+      id: '',
+      email: '',
+      name: '',
+      role: 'MANAGER',
+      ownerId: null,
+      canCreateOwners: false,
+      canCreateProperties: false,
+    };
+    return { ...defaults, ...overrides };
+  }
+
+  function createMockContext(user: AuthUser | null): ExecutionContext {
     return {
       getHandler: jest.fn(),
       getClass: jest.fn(),
@@ -44,29 +56,27 @@ describe('RolesGuard', () => {
   describe('canActivate()', () => {
     it('should allow access when no @Roles() decorator present', () => {
       mockReflector.getAllAndOverride.mockReturnValue(undefined);
-      const context = createMockContext({ id: '1', role: 'MANAGER' });
+      const context = createMockContext(
+        mockAuthUser({ id: '1', role: 'MANAGER' }),
+      );
 
       expect(guard.canActivate(context)).toBe(true);
     });
 
     it('should allow access when user has required role', () => {
       mockReflector.getAllAndOverride.mockReturnValue(['MANAGER']);
-      const context = createMockContext({
-        id: '1',
-        email: 'admin@rieltar.ru',
-        role: 'MANAGER',
-      });
+      const context = createMockContext(
+        mockAuthUser({ id: '1', email: 'admin@rieltar.ru', role: 'MANAGER' }),
+      );
 
       expect(guard.canActivate(context)).toBe(true);
     });
 
     it('should throw ForbiddenException when user role doesnt match', () => {
       mockReflector.getAllAndOverride.mockReturnValue(['MANAGER']);
-      const context = createMockContext({
-        id: '1',
-        email: 'owner@test.ru',
-        role: 'OWNER',
-      });
+      const context = createMockContext(
+        mockAuthUser({ id: '1', email: 'owner@test.ru', role: 'OWNER' }),
+      );
 
       expect(() => guard.canActivate(context)).toThrow(ForbiddenException);
     });
@@ -80,11 +90,9 @@ describe('RolesGuard', () => {
 
     it('should work with multiple roles (any match = allow)', () => {
       mockReflector.getAllAndOverride.mockReturnValue(['MANAGER', 'OWNER']);
-      const context = createMockContext({
-        id: '1',
-        email: 'owner@test.ru',
-        role: 'OWNER',
-      });
+      const context = createMockContext(
+        mockAuthUser({ id: '1', email: 'owner@test.ru', role: 'OWNER' }),
+      );
 
       expect(guard.canActivate(context)).toBe(true);
     });

@@ -8,6 +8,7 @@ import { UsersModule } from './modules/users/users.module';
 import { ManagerPropertiesModule } from './modules/manager-properties/manager-properties.module';
 import { PropertyScopeModule } from './modules/property-scope/property-scope.module';
 import { OwnersModule } from './modules/owners/owners.module';
+import { PropertiesModule } from './modules/properties/properties.module';
 import { JwtAuthGuard, RolesGuard } from './modules/common/guards';
 
 @Module({
@@ -19,6 +20,7 @@ import { JwtAuthGuard, RolesGuard } from './modules/common/guards';
     ManagerPropertiesModule,
     PropertyScopeModule,
     OwnersModule,
+    PropertiesModule,
   ],
   controllers: [AppController],
   providers: [

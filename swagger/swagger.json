@@ -642,6 +642,266 @@
           "Owners"
         ]
       }
+    },
+    "/api/properties": {
+      "post": {
+        "operationId": "PropertiesController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePropertyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Объект создан",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Собственник не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Создать объект (только Admin)",
+        "tags": [
+          "Properties"
+        ]
+      },
+      "get": {
+        "operationId": "PropertiesController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы (1-based)",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Количество на странице",
+            "schema": {
+              "default": 20,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "ownerId",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по ID собственника",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "required": false,
+            "in": "query",
+            "description": "Поиск по названию или адресу",
+            "schema": {
+              "example": "Тверская",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список с пагинацией",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertiesListResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Список объектов (Admin — все, Manager — назначенные, Owner — свои)",
+        "tags": [
+          "Properties"
+        ]
+      }
+    },
+    "/api/properties/{id}": {
+      "get": {
+        "operationId": "PropertiesController_findOne",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Данные объекта",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyDetailDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Объект не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Карточка объекта",
+        "tags": [
+          "Properties"
+        ]
+      },
+      "patch": {
+        "operationId": "PropertiesController_update",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdatePropertyDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Объект обновлён",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PropertyDetailDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Объект не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Обновить объект (только Admin)",
+        "tags": [
+          "Properties"
+        ]
+      },
+      "delete": {
+        "operationId": "PropertiesController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Объект удалён"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Объект не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Удалить объект (только Admin)",
+        "tags": [
+          "Properties"
+        ]
+      }
     }
   },
   "info": {
@@ -1121,6 +1381,157 @@
             "type": "string",
             "description": "Телефон собственника",
             "example": "+7 999 123-45-67"
+          }
+        }
+      },
+      "CreatePropertyDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Название объекта",
+            "example": "Квартира на Тверской"
+          },
+          "address": {
+            "type": "string",
+            "description": "Адрес объекта",
+            "example": "ул. Тверская, д. 1"
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "ID собственника",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          }
+        },
+        "required": [
+          "title",
+          "address",
+          "ownerId"
+        ]
+      },
+      "PropertyDetailDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID объекта"
+          },
+          "title": {
+            "type": "string",
+            "description": "Название"
+          },
+          "address": {
+            "type": "string",
+            "description": "Адрес"
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "ID собственника"
+          },
+          "ownerName": {
+            "type": "string",
+            "description": "Имя собственника"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата создания"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "address",
+          "ownerId",
+          "ownerName",
+          "createdAt"
+        ]
+      },
+      "PropertyListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID объекта"
+          },
+          "title": {
+            "type": "string",
+            "description": "Название"
+          },
+          "address": {
+            "type": "string",
+            "description": "Адрес"
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "ID собственника"
+          },
+          "ownerName": {
+            "type": "string",
+            "description": "Имя собственника"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата создания"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "address",
+          "ownerId",
+          "ownerName",
+          "createdAt"
+        ]
+      },
+      "PropertiesListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Список объектов",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PropertyListItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Всего записей"
+          },
+          "page": {
+            "type": "number",
+            "description": "Номер страницы"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Количество на странице"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit"
+        ]
+      },
+      "UpdatePropertyDto": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string",
+            "description": "Название объекта",
+            "example": "Квартира на Тверской"
+          },
+          "address": {
+            "type": "string",
+            "description": "Адрес объекта",
+            "example": "ул. Тверская, д. 1"
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "ID собственника",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
           }
         }
       }

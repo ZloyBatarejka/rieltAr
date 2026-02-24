@@ -3,6 +3,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
+import type { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { AssignPropertyDto } from './dto/assign-property.dto';
 
@@ -82,7 +83,7 @@ export class ManagerPropertiesService {
     userId?: string,
     propertyId?: string,
   ): Promise<ManagerPropertyResponse[]> {
-    const where: { userId?: string; propertyId?: string } = {};
+    const where: Prisma.ManagerPropertyWhereInput = {};
     if (userId) where.userId = userId;
     if (propertyId) where.propertyId = propertyId;
 

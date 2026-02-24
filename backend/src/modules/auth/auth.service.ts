@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { createHash, randomBytes } from 'crypto';
 import * as bcrypt from 'bcrypt';
-import type { Role } from '@prisma/client';
+import type { User } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { LoginDto } from './dto/login.dto';
 import type { AuthUser, LoginResponse, TokenPairResponse } from './auth.types';
@@ -22,11 +22,9 @@ export class AuthService {
     return createHash('sha256').update(token).digest('hex');
   }
 
-  private generateAccessToken(user: {
-    id: string;
-    email: string;
-    role: Role;
-  }): string {
+  private generateAccessToken(
+    user: Pick<User, 'id' | 'email' | 'role'>,
+  ): string {
     return this.jwtService.sign({
       sub: user.id,
       email: user.email,
