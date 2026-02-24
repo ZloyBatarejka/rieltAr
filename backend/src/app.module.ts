@@ -11,6 +11,7 @@ import { OwnersModule } from './modules/owners/owners.module';
 import { PropertiesModule } from './modules/properties/properties.module';
 import { JwtAuthGuard, RolesGuard } from './modules/common/guards';
 import { StaysModule } from './modules/stays/stays.module';
+import { TransactionsModule } from './modules/transactions/transactions.module';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { StaysModule } from './modules/stays/stays.module';
     OwnersModule,
     PropertiesModule,
     StaysModule,
+    TransactionsModule,
   ],
   controllers: [AppController],
   providers: [

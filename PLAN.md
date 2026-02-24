@@ -176,7 +176,7 @@
   - `GET /api/stays/:id` — детали с вложенными транзакциями
   - `DELETE /api/stays/:id` — удаление заезда + связанных транзакций
 
-- [ ] **3.5** Transactions модуль (скоупинг: Manager — только назначенные propertyId)
+- [x] **3.5** Transactions модуль (скоупинг: Manager — только назначенные propertyId)
   - `POST /api/transactions` — ручное добавление операции (propertyId обязателен)
   - `GET /api/transactions` — список с фильтрами + пагинация
   - `DELETE /api/transactions/:id` — удаление
