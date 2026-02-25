@@ -1,0 +1,1 @@
+export { AdminAssignmentsPage } from './AdminAssignmentsPage'

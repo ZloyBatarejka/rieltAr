@@ -108,7 +108,7 @@ describe('TransactionsService', () => {
   });
 
   describe('findAll', () => {
-    it('returns paginated list with filters', async () => {
+    it('returns list with filters', async () => {
       const mockTxs = [
         {
           id: 'tx-1',
@@ -132,8 +132,6 @@ describe('TransactionsService', () => {
       jest.spyOn(prisma.transaction, 'count').mockResolvedValue(1);
 
       const result = await service.findAll(adminUser, {
-        page: 1,
-        limit: 20,
         type: TransactionType.INCOME,
       });
 

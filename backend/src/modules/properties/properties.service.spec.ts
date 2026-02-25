@@ -75,7 +75,7 @@ describe('PropertiesService', () => {
       jest.spyOn(prisma.property, 'count').mockResolvedValue(1);
       const getPropertyWhereSpy = jest.spyOn(propertyScope, 'getPropertyWhere');
 
-      const result = await service.findAll(adminUser, 1, 20);
+      const result = await service.findAll(adminUser);
 
       expect(result.items).toHaveLength(1);
       expect(result.items[0]).toMatchObject({
@@ -96,7 +96,7 @@ describe('PropertiesService', () => {
         .mockResolvedValue([]);
       jest.spyOn(prisma.property, 'count').mockResolvedValue(0);
 
-      await service.findAll(adminUser, 1, 20, 'owner-123');
+      await service.findAll(adminUser, 'owner-123');
 
       expect(findManySpy).toHaveBeenCalledWith(
         expect.objectContaining({

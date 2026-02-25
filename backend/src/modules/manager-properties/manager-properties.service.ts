@@ -13,6 +13,7 @@ export interface ManagerPropertyResponse {
   propertyId: string;
   userName: string;
   propertyTitle: string;
+  propertyAddress: string;
   assignedAt: Date;
 }
 
@@ -54,7 +55,7 @@ export class ManagerPropertiesService {
       },
       include: {
         user: { select: { name: true } },
-        property: { select: { title: true } },
+        property: { select: { title: true, address: true } },
       },
     });
 
@@ -64,6 +65,7 @@ export class ManagerPropertiesService {
       propertyId: assignment.propertyId,
       userName: assignment.user.name,
       propertyTitle: assignment.property.title,
+      propertyAddress: assignment.property.address,
       assignedAt: assignment.assignedAt,
     };
   }
@@ -91,7 +93,7 @@ export class ManagerPropertiesService {
       where,
       include: {
         user: { select: { name: true } },
-        property: { select: { title: true } },
+        property: { select: { title: true, address: true } },
       },
       orderBy: { assignedAt: 'desc' },
     });
@@ -102,6 +104,7 @@ export class ManagerPropertiesService {
       propertyId: a.propertyId,
       userName: a.user.name,
       propertyTitle: a.property.title,
+      propertyAddress: a.property.address,
       assignedAt: a.assignedAt,
     }));
   }

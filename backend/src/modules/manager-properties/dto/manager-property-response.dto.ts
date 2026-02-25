@@ -16,6 +16,9 @@ export class ManagerPropertyResponseDto {
   @ApiProperty({ description: 'Название объекта' })
   propertyTitle: string;
 
+  @ApiProperty({ description: 'Адрес объекта' })
+  propertyAddress: string;
+
   @ApiProperty({ description: 'Дата назначения' })
   assignedAt: Date;
 }

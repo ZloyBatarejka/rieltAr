@@ -31,14 +31,32 @@ alwaysApply: true
 - Frontend **не пишет** API-вызовы вручную — только сгенерированные клиенты
 - Сгенерированный код: `frontend/src/api/generated/`
 
+## React-компоненты
+
+- Типизация: `React.FC<PropsInterface>` для функциональных компонентов
+- Экспорт: `export const ComponentName: React.FC<Props> = (props) => { ... }`
+- Props-интерфейс объявлять выше компонента
+
+```tsx
+interface PermissionSwitchProps {
+  value: boolean
+  onChange: (value: boolean) => void
+}
+
+export const PermissionSwitch: React.FC<PermissionSwitchProps> = ({
+  value,
+  onChange,
+}) => { ... }
+```
+
 ## Строгая типизация
 
 - Всегда TypeScript (strict)
 - **Запрещён** `any` — всегда конкретный тип
 - **Запрещён** `as` (type assertion) — использовать type guard (`value is T`)
-- **Обязательны** явные возвращаемые типы у функций и методов (кроме callback-выражений и void)
+- **Не объявлять** явные возвращаемые типы там, где TypeScript выводит их сам. Не писать громоздкие inline-типы (`function foo(): { a: X; b: Y; ... }`).
 - Runtime-валидация: на фронте — `zod`, на бэке — type guard или `class-validator`
-- Закреплено в ESLint: `no-explicit-any`, `consistent-type-assertions`, `explicit-function-return-type`
+- Закреплено в ESLint: `no-explicit-any`, `consistent-type-assertions` (без `explicit-function-return-type`)
 
 ## Проверка качества кода
 

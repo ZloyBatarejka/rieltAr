@@ -1,0 +1,1 @@
+export { AdminPropertiesPage } from './AdminPropertiesPage'

@@ -48,8 +48,6 @@ export interface StayDetail {
 export interface StaysListResult {
   items: StayListItem[];
   total: number;
-  page: number;
-  limit: number;
 }
 
 type StayWithRelations = Prisma.StayGetPayload<{
@@ -227,9 +225,6 @@ export class StaysService {
     user: AuthUser,
     query: StayListQueryDto,
   ): Promise<StaysListResult> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 20;
-
     const basePropertyWhere = await this.propertyScope.getPropertyWhere(user);
 
     const propertyWhere: Prisma.PropertyWhereInput = {
@@ -293,15 +288,13 @@ export class StaysService {
           },
         },
         orderBy: { checkIn: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
       }),
       this.prisma.stay.count({ where }),
     ]);
 
     const items = stays.map((stay) => this.mapToListItem(stay));
 
-    return { items, total, page, limit };
+    return { items, total };
   }
 
   async findOne(user: AuthUser, id: string): Promise<StayDetail> {

@@ -25,8 +25,6 @@ export interface TransactionListItem {
 export interface TransactionsListResult {
   items: TransactionListItem[];
   total: number;
-  page: number;
-  limit: number;
 }
 
 type TransactionForList = Prisma.TransactionGetPayload<{
@@ -106,9 +104,6 @@ export class TransactionsService {
     user: AuthUser,
     query: TransactionListQueryDto,
   ): Promise<TransactionsListResult> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 20;
-
     const baseWhere = await this.propertyScope.getTransactionWhere(user);
 
     const filterWhere: Prisma.TransactionWhereInput = {};
@@ -163,15 +158,13 @@ export class TransactionsService {
           },
         },
         orderBy: { createdAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
       }),
       this.prisma.transaction.count({ where }),
     ]);
 
     const items = transactions.map((tx) => this.mapToListItem(tx));
 
-    return { items, total, page, limit };
+    return { items, total };
   }
 
   async remove(user: AuthUser, id: string): Promise<void> {

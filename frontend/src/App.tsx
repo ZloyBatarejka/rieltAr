@@ -5,6 +5,10 @@ import { authStore } from './entities/auth'
 import { GuardedRoute } from './features/auth'
 import LoginPage from './pages/login/LoginPage'
 import AdminDashboardPage from './pages/admin/AdminDashboardPage'
+import { AdminManagersPage } from './pages/admin/managers'
+import { AdminOwnersPage } from './pages/admin/owners'
+import { AdminPropertiesPage } from './pages/admin/properties'
+import { AdminAssignmentsPage } from './pages/admin/assignments'
 import ManagerDashboardPage from './pages/manager/ManagerDashboardPage'
 import OwnerDashboardPage from './pages/owner/OwnerDashboardPage'
 import { AdminLayout } from './widgets/admin-layout'
@@ -27,6 +31,10 @@ const AppContent = observer(function AppContent(): ReactElement {
         <Route element={<GuardedRoute mode="private" requiredRole="ADMIN" />}>
           <Route path="/admin" element={<AdminLayout />}>
             <Route index element={<AdminDashboardPage />} />
+            <Route path="managers" element={<AdminManagersPage />} />
+            <Route path="owners" element={<AdminOwnersPage />} />
+            <Route path="properties" element={<AdminPropertiesPage />} />
+            <Route path="assignments" element={<AdminAssignmentsPage />} />
           </Route>
         </Route>
 

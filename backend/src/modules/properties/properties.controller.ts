@@ -64,7 +64,7 @@ export class PropertiesController {
   })
   @ApiResponse({
     status: 200,
-    description: 'Список с пагинацией',
+    description: 'Список объектов',
     type: PropertiesListResponseDto,
   })
   @ApiResponse({ status: 401, description: 'Необходима авторизация' })
@@ -73,15 +73,7 @@ export class PropertiesController {
     @CurrentUser() user: AuthUser,
     @Query() query: PropertyListQueryDto,
   ): Promise<PropertiesListResult> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 20;
-    return this.propertiesService.findAll(
-      user,
-      page,
-      limit,
-      query.ownerId,
-      query.search,
-    );
+    return this.propertiesService.findAll(user, query.ownerId, query.search);
   }
 
   @Get(':id')

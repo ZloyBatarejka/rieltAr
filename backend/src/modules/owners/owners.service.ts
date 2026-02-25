@@ -27,8 +27,6 @@ export interface OwnerDetail {
 export interface OwnersListResult {
   items: OwnerListItem[];
   total: number;
-  page: number;
-  limit: number;
 }
 
 @Injectable()
@@ -38,12 +36,7 @@ export class OwnersService {
     private readonly propertyScope: PropertyScopeService,
   ) {}
 
-  async findAll(
-    user: AuthUser,
-    page: number,
-    limit: number,
-    search?: string,
-  ): Promise<OwnersListResult> {
+  async findAll(user: AuthUser, search?: string): Promise<OwnersListResult> {
     const where = await this.propertyScope.getOwnerWhere(user);
 
     const searchWhere = search?.trim()
@@ -64,8 +57,6 @@ export class OwnersService {
           _count: { select: { properties: true } },
         },
         orderBy: { user: { name: 'asc' } },
-        skip: (page - 1) * limit,
-        take: limit,
       }),
       this.prisma.owner.count({ where: combinedWhere }),
     ]);
@@ -83,7 +74,7 @@ export class OwnersService {
       createdAt: o.createdAt,
     }));
 
-    return { items, total, page, limit };
+    return { items, total };
   }
 
   async findOne(user: AuthUser, id: string): Promise<OwnerDetail> {

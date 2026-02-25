@@ -445,28 +445,6 @@
         "operationId": "OwnersController_findAll",
         "parameters": [
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Номер страницы (1-based)",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Количество на странице",
-            "schema": {
-              "default": 20,
-              "example": 20,
-              "type": "number"
-            }
-          },
-          {
             "name": "search",
             "required": false,
             "in": "query",
@@ -479,7 +457,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Список с пагинацией",
+            "description": "Список собственников",
             "content": {
               "application/json": {
                 "schema": {
@@ -695,28 +673,6 @@
         "operationId": "PropertiesController_findAll",
         "parameters": [
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Номер страницы (1-based)",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Количество на странице",
-            "schema": {
-              "default": 20,
-              "example": 20,
-              "type": "number"
-            }
-          },
-          {
             "name": "ownerId",
             "required": false,
             "in": "query",
@@ -739,7 +695,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Список с пагинацией",
+            "description": "Список объектов",
             "content": {
               "application/json": {
                 "schema": {
@@ -955,28 +911,6 @@
         "operationId": "StaysController_findAll",
         "parameters": [
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Номер страницы (1-based)",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Количество на странице",
-            "schema": {
-              "default": 20,
-              "example": 20,
-              "type": "number"
-            }
-          },
-          {
             "name": "propertyId",
             "required": false,
             "in": "query",
@@ -1189,28 +1123,6 @@
         "operationId": "TransactionsController_findAll",
         "parameters": [
           {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Номер страницы (1-based)",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Количество на странице",
-            "schema": {
-              "default": 20,
-              "example": 20,
-              "type": "number"
-            }
-          },
-          {
             "name": "propertyId",
             "required": false,
             "in": "query",
@@ -1385,28 +1297,6 @@
       "get": {
         "operationId": "PayoutsController_findAll",
         "parameters": [
-          {
-            "name": "page",
-            "required": false,
-            "in": "query",
-            "description": "Номер страницы (1-based)",
-            "schema": {
-              "default": 1,
-              "example": 1,
-              "type": "number"
-            }
-          },
-          {
-            "name": "limit",
-            "required": false,
-            "in": "query",
-            "description": "Количество на странице",
-            "schema": {
-              "default": 20,
-              "example": 20,
-              "type": "number"
-            }
-          },
           {
             "name": "propertyId",
             "required": false,
@@ -2016,6 +1906,10 @@
             "type": "string",
             "description": "Название объекта"
           },
+          "propertyAddress": {
+            "type": "string",
+            "description": "Адрес объекта"
+          },
           "assignedAt": {
             "format": "date-time",
             "type": "string",
@@ -2028,6 +1922,7 @@
           "propertyId",
           "userName",
           "propertyTitle",
+          "propertyAddress",
           "assignedAt"
         ]
       },
@@ -2081,21 +1976,11 @@
           "total": {
             "type": "number",
             "description": "Всего записей"
-          },
-          "page": {
-            "type": "number",
-            "description": "Номер страницы"
-          },
-          "limit": {
-            "type": "number",
-            "description": "Количество на странице"
           }
         },
         "required": [
           "items",
-          "total",
-          "page",
-          "limit"
+          "total"
         ]
       },
       "OwnerDetailDto": {
@@ -2264,21 +2149,11 @@
           "total": {
             "type": "number",
             "description": "Всего записей"
-          },
-          "page": {
-            "type": "number",
-            "description": "Номер страницы"
-          },
-          "limit": {
-            "type": "number",
-            "description": "Количество на странице"
           }
         },
         "required": [
           "items",
-          "total",
-          "page",
-          "limit"
+          "total"
         ]
       },
       "UpdatePropertyDto": {
@@ -2543,21 +2418,11 @@
           "total": {
             "type": "number",
             "description": "Всего записей"
-          },
-          "page": {
-            "type": "number",
-            "description": "Номер страницы"
-          },
-          "limit": {
-            "type": "number",
-            "description": "Количество на странице"
           }
         },
         "required": [
           "items",
-          "total",
-          "page",
-          "limit"
+          "total"
         ]
       },
       "CreateTransactionDto": {
@@ -2669,21 +2534,11 @@
           "total": {
             "type": "number",
             "description": "Всего записей"
-          },
-          "page": {
-            "type": "number",
-            "description": "Номер страницы"
-          },
-          "limit": {
-            "type": "number",
-            "description": "Количество на странице"
           }
         },
         "required": [
           "items",
-          "total",
-          "page",
-          "limit"
+          "total"
         ]
       },
       "CreatePayoutDto": {
@@ -2781,21 +2636,11 @@
           "total": {
             "type": "number",
             "description": "Всего записей"
-          },
-          "page": {
-            "type": "number",
-            "description": "Номер страницы"
-          },
-          "limit": {
-            "type": "number",
-            "description": "Количество на странице"
           }
         },
         "required": [
           "items",
-          "total",
-          "page",
-          "limit"
+          "total"
         ]
       },
       "DashboardTransactionDto": {

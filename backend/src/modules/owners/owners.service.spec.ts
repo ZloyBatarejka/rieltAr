@@ -54,7 +54,7 @@ describe('OwnersService', () => {
   });
 
   describe('findAll', () => {
-    it('returns paginated list with scope', async () => {
+    it('returns list with scope', async () => {
       const mockOwners = [
         {
           id: 'owner-1',
@@ -72,12 +72,10 @@ describe('OwnersService', () => {
       balanceSpy.mockResolvedValue(1000);
       const getOwnerWhereSpy = jest.spyOn(propertyScope, 'getOwnerWhere');
 
-      const result = await service.findAll(adminUser, 1, 20);
+      const result = await service.findAll(adminUser);
 
       expect(result.items).toHaveLength(1);
       expect(result.total).toBe(1);
-      expect(result.page).toBe(1);
-      expect(result.limit).toBe(20);
       expect(getOwnerWhereSpy).toHaveBeenCalledWith(adminUser);
     });
   });

@@ -27,8 +27,6 @@ export interface PropertyDetail {
 export interface PropertiesListResult {
   items: PropertyListItem[];
   total: number;
-  page: number;
-  limit: number;
 }
 
 @Injectable()
@@ -40,8 +38,6 @@ export class PropertiesService {
 
   async findAll(
     user: AuthUser,
-    page: number,
-    limit: number,
     ownerId?: string,
     search?: string,
   ): Promise<PropertiesListResult> {
@@ -68,8 +64,6 @@ export class PropertiesService {
           owner: { include: { user: { select: { name: true } } } },
         },
         orderBy: { title: 'asc' },
-        skip: (page - 1) * limit,
-        take: limit,
       }),
       this.prisma.property.count({ where: combinedWhere }),
     ]);
@@ -83,7 +77,7 @@ export class PropertiesService {
       createdAt: p.createdAt,
     }));
 
-    return { items, total, page, limit };
+    return { items, total };
   }
 
   async findOne(user: AuthUser, id: string): Promise<PropertyDetail> {

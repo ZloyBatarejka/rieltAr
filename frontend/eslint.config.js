@@ -27,16 +27,8 @@ export default defineConfig([
         'error',
         { assertionStyle: 'never' },
       ],
-      '@typescript-eslint/explicit-function-return-type': [
-        'error',
-        {
-          allowExpressions: true,
-          allowTypedFunctionExpressions: true,
-          allowHigherOrderFunctions: true,
-          allowDirectConstAssertionInArrowFunctions: true,
-          allowConciseArrowFunctionExpressionsStartingWithVoid: true,
-        },
-      ],
+      // Явные return-типы не требуются — полагаемся на вывод TypeScript
+      '@typescript-eslint/explicit-function-return-type': 'off',
 
       // ─── XSS-защита ──────────────────────────────────────
       'no-restricted-properties': [

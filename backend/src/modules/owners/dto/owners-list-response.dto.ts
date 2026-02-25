@@ -10,10 +10,4 @@ export class OwnersListResponseDto {
 
   @ApiProperty({ description: 'Всего записей' })
   total: number;
-
-  @ApiProperty({ description: 'Номер страницы' })
-  page: number;
-
-  @ApiProperty({ description: 'Количество на странице' })
-  limit: number;
 }

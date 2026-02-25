@@ -1,0 +1,53 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+@media (min-width: 768px) {
+  .header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+
+.tableWrap {
+  overflow-x: auto;
+}
+
+.badge {
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 4px;
+}
+
+.badgeYes {
+  background: var(--chakra-colors-green-100);
+  color: var(--chakra-colors-green-800);
+}
+
+.badgeNo {
+  background: var(--chakra-colors-gray-100);
+  color: var(--chakra-colors-gray-600);
+}
+
+.formCard {
+  max-width: 400px;
+}
+
+.formActions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+}
+
+.formActions button:first-child {
+  flex: 1;
+}

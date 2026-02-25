@@ -25,8 +25,6 @@ export interface PayoutListItem {
 export interface PayoutsListResult {
   items: PayoutListItem[];
   total: number;
-  page: number;
-  limit: number;
 }
 
 type PayoutWithRelations = Prisma.PayoutGetPayload<{
@@ -127,9 +125,6 @@ export class PayoutsService {
     user: AuthUser,
     query: PayoutListQueryDto,
   ): Promise<PayoutsListResult> {
-    const page = query.page ?? 1;
-    const limit = query.limit ?? 20;
-
     const baseWhere = await this.propertyScope.getPayoutWhere(user);
 
     const filterWhere: Prisma.PayoutWhereInput = {};
@@ -180,15 +175,13 @@ export class PayoutsService {
           },
         },
         orderBy: { paidAt: 'desc' },
-        skip: (page - 1) * limit,
-        take: limit,
       }),
       this.prisma.payout.count({ where }),
     ]);
 
     const items = payouts.map((payout) => this.mapToListItem(payout));
 
-    return { items, total, page, limit };
+    return { items, total };
   }
 
   async remove(user: AuthUser, id: string): Promise<void> {
