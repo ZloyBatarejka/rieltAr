@@ -1333,6 +1333,187 @@
           "Transactions"
         ]
       }
+    },
+    "/api/payouts": {
+      "post": {
+        "operationId": "PayoutsController_create",
+        "parameters": [],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreatePayoutDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Выплата создана",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutListItemDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Объект не найден или нет доступа"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Создать выплату (Admin, Manager). Автоматически создаёт транзакцию PAYOUT",
+        "tags": [
+          "Payouts"
+        ]
+      },
+      "get": {
+        "operationId": "PayoutsController_findAll",
+        "parameters": [
+          {
+            "name": "page",
+            "required": false,
+            "in": "query",
+            "description": "Номер страницы (1-based)",
+            "schema": {
+              "default": 1,
+              "example": 1,
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "required": false,
+            "in": "query",
+            "description": "Количество на странице",
+            "schema": {
+              "default": 20,
+              "example": 20,
+              "type": "number"
+            }
+          },
+          {
+            "name": "propertyId",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по ID объекта",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "ownerId",
+            "required": false,
+            "in": "query",
+            "description": "Фильтр по ID собственника",
+            "schema": {
+              "example": "123e4567-e89b-12d3-a456-426614174000",
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Начало периода по дате выплаты (paidAt >= from)",
+            "schema": {
+              "example": "2026-02-01T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Конец периода по дате выплаты (paidAt <= to)",
+            "schema": {
+              "example": "2026-02-29T23:59:59.000Z",
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Список выплат",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutsListResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Список выплат с пагинацией и фильтрами (Admin — все, Manager — только по назначенным объектам, Owner — свои)",
+        "tags": [
+          "Payouts"
+        ]
+      }
+    },
+    "/api/payouts/{id}": {
+      "delete": {
+        "operationId": "PayoutsController_remove",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "204": {
+            "description": "Выплата удалена"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Выплата не найдена"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Удалить выплату",
+        "tags": [
+          "Payouts"
+        ]
+      }
     }
   },
   "info": {
@@ -2329,6 +2510,118 @@
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/TransactionListItemDto"
+            }
+          },
+          "total": {
+            "type": "number",
+            "description": "Всего записей"
+          },
+          "page": {
+            "type": "number",
+            "description": "Номер страницы"
+          },
+          "limit": {
+            "type": "number",
+            "description": "Количество на странице"
+          }
+        },
+        "required": [
+          "items",
+          "total",
+          "page",
+          "limit"
+        ]
+      },
+      "CreatePayoutDto": {
+        "type": "object",
+        "properties": {
+          "propertyId": {
+            "type": "string",
+            "description": "ID объекта, по которому создаётся выплата",
+            "example": "123e4567-e89b-12d3-a456-426614174000"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Сумма выплаты (положительное число)",
+            "example": 15000
+          },
+          "paidAt": {
+            "type": "string",
+            "description": "Дата фактической выплаты (по умолчанию — сейчас)",
+            "example": "2026-02-24T12:00:00.000Z"
+          },
+          "comment": {
+            "type": "string",
+            "description": "Комментарий к выплате",
+            "example": "Выплата собственнику за февраль"
+          }
+        },
+        "required": [
+          "propertyId",
+          "amount"
+        ]
+      },
+      "PayoutListItemDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID выплаты"
+          },
+          "ownerId": {
+            "type": "string",
+            "description": "ID собственника"
+          },
+          "ownerName": {
+            "type": "string",
+            "description": "Имя собственника"
+          },
+          "propertyId": {
+            "type": "string",
+            "description": "ID объекта"
+          },
+          "propertyTitle": {
+            "type": "string",
+            "description": "Название объекта"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Сумма выплаты"
+          },
+          "comment": {
+            "type": "object",
+            "description": "Комментарий"
+          },
+          "paidAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата фактической выплаты"
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата создания записи"
+          }
+        },
+        "required": [
+          "id",
+          "ownerId",
+          "ownerName",
+          "propertyId",
+          "propertyTitle",
+          "amount",
+          "paidAt",
+          "createdAt"
+        ]
+      },
+      "PayoutsListResponseDto": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "description": "Список выплат",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PayoutListItemDto"
             }
           },
           "total": {

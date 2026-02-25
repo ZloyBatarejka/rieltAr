@@ -12,6 +12,7 @@ import { PropertiesModule } from './modules/properties/properties.module';
 import { JwtAuthGuard, RolesGuard } from './modules/common/guards';
 import { StaysModule } from './modules/stays/stays.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
+import { PayoutsModule } from './modules/payouts/payouts.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { TransactionsModule } from './modules/transactions/transactions.module';
     PropertiesModule,
     StaysModule,
     TransactionsModule,
+    PayoutsModule,
   ],
   controllers: [AppController],
   providers: [

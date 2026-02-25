@@ -181,7 +181,7 @@
   - `GET /api/transactions` — список с фильтрами + пагинация
   - `DELETE /api/transactions/:id` — удаление
 
-- [ ] **3.6** Payouts модуль (скоупинг: Manager — только назначенные propertyId)
+- [x] **3.6** Payouts модуль (скоупинг: Manager — только назначенные propertyId)
   - `POST /api/payouts` — создание выплаты (propertyId обязателен)
     - Автоматическое создание транзакции типа PAYOUT
     - В одной Prisma-транзакции
