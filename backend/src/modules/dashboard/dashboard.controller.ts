@@ -1,4 +1,4 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiOperation,
@@ -8,6 +8,7 @@ import {
 import { Role } from '@prisma/client';
 import { DashboardService, type DashboardData } from './dashboard.service';
 import { DashboardResponseDto } from './dto/dashboard-response.dto';
+import { DashboardQueryDto } from './dto/dashboard-query.dto';
 import { Roles, CurrentUser } from '../common/decorators';
 import type { AuthUser } from '../auth/auth.types';
 
@@ -21,7 +22,8 @@ export class DashboardController {
   @Get()
   @Roles(Role.OWNER)
   @ApiOperation({
-    summary: 'Дашборд для собственника (автоопределение по JWT)',
+    summary:
+      'Дашборд для собственника (автоопределение по JWT). Фильтрация: period (month/quarter/year/all) или from/to',
   })
   @ApiResponse({
     status: 200,
@@ -34,15 +36,16 @@ export class DashboardController {
   @ApiResponse({ status: 404, description: 'Собственник не найден' })
   async getForCurrentUser(
     @CurrentUser() user: AuthUser,
+    @Query() query: DashboardQueryDto,
   ): Promise<DashboardData> {
-    return this.dashboardService.getForCurrentUser(user);
+    return this.dashboardService.getForCurrentUser(user, query);
   }
 
   @Get('owner/:id')
   @Roles(Role.ADMIN, Role.MANAGER)
   @ApiOperation({
     summary:
-      'Дашборд по ID собственника (Admin — любой, Manager — только owners с назначенными объектами)',
+      'Дашборд по ID собственника. Фильтрация: period (month/quarter/year/all) или from/to',
   })
   @ApiResponse({
     status: 200,
@@ -55,7 +58,8 @@ export class DashboardController {
   async getForOwner(
     @CurrentUser() user: AuthUser,
     @Param('id') id: string,
+    @Query() query: DashboardQueryDto,
   ): Promise<DashboardData> {
-    return this.dashboardService.getForOwner(user, id);
+    return this.dashboardService.getForOwner(user, id, query);
   }
 }

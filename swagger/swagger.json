@@ -1518,7 +1518,44 @@
     "/api/dashboard": {
       "get": {
         "operationId": "DashboardController_getForCurrentUser",
-        "parameters": [],
+        "parameters": [
+          {
+            "name": "period",
+            "required": false,
+            "in": "query",
+            "description": "Предустановленный период (month / quarter / year / all)",
+            "schema": {
+              "default": "all",
+              "type": "string",
+              "enum": [
+                "month",
+                "quarter",
+                "year",
+                "all"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Начало произвольного периода (createdAt >= from). Приоритет над period",
+            "schema": {
+              "example": "2026-02-01T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Конец произвольного периода (createdAt <= to). Приоритет над period",
+            "schema": {
+              "example": "2026-02-28T23:59:59.999Z",
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Финансовая сводка: баланс, доходы, расходы, выплаты, последние 5 операций",
@@ -1545,7 +1582,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Дашборд для собственника (автоопределение по JWT)",
+        "summary": "Дашборд для собственника (автоопределение по JWT). Фильтрация: period (month/quarter/year/all) или from/to",
         "tags": [
           "Dashboard"
         ]
@@ -1560,6 +1597,42 @@
             "required": true,
             "in": "path",
             "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "period",
+            "required": false,
+            "in": "query",
+            "description": "Предустановленный период (month / quarter / year / all)",
+            "schema": {
+              "default": "all",
+              "type": "string",
+              "enum": [
+                "month",
+                "quarter",
+                "year",
+                "all"
+              ]
+            }
+          },
+          {
+            "name": "from",
+            "required": false,
+            "in": "query",
+            "description": "Начало произвольного периода (createdAt >= from). Приоритет над period",
+            "schema": {
+              "example": "2026-02-01T00:00:00.000Z",
+              "type": "string"
+            }
+          },
+          {
+            "name": "to",
+            "required": false,
+            "in": "query",
+            "description": "Конец произвольного периода (createdAt <= to). Приоритет над period",
+            "schema": {
+              "example": "2026-02-28T23:59:59.999Z",
               "type": "string"
             }
           }
@@ -1590,7 +1663,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Дашборд по ID собственника (Admin — любой, Manager — только owners с назначенными объектами)",
+        "summary": "Дашборд по ID собственника. Фильтрация: period (month/quarter/year/all) или from/to",
         "tags": [
           "Dashboard"
         ]

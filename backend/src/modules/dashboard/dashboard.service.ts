@@ -1,8 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { TransactionType, type Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { PropertyScopeService } from '../property-scope/property-scope.service';
 import type { AuthUser } from '../auth/auth.types';
+import type { DashboardQueryDto } from './dto/dashboard-query.dto';
+import { DashboardPeriod } from './dto/dashboard-query.dto';
 
 export interface DashboardTransaction {
   id: string;
@@ -37,13 +43,19 @@ export class DashboardService {
     private readonly propertyScope: PropertyScopeService,
   ) {}
 
-  async getForOwner(user: AuthUser, ownerId: string): Promise<DashboardData> {
+  async getForOwner(
+    user: AuthUser,
+    ownerId: string,
+    query?: DashboardQueryDto,
+  ): Promise<DashboardData> {
     await this.ensureAccess(user, ownerId);
 
     const propertyWhere = await this.propertyScope.getPropertyWhere(user);
+    const createdAt = this.buildDateFilter(query);
     const transactionWhere: Prisma.TransactionWhereInput = {
       ownerId,
       property: propertyWhere,
+      ...(createdAt ? { createdAt } : {}),
     };
 
     const [txGroups, lastTransactions, propertiesCount, activeStaysCount] =
@@ -105,11 +117,60 @@ export class DashboardService {
     };
   }
 
-  async getForCurrentUser(user: AuthUser): Promise<DashboardData> {
+  async getForCurrentUser(
+    user: AuthUser,
+    query?: DashboardQueryDto,
+  ): Promise<DashboardData> {
     if (user.role !== 'OWNER' || !user.ownerId) {
       throw new NotFoundException('Доступно только для собственника');
     }
-    return this.getForOwner(user, user.ownerId);
+    return this.getForOwner(user, user.ownerId, query);
+  }
+
+  private buildDateFilter(
+    query?: DashboardQueryDto,
+  ): Prisma.TransactionWhereInput['createdAt'] {
+    if (!query) return undefined;
+
+    if (query.from || query.to) {
+      const filter: { gte?: Date; lte?: Date } = {};
+      if (query.from) {
+        const fromDate = new Date(query.from);
+        if (Number.isNaN(fromDate.getTime())) {
+          throw new BadRequestException('Некорректная дата from');
+        }
+        filter.gte = fromDate;
+      }
+      if (query.to) {
+        const toDate = new Date(query.to);
+        if (Number.isNaN(toDate.getTime())) {
+          throw new BadRequestException('Некорректная дата to');
+        }
+        filter.lte = toDate;
+      }
+      if (Object.keys(filter).length > 0) {
+        return filter;
+      }
+    }
+
+    const period = query.period ?? DashboardPeriod.ALL;
+    if (period === DashboardPeriod.ALL) return undefined;
+
+    const now = new Date();
+    let from: Date;
+
+    if (period === DashboardPeriod.MONTH) {
+      from = new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
+    } else if (period === DashboardPeriod.QUARTER) {
+      const quarterMonth = Math.floor(now.getMonth() / 3) * 3;
+      from = new Date(now.getFullYear(), quarterMonth, 1, 0, 0, 0, 0);
+    } else if (period === DashboardPeriod.YEAR) {
+      from = new Date(now.getFullYear(), 0, 1, 0, 0, 0, 0);
+    } else {
+      return undefined;
+    }
+
+    return { gte: from, lte: now };
   }
 
   private async ensureAccess(user: AuthUser, ownerId: string): Promise<void> {

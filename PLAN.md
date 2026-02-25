@@ -219,11 +219,11 @@
     - Количество объектов
     - Количество активных заездов
 
-- [ ] **4.2** Фильтрация по периоду
+- [x] **4.2** Фильтрация по периоду
   - Query-параметры: `period` (month / quarter / year / all)
   - Или `from` / `to` для произвольного диапазона
 
-- [ ] **4.3** Тесты Dashboard (Backend)
+- [x] **4.3** Тесты Dashboard (Backend)
   - Jest + supertest
   - Корректность расчёта баланса (INCOME − COMMISSION − CLEANING − EXPENSE − PAYOUT)
   - Фильтрация по периоду (month / quarter / year / all / from-to)
