@@ -121,4 +121,78 @@ describe('OwnersService', () => {
       );
     });
   });
+
+  describe('update', () => {
+    it('updates owner phone when in scope', async () => {
+      const updatedOwner = {
+        id: 'owner-1',
+        phone: '+7 999 999-99-99',
+        createdAt: new Date(),
+        user: { name: 'Иван', email: 'ivan@test.com' },
+        _count: { properties: 2 },
+      };
+      jest.spyOn(propertyScope, 'getOwnerWhere').mockResolvedValue({});
+      jest
+        .spyOn(prisma.owner, 'findFirst')
+        .mockResolvedValue({ id: 'owner-1' } as never);
+      const updateSpy = jest
+        .spyOn(prisma.owner, 'update')
+        .mockResolvedValue(updatedOwner as never);
+      jest.spyOn(service, 'calculateBalance').mockResolvedValue(1000);
+
+      const result = await service.update(adminUser, 'owner-1', {
+        phone: '+7 999 999-99-99',
+      });
+
+      expect(result.phone).toBe('+7 999 999-99-99');
+      expect(updateSpy).toHaveBeenCalledWith({
+        where: { id: 'owner-1' },
+        data: { phone: '+7 999 999-99-99' },
+        include: expect.any(Object),
+      });
+    });
+  });
+
+  describe('remove', () => {
+    it('deletes owner when in scope', async () => {
+      jest.spyOn(propertyScope, 'getOwnerWhere').mockResolvedValue({});
+      jest
+        .spyOn(prisma.owner, 'findFirst')
+        .mockResolvedValue({ id: 'owner-1' } as never);
+      const deleteSpy = jest
+        .spyOn(prisma.owner, 'delete')
+        .mockResolvedValue({} as never);
+
+      await service.remove(adminUser, 'owner-1');
+
+      expect(deleteSpy).toHaveBeenCalledWith({
+        where: { id: 'owner-1' },
+      });
+    });
+
+    it('throws NotFound when owner not in scope', async () => {
+      jest
+        .spyOn(propertyScope, 'getOwnerWhere')
+        .mockResolvedValue({ id: { in: [] } });
+      jest.spyOn(prisma.owner, 'findFirst').mockResolvedValue(null);
+
+      await expect(service.remove(adminUser, 'owner-1')).rejects.toThrow(
+        NotFoundException,
+      );
+    });
+  });
+
+  describe('calculateBalance', () => {
+    it('returns balance from transaction groupBy', async () => {
+      jest.spyOn(prisma.transaction, 'groupBy').mockResolvedValue([
+        { type: 'INCOME' as const, _sum: { amount: 50000 } },
+        { type: 'COMMISSION' as const, _sum: { amount: 5000 } },
+        { type: 'PAYOUT' as const, _sum: { amount: 10000 } },
+      ] as never);
+
+      const balance = await service.calculateBalance('owner-1');
+
+      expect(balance).toBe(35000);
+    });
+  });
 });

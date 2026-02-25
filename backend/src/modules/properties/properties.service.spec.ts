@@ -88,6 +88,22 @@ describe('PropertiesService', () => {
       expect(result.total).toBe(1);
       expect(getPropertyWhereSpy).toHaveBeenCalledWith(adminUser);
     });
+
+    it('filters by ownerId when provided', async () => {
+      jest.spyOn(propertyScope, 'getPropertyWhere').mockResolvedValue({});
+      const findManySpy = jest
+        .spyOn(prisma.property, 'findMany')
+        .mockResolvedValue([]);
+      jest.spyOn(prisma.property, 'count').mockResolvedValue(0);
+
+      await service.findAll(adminUser, 1, 20, 'owner-123');
+
+      expect(findManySpy).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: expect.objectContaining({ ownerId: 'owner-123' }),
+        }),
+      );
+    });
   });
 
   describe('findOne', () => {
@@ -158,6 +174,58 @@ describe('PropertiesService', () => {
 
       expect(result.id).toBe('prop-1');
       expect(result.title).toBe('Квартира');
+    });
+  });
+
+  describe('update', () => {
+    it('updates property when found', async () => {
+      const updatedProperty = {
+        id: 'prop-1',
+        title: 'Новое название',
+        address: 'ул. Новая, 2',
+        ownerId: 'owner-1',
+        createdAt: new Date(),
+        owner: { user: { name: 'Иван' } },
+      };
+      jest
+        .spyOn(prisma.property, 'findUnique')
+        .mockResolvedValue({ id: 'prop-1' } as never);
+      jest
+        .spyOn(prisma.property, 'update')
+        .mockResolvedValue(updatedProperty as never);
+
+      const result = await service.update(adminUser, 'prop-1', {
+        title: 'Новое название',
+        address: 'ул. Новая, 2',
+      });
+
+      expect(result.title).toBe('Новое название');
+      expect(result.address).toBe('ул. Новая, 2');
+    });
+  });
+
+  describe('remove', () => {
+    it('deletes property when found', async () => {
+      jest
+        .spyOn(prisma.property, 'findUnique')
+        .mockResolvedValue({ id: 'prop-1' } as never);
+      const deleteSpy = jest
+        .spyOn(prisma.property, 'delete')
+        .mockResolvedValue({} as never);
+
+      await service.remove(adminUser, 'prop-1');
+
+      expect(deleteSpy).toHaveBeenCalledWith({
+        where: { id: 'prop-1' },
+      });
+    });
+
+    it('throws NotFound when property not found', async () => {
+      jest.spyOn(prisma.property, 'findUnique').mockResolvedValue(null);
+
+      await expect(service.remove(adminUser, 'prop-1')).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

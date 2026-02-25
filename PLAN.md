@@ -188,7 +188,7 @@
   - `GET /api/payouts` — список выплат
   - `DELETE /api/payouts/:id` — удаление
 
-- [ ] **3.7** Тесты CRUD (Backend)
+- [x] **3.7** Тесты CRUD (Backend)
   - Jest + supertest
   - Users — создание собственника, валидация DTO, дубликат email
   - Owners — CRUD, пагинация, подсчёт баланса
