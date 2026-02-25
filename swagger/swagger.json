@@ -1514,6 +1514,87 @@
           "Payouts"
         ]
       }
+    },
+    "/api/dashboard": {
+      "get": {
+        "operationId": "DashboardController_getForCurrentUser",
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "Финансовая сводка: баланс, доходы, расходы, выплаты, последние 5 операций",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Собственник не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Дашборд для собственника (автоопределение по JWT)",
+        "tags": [
+          "Dashboard"
+        ]
+      }
+    },
+    "/api/dashboard/owner/{id}": {
+      "get": {
+        "operationId": "DashboardController_getForOwner",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Финансовая сводка собственника",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DashboardResponseDto"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Собственник не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Дашборд по ID собственника (Admin — любой, Manager — только owners с назначенными объектами)",
+        "tags": [
+          "Dashboard"
+        ]
+      }
     }
   },
   "info": {
@@ -2642,6 +2723,92 @@
           "total",
           "page",
           "limit"
+        ]
+      },
+      "DashboardTransactionDto": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "ID транзакции"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "INCOME",
+              "COMMISSION",
+              "CLEANING",
+              "EXPENSE",
+              "PAYOUT"
+            ],
+            "description": "Тип"
+          },
+          "amount": {
+            "type": "number",
+            "description": "Сумма"
+          },
+          "comment": {
+            "type": "object",
+            "description": "Комментарий",
+            "nullable": true
+          },
+          "createdAt": {
+            "format": "date-time",
+            "type": "string",
+            "description": "Дата создания"
+          }
+        },
+        "required": [
+          "id",
+          "type",
+          "amount",
+          "comment",
+          "createdAt"
+        ]
+      },
+      "DashboardResponseDto": {
+        "type": "object",
+        "properties": {
+          "balance": {
+            "type": "number",
+            "description": "Общий баланс"
+          },
+          "income": {
+            "type": "number",
+            "description": "Доход за период (INCOME)"
+          },
+          "expenses": {
+            "type": "number",
+            "description": "Расходы за период (COMMISSION + CLEANING + EXPENSE)"
+          },
+          "payouts": {
+            "type": "number",
+            "description": "Выплаты за период (PAYOUT)"
+          },
+          "lastTransactions": {
+            "description": "Последние 5 операций",
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DashboardTransactionDto"
+            }
+          },
+          "propertiesCount": {
+            "type": "number",
+            "description": "Количество объектов"
+          },
+          "activeStaysCount": {
+            "type": "number",
+            "description": "Количество активных заездов (checkIn <= now <= checkOut)"
+          }
+        },
+        "required": [
+          "balance",
+          "income",
+          "expenses",
+          "payouts",
+          "lastTransactions",
+          "propertiesCount",
+          "activeStaysCount"
         ]
       }
     }

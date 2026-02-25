@@ -20,6 +20,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-table": "^8.21.3",
     "axios": "^1.13.5",
     "framer-motion": "^12.34.3",
     "mobx": "^6.15.0",

@@ -11,7 +11,7 @@ alwaysApply: true
 ## Стек
 
 - **Backend:** NestJS, TypeScript, Prisma ORM, PostgreSQL
-- **Frontend:** React, TypeScript, Vite, Chakra UI v2, React Hook Form + zod, MobX, Feature-Sliced Design (FSD)
+- **Frontend:** React, TypeScript, Vite, Chakra UI v2, TanStack Table, React Hook Form + zod, MobX, Feature-Sliced Design (FSD)
 - **Авторизация:** JWT + bcrypt
 - **Язык общения:** русский
 

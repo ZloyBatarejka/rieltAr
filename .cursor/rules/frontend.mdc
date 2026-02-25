@@ -56,6 +56,7 @@ import { AuthStore } from '@/entities/auth/model/auth.store'
 ```
 - State management — **MobX** (`mobx` + `mobx-react-lite`), stores в `model/` внутри слайсов
 - UI-компоненты — **Chakra UI v2** (`@chakra-ui/react`)
+- Таблицы — **TanStack Table** (`@tanstack/react-table`) + Chakra UI Table
 - Формы — **React Hook Form** + **zod** (`react-hook-form`, `@hookform/resolvers`, `zod`)
 - API-запросы — axios с interceptor для JWT
 - **Mobile first:** базовые стили = мобильные, расширение через `@media (min-width)`. Брейкпоинты: `sm` 480px, `md` 768px, `lg` 992px, `xl` 1280px. Подробности в `frontend-styles.mdc`
@@ -150,6 +151,12 @@ import { Show } from 'shared/ui/Show'
 - Доступ к роутам контролируется через `<GuardedRoute>` из `features/auth` в `App.tsx`
 - `mode="private"` — только для авторизованных; `requiredRole` для проверки роли
 - `mode="guest"` — только для неавторизованных (логин, регистрация)
+
+## Таблицы — TanStack Table + Chakra UI
+
+- Использовать **TanStack Table** (`@tanstack/react-table`) + Chakra UI `Table`, `TableContainer`, `Thead`, `Tbody`, `Tr`, `Th`, `Td`
+- Колонки определять через `createColumnHelper<TRow>()`, рендер строк — через Chakra Table-компоненты
+- Пагинация, сортировка, фильтрация — средствами TanStack Table (server-side через API для больших списков)
 
 ## Безопасность (XSS)
 

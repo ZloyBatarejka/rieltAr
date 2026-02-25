@@ -13,6 +13,7 @@ import { JwtAuthGuard, RolesGuard } from './modules/common/guards';
 import { StaysModule } from './modules/stays/stays.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
 import { PayoutsModule } from './modules/payouts/payouts.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { PayoutsModule } from './modules/payouts/payouts.module';
     StaysModule,
     TransactionsModule,
     PayoutsModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [
