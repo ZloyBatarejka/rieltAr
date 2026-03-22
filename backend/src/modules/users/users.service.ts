@@ -8,6 +8,7 @@ import type { Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { CreateManagerDto } from './dto/create-manager.dto';
+import { UpdateManagerPermissionsDto } from './dto/update-manager-permissions.dto';
 
 const BCRYPT_ROUNDS = 10;
 
@@ -106,6 +107,38 @@ export class UsersService {
       canCreateProperties: m.canCreateProperties,
       createdAt: m.createdAt,
     }));
+  }
+
+  async updateManagerPermissions(
+    id: string,
+    dto: UpdateManagerPermissionsDto,
+  ): Promise<UserResponse> {
+    const user = await this.prisma.user.findUnique({ where: { id } });
+
+    if (!user || user.role !== 'MANAGER') {
+      throw new NotFoundException('Менеджер не найден');
+    }
+
+    const updatedUser = await this.prisma.user.update({
+      where: { id },
+      data: {
+        canCreateOwners: dto.canCreateOwners ?? user.canCreateOwners,
+        canCreateProperties:
+          dto.canCreateProperties ?? user.canCreateProperties,
+      },
+    });
+
+    return {
+      id: updatedUser.id,
+      email: updatedUser.email,
+      name: updatedUser.name,
+      role: updatedUser.role,
+      ownerId: null,
+      phone: null,
+      canCreateOwners: updatedUser.canCreateOwners,
+      canCreateProperties: updatedUser.canCreateProperties,
+      createdAt: updatedUser.createdAt,
+    };
   }
 
   async deleteManager(id: string): Promise<void> {

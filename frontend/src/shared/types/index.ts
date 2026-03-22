@@ -1,6 +1,7 @@
 export type {
   Manager,
   CreateManager,
+  UpdateManagerPermissions,
 } from './manager'
 export type {
   Owner,

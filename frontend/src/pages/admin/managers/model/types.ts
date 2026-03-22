@@ -6,5 +6,5 @@ export interface CreateManagersColumnsParams {
     managerId: string,
     field: PermissionField,
     value: boolean,
-  ) => void
+  ) => Promise<void>
 }

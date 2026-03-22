@@ -17,3 +17,8 @@ export interface CreateManager {
   canCreateOwners?: boolean
   canCreateProperties?: boolean
 }
+
+export interface UpdateManagerPermissions {
+  canCreateOwners?: boolean
+  canCreateProperties?: boolean
+}

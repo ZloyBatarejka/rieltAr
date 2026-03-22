@@ -24,6 +24,7 @@ describe('UsersService', () => {
               findUnique: jest.fn(),
               create: jest.fn(),
               findMany: jest.fn(),
+              update: jest.fn(),
               delete: jest.fn(),
             },
           },
@@ -170,6 +171,54 @@ describe('UsersService', () => {
       await expect(service.deleteManager('owner-1')).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('updateManagerPermissions', () => {
+    it('updates manager permissions', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue({
+        id: 'mgr-1',
+        email: 'manager@test.com',
+        name: 'Менеджер',
+        role: 'MANAGER',
+        canCreateOwners: false,
+        canCreateProperties: false,
+        createdAt: new Date(),
+      } as never);
+
+      const updateSpy = jest.spyOn(prisma.user, 'update').mockResolvedValue({
+        id: 'mgr-1',
+        email: 'manager@test.com',
+        name: 'Менеджер',
+        role: 'MANAGER',
+        canCreateOwners: true,
+        canCreateProperties: false,
+        createdAt: new Date(),
+      } as never);
+
+      const result = await service.updateManagerPermissions('mgr-1', {
+        canCreateOwners: true,
+      });
+
+      expect(updateSpy).toHaveBeenCalledWith({
+        where: { id: 'mgr-1' },
+        data: {
+          canCreateOwners: true,
+          canCreateProperties: false,
+        },
+      });
+      expect(result.canCreateOwners).toBe(true);
+      expect(result.canCreateProperties).toBe(false);
+    });
+
+    it('throws NotFound when manager not found', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
+
+      await expect(
+        service.updateManagerPermissions('mgr-1', {
+          canCreateOwners: true,
+        }),
+      ).rejects.toThrow(NotFoundException);
     });
   });
 });

@@ -26,7 +26,11 @@ export function createManagersColumns(
         <PermissionSwitch
           value={info.getValue()}
           onChange={(checked) => {
-            onPermissionChange(info.row.original.id, 'canCreateOwners', checked)
+            void onPermissionChange(
+              info.row.original.id,
+              'canCreateOwners',
+              checked,
+            )
           }}
         />
       ),
@@ -37,7 +41,7 @@ export function createManagersColumns(
         <PermissionSwitch
           value={info.getValue()}
           onChange={(checked) => {
-            onPermissionChange(
+            void onPermissionChange(
               info.row.original.id,
               'canCreateProperties',
               checked,

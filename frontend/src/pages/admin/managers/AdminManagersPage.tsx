@@ -1,7 +1,6 @@
 import { type ReactElement } from 'react'
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import type { Manager } from '@/shared/types'
-import { managersApi } from './api'
 import { useManagers } from './model/useManagers'
 import { Table } from '@/shared/ui/Table'
 import { AddManagerModal } from './ui/AddManagerModal'
@@ -14,6 +13,7 @@ export function AdminManagersPage(): ReactElement {
     isLoading,
     addManager,
     deleteManager,
+    updateManagerPermission,
     isModalOpen,
     openModal,
     closeModal,
@@ -21,7 +21,7 @@ export function AdminManagersPage(): ReactElement {
 
   const columnsParams: CreateManagersColumnsParams = {
     onDeleteManager: deleteManager,
-    onPermissionChange: managersApi.updateManager,
+    onPermissionChange: updateManagerPermission,
   }
 
   const table = useReactTable<Manager>({

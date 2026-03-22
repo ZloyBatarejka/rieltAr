@@ -1,6 +1,8 @@
 import { apiClient } from '@/api/api-client'
-import type { Manager, CreateManager } from '@/shared/types'
-import type { PermissionField } from '../model/types'
+import type {
+  Manager,
+  CreateManager,
+} from '@/shared/types'
 
 export const managersApi = {
   getManagers(): Promise<Manager[]> {
@@ -15,7 +17,15 @@ export const managersApi = {
     return apiClient.deleteManager(id)
   },
 
-  updateManager(id: string, field: PermissionField, value: boolean): void {
-    console.log(id, field, value)
+  updateCanCreateOwners(id: string, value: boolean): Promise<Manager> {
+    return apiClient.updateManagerPermissions(id, {
+      canCreateOwners: value,
+    })
+  },
+
+  updateCanCreateProperties(id: string, value: boolean): Promise<Manager> {
+    return apiClient.updateManagerPermissions(id, {
+      canCreateProperties: value,
+    })
   },
 }

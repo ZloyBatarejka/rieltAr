@@ -15,6 +15,11 @@ export function useManagers(): {
   fetchManagers: () => Promise<void>
   addManager: (values: AddManagerValues) => Promise<void>
   deleteManager: (id: string, name: string) => Promise<void>
+  updateManagerPermission: (
+    id: string,
+    field: 'canCreateOwners' | 'canCreateProperties',
+    value: boolean,
+  ) => Promise<void>
   isModalOpen: boolean
   openModal: () => void
   closeModal: () => void
@@ -77,6 +82,32 @@ export function useManagers(): {
     [fetchManagers, toast],
   )
 
+  const updateManagerPermission = useCallback(
+    async (
+      id: string,
+      field: 'canCreateOwners' | 'canCreateProperties',
+      value: boolean,
+    ): Promise<void> => {
+      try {
+        const updatedManager =
+          field === 'canCreateOwners'
+            ? await managersApi.updateCanCreateOwners(id, value)
+            : await managersApi.updateCanCreateProperties(id, value)
+
+        setManagers((prevManagers) =>
+          prevManagers.map((manager) =>
+            manager.id === id ? updatedManager : manager,
+          ),
+        )
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : 'Ошибка обновления прав'
+        toast({ title: msg, status: 'error', isClosable: true })
+        await fetchManagers()
+      }
+    },
+    [fetchManagers, toast],
+  )
+
   useEffect(() => {
     void fetchManagers()
   }, [fetchManagers])
@@ -87,6 +118,7 @@ export function useManagers(): {
     fetchManagers,
     addManager,
     deleteManager,
+    updateManagerPermission,
     isModalOpen,
     openModal,
     closeModal,

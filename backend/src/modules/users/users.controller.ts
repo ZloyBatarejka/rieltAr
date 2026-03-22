@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Delete,
+  Patch,
   Body,
   Param,
   HttpCode,
@@ -18,6 +19,7 @@ import { Role } from '@prisma/client';
 import { UsersService, type UserResponse } from './users.service';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { CreateManagerDto } from './dto/create-manager.dto';
+import { UpdateManagerPermissionsDto } from './dto/update-manager-permissions.dto';
 import { UserResponseDto } from './dto/user-response.dto';
 import { Roles } from '../common/decorators';
 
@@ -71,6 +73,25 @@ export class UsersController {
   @ApiResponse({ status: 403, description: 'Недостаточно прав' })
   async getManagers(): Promise<UserResponse[]> {
     return this.usersService.getManagers();
+  }
+
+  @Patch(':id/permissions')
+  @Roles(Role.ADMIN)
+  @ApiOperation({ summary: 'Обновить права менеджера (только админ)' })
+  @ApiResponse({
+    status: 200,
+    description: 'Права менеджера обновлены',
+    type: UserResponseDto,
+  })
+  @ApiResponse({ status: 400, description: 'Ошибка валидации' })
+  @ApiResponse({ status: 401, description: 'Необходима авторизация' })
+  @ApiResponse({ status: 403, description: 'Недостаточно прав' })
+  @ApiResponse({ status: 404, description: 'Менеджер не найден' })
+  async updateManagerPermissions(
+    @Param('id') id: string,
+    @Body() dto: UpdateManagerPermissionsDto,
+  ): Promise<UserResponse> {
+    return this.usersService.updateManagerPermissions(id, dto);
   }
 
   @Delete(':id')

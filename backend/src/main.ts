@@ -18,7 +18,7 @@ async function bootstrap(): Promise<void> {
 
   app.enableCors({
     origin: process.env.CORS_ORIGINS?.split(',') || ['http://localhost:3070'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     maxAge: 600,
   });

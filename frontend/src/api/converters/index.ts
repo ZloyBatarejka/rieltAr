@@ -1,6 +1,7 @@
 export {
   fromApiManager,
   toApiCreateManager,
+  toApiUpdateManagerPermissions,
 } from './manager.converter'
 export {
   fromApiOwnerDetail,

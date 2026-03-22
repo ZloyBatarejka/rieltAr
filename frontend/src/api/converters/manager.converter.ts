@@ -1,5 +1,13 @@
-import type { UserResponseDto, CreateManagerDto } from '../generated/Api'
-import type { Manager, CreateManager } from '@/shared/types'
+import type {
+  UserResponseDto,
+  CreateManagerDto,
+  UpdateManagerPermissionsDto,
+} from '../generated/Api'
+import type {
+  Manager,
+  CreateManager,
+  UpdateManagerPermissions,
+} from '@/shared/types'
 
 export function fromApiManager(dto: UserResponseDto): Manager {
   return {
@@ -20,6 +28,15 @@ export function toApiCreateManager(data: CreateManager): CreateManagerDto {
     email: data.email,
     password: data.password,
     name: data.name,
+    canCreateOwners: data.canCreateOwners,
+    canCreateProperties: data.canCreateProperties,
+  }
+}
+
+export function toApiUpdateManagerPermissions(
+  data: UpdateManagerPermissions,
+): UpdateManagerPermissionsDto {
+  return {
     canCreateOwners: data.canCreateOwners,
     canCreateProperties: data.canCreateProperties,
   }

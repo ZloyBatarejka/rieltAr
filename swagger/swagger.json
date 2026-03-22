@@ -279,6 +279,64 @@
         ]
       }
     },
+    "/api/users/{id}/permissions": {
+      "patch": {
+        "operationId": "UsersController_updateManagerPermissions",
+        "parameters": [
+          {
+            "name": "id",
+            "required": true,
+            "in": "path",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UpdateManagerPermissionsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Права менеджера обновлены",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UserResponseDto"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Ошибка валидации"
+          },
+          "401": {
+            "description": "Необходима авторизация"
+          },
+          "403": {
+            "description": "Недостаточно прав"
+          },
+          "404": {
+            "description": "Менеджер не найден"
+          }
+        },
+        "security": [
+          {
+            "JWT-auth": []
+          }
+        ],
+        "summary": "Обновить права менеджера (только админ)",
+        "tags": [
+          "Users"
+        ]
+      }
+    },
     "/api/users/{id}": {
       "delete": {
         "operationId": "UsersController_deleteManager",
@@ -1863,6 +1921,21 @@
           "password",
           "name"
         ]
+      },
+      "UpdateManagerPermissionsDto": {
+        "type": "object",
+        "properties": {
+          "canCreateOwners": {
+            "type": "boolean",
+            "description": "Может создавать собственников",
+            "example": true
+          },
+          "canCreateProperties": {
+            "type": "boolean",
+            "description": "Может создавать объекты",
+            "example": true
+          }
+        }
       },
       "AssignPropertyDto": {
         "type": "object",

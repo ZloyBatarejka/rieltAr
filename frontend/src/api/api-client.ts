@@ -3,6 +3,7 @@ import { axiosInstance } from './axios-instance'
 import {
   fromApiManager,
   toApiCreateManager,
+  toApiUpdateManagerPermissions,
   fromApiOwnerDetail,
   fromApiOwnersList,
   toApiCreateOwner,
@@ -17,6 +18,7 @@ import {
 import type {
   Manager,
   CreateManager,
+  UpdateManagerPermissions,
   OwnerDetail,
   OwnersList,
   CreateOwner,
@@ -77,6 +79,18 @@ class ApiClient {
 
   getManagers(): Promise<Manager[]> {
     return this.api.users.usersControllerGetManagers().then((list) => list.map(fromApiManager))
+  }
+
+  updateManagerPermissions(
+    id: string,
+    data: UpdateManagerPermissions,
+  ): Promise<Manager> {
+    return this.api.users
+      .usersControllerUpdateManagerPermissions(
+        { id },
+        toApiUpdateManagerPermissions(data),
+      )
+      .then(fromApiManager)
   }
 
   deleteManager(id: string): Promise<void> {
