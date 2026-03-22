@@ -1,11 +1,13 @@
 import {
   ConflictException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import type { Role } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
+import type { AuthUser } from '../auth/auth.types';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { CreateManagerDto } from './dto/create-manager.dto';
 import { UpdateManagerPermissionsDto } from './dto/update-manager-permissions.dto';
@@ -28,7 +30,11 @@ export interface UserResponse {
 export class UsersService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async createOwner(dto: CreateOwnerDto): Promise<UserResponse> {
+  async createOwner(
+    currentUser: AuthUser,
+    dto: CreateOwnerDto,
+  ): Promise<UserResponse> {
+    this.ensureCanCreateOwner(currentUser);
     await this.ensureEmailAvailable(dto.email);
 
     const hashedPassword = await bcrypt.hash(dto.password, BCRYPT_ROUNDS);
@@ -159,5 +165,17 @@ export class UsersService {
     if (existing) {
       throw new ConflictException('Пользователь с таким email уже существует');
     }
+  }
+
+  private ensureCanCreateOwner(currentUser: AuthUser): void {
+    if (currentUser.role === 'ADMIN') {
+      return;
+    }
+
+    if (currentUser.role === 'MANAGER' && currentUser.canCreateOwners) {
+      return;
+    }
+
+    throw new ForbiddenException('Недостаточно прав для создания собственника');
   }
 }

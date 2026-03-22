@@ -16,9 +16,10 @@ import styles from './TableCard.module.css'
 interface TableCardProps<TData> {
   title: string
   table: Table<TData>
-  onAddClick: () => void
+  onAddClick?: () => void
   size?: 'sm' | 'md' | 'lg'
   footer?: ReactNode
+  children?: ReactNode
 }
 
 export function TableCard<TData>({
@@ -27,6 +28,7 @@ export function TableCard<TData>({
   onAddClick,
   size = 'sm',
   footer,
+  children,
 }: TableCardProps<TData>): ReactElement | null {
   const { hasData, isLoading, loadingFallback } = useTableContext()
   if (!hasData) return null
@@ -34,15 +36,18 @@ export function TableCard<TData>({
     <Card>
       <CardHeader className={styles.cardHeader}>
         <Heading size="md">{title}</Heading>
-        <IconButton
-          aria-label="Добавить"
-          icon={<AddIcon />}
-          colorScheme="blue"
-          size="sm"
-          onClick={onAddClick}
-        />
+        {onAddClick ? (
+          <IconButton
+            aria-label="Добавить"
+            icon={<AddIcon />}
+            colorScheme="blue"
+            size="sm"
+            onClick={onAddClick}
+          />
+        ) : null}
       </CardHeader>
       <CardBody>
+        {children}
         <Show when={!isLoading} fallback={loadingFallback}>
           <TableList table={table} size={size} />
           {footer}

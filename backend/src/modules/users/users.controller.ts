@@ -17,11 +17,12 @@ import {
 } from '@nestjs/swagger';
 import { Role } from '@prisma/client';
 import { UsersService, type UserResponse } from './users.service';
+import type { AuthUser } from '../auth/auth.types';
 import { CreateOwnerDto } from './dto/create-owner.dto';
 import { CreateManagerDto } from './dto/create-manager.dto';
 import { UpdateManagerPermissionsDto } from './dto/update-manager-permissions.dto';
 import { UserResponseDto } from './dto/user-response.dto';
-import { Roles } from '../common/decorators';
+import { CurrentUser, Roles } from '../common/decorators';
 
 @ApiTags('Users')
 @ApiBearerAuth('JWT-auth')
@@ -30,8 +31,11 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('owner')
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Создать собственника (только админ)' })
+  @Roles(Role.ADMIN, Role.MANAGER)
+  @ApiOperation({
+    summary:
+      'Создать собственника (админ или менеджер с правом canCreateOwners)',
+  })
   @ApiResponse({
     status: 201,
     description: 'Собственник создан',
@@ -41,8 +45,11 @@ export class UsersController {
   @ApiResponse({ status: 401, description: 'Необходима авторизация' })
   @ApiResponse({ status: 403, description: 'Недостаточно прав' })
   @ApiResponse({ status: 409, description: 'Email уже существует' })
-  async createOwner(@Body() dto: CreateOwnerDto): Promise<UserResponse> {
-    return this.usersService.createOwner(dto);
+  async createOwner(
+    @CurrentUser() user: AuthUser,
+    @Body() dto: CreateOwnerDto,
+  ): Promise<UserResponse> {
+    return this.usersService.createOwner(user, dto);
   }
 
   @Post('manager')

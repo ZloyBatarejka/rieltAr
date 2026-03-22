@@ -10,6 +10,7 @@ import { AdminOwnersPage } from './pages/admin/owners'
 import { AdminPropertiesPage } from './pages/admin/properties'
 import { AdminAssignmentsPage } from './pages/admin/assignments'
 import ManagerDashboardPage from './pages/manager/ManagerDashboardPage'
+import { ManagerOwnersPage } from './pages/manager/owners'
 import OwnerDashboardPage from './pages/owner/OwnerDashboardPage'
 import { AdminLayout } from './widgets/admin-layout'
 import { ManagerLayout } from './widgets/manager-layout'
@@ -41,6 +42,7 @@ const AppContent = observer(function AppContent(): ReactElement {
         <Route element={<GuardedRoute mode="private" requiredRole="MANAGER" />}>
           <Route path="/manager" element={<ManagerLayout />}>
             <Route index element={<ManagerDashboardPage />} />
+            <Route path="owners" element={<ManagerOwnersPage />} />
           </Route>
         </Route>
 

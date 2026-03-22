@@ -1,7 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  ConflictException,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { UsersService } from './users.service';
 import { PrismaService } from '../prisma/prisma.service';
+import type { AuthUser } from '../auth/auth.types';
 
 const mockBcryptHash = jest.fn<Promise<string>, [string, number]>();
 
@@ -12,6 +17,33 @@ jest.mock('bcrypt', () => ({
 describe('UsersService', () => {
   let service: UsersService;
   let prisma: PrismaService;
+  const adminUser: AuthUser = {
+    id: 'admin-1',
+    email: 'admin@test.com',
+    name: 'Админ',
+    role: 'ADMIN',
+    ownerId: null,
+    canCreateOwners: false,
+    canCreateProperties: false,
+  };
+  const managerWithOwnerPermission: AuthUser = {
+    id: 'mgr-1',
+    email: 'manager@test.com',
+    name: 'Менеджер',
+    role: 'MANAGER',
+    ownerId: null,
+    canCreateOwners: true,
+    canCreateProperties: false,
+  };
+  const managerWithoutOwnerPermission: AuthUser = {
+    id: 'mgr-2',
+    email: 'manager2@test.com',
+    name: 'Менеджер без права',
+    role: 'MANAGER',
+    ownerId: null,
+    canCreateOwners: false,
+    canCreateProperties: false,
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -61,7 +93,7 @@ describe('UsersService', () => {
       };
       jest.spyOn(prisma.user, 'create').mockResolvedValue(createdUser as never);
 
-      const result = await service.createOwner({
+      const result = await service.createOwner(adminUser, {
         email: 'owner@test.com',
         password: 'password123',
         name: 'Иван Иванов',
@@ -85,14 +117,14 @@ describe('UsersService', () => {
       const createSpy = jest.spyOn(prisma.user, 'create');
 
       await expect(
-        service.createOwner({
+        service.createOwner(adminUser, {
           email: 'owner@test.com',
           password: 'password123',
           name: 'Иван',
         }),
       ).rejects.toThrow(ConflictException);
       await expect(
-        service.createOwner({
+        service.createOwner(adminUser, {
           email: 'owner@test.com',
           password: 'password123',
           name: 'Иван',
@@ -100,6 +132,47 @@ describe('UsersService', () => {
       ).rejects.toThrow('Пользователь с таким email уже существует');
 
       expect(createSpy).not.toHaveBeenCalled();
+    });
+
+    it('allows manager with canCreateOwners to create owner', async () => {
+      jest.spyOn(prisma.user, 'findUnique').mockResolvedValue(null);
+      jest.spyOn(prisma.user, 'create').mockResolvedValue({
+        id: 'user-2',
+        email: 'owner2@test.com',
+        name: 'Мария',
+        role: 'OWNER',
+        createdAt: new Date(),
+        password: 'hashed',
+        updatedAt: new Date(),
+        canCreateOwners: false,
+        canCreateProperties: false,
+        owner: {
+          id: 'owner-2',
+          userId: 'user-2',
+          phone: null,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        },
+      } as never);
+
+      const result = await service.createOwner(managerWithOwnerPermission, {
+        email: 'owner2@test.com',
+        password: 'password123',
+        name: 'Мария',
+      });
+
+      expect(result.id).toBe('user-2');
+      expect(result.role).toBe('OWNER');
+    });
+
+    it('throws ForbiddenException for manager without canCreateOwners', async () => {
+      await expect(
+        service.createOwner(managerWithoutOwnerPermission, {
+          email: 'owner3@test.com',
+          password: 'password123',
+          name: 'Олег',
+        }),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 
