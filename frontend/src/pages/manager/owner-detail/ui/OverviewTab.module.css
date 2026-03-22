@@ -1,0 +1,54 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.statsRow {
+  display: flex;
+  gap: 16px;
+  overflow-x: auto;
+}
+
+.statCard {
+  flex: 1 0 220px;
+  min-width: 220px;
+}
+
+.txList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-x: auto;
+}
+
+.txRow {
+  display: grid;
+  grid-template-columns: 100px auto 140px;
+  gap: 12px;
+  align-items: center;
+}
+
+.txAmount {
+  text-align: right;
+  font-weight: 500;
+}
+
+.txComment {
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (max-width: 480px) {
+  .txRow {
+    min-width: 260px;
+    grid-template-columns: 100px 220px 140px;
+  }
+
+  .statCard {
+    flex: 1 0 150px;
+    min-width: 150px;
+  }
+}

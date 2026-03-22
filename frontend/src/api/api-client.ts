@@ -14,6 +14,10 @@ import {
   toApiUpdateProperty,
   fromApiAssignment,
   toApiAssignProperty,
+  fromApiStaysList,
+  fromApiTransactionsList,
+  fromApiPayoutsList,
+  fromApiDashboard,
 } from './converters'
 import type {
   Manager,
@@ -29,6 +33,10 @@ import type {
   UpdateProperty,
   Assignment,
   AssignProperty,
+  StaysList,
+  TransactionsList,
+  PayoutsList,
+  Dashboard,
 } from '@/shared/types'
 import type {
   LoginDto,
@@ -41,6 +49,10 @@ import type {
   OwnersControllerFindAllParams,
   PropertiesControllerFindAllParams,
   ManagerPropertiesControllerFindAllParams,
+  StaysControllerFindAllParams,
+  TransactionsControllerFindAllParams,
+  PayoutsControllerFindAllParams,
+  DashboardControllerGetForOwnerParams,
 } from './generated/Api'
 
 /**
@@ -155,6 +167,26 @@ class ApiClient {
 
   unassignProperty(id: string): Promise<void> {
     return this.api.managerProperties.managerPropertiesControllerUnassign({ id })
+  }
+
+  // Stays
+  getStays(params?: StaysControllerFindAllParams): Promise<StaysList> {
+    return this.api.stays.staysControllerFindAll(params ?? {}).then(fromApiStaysList)
+  }
+
+  // Transactions
+  getTransactions(params?: TransactionsControllerFindAllParams): Promise<TransactionsList> {
+    return this.api.transactions.transactionsControllerFindAll(params ?? {}).then(fromApiTransactionsList)
+  }
+
+  // Payouts
+  getPayouts(params?: PayoutsControllerFindAllParams): Promise<PayoutsList> {
+    return this.api.payouts.payoutsControllerFindAll(params ?? {}).then(fromApiPayoutsList)
+  }
+
+  // Dashboard
+  getOwnerDashboard(ownerId: string, params?: Omit<DashboardControllerGetForOwnerParams, 'id'>): Promise<Dashboard> {
+    return this.api.dashboard.dashboardControllerGetForOwner({ id: ownerId, ...params }).then(fromApiDashboard)
   }
 }
 

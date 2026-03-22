@@ -20,16 +20,16 @@ alwaysApply: false
 ```tsx
 // ❌ Плохо
 // Component.tsx
-const Component = () => <div />
-export default Component
+const Component = () => <div />;
+export default Component;
 // index.ts
-export { default as Component } from './ui/Component'
+export { default as Component } from "./ui/Component";
 
 // ✅ Хорошо
 // Component.tsx
-export const Component = () => <div />
+export const Component = () => <div />;
 // index.ts
-export { Component } from './ui/Component'
+export { Component } from "./ui/Component";
 ```
 
 ## Импорты — алиасы `@/`
@@ -40,20 +40,21 @@ export { Component } from './ui/Component'
 
 ```tsx
 // ✅ Кросс-слойный — алиас через публичный index.ts
-import { authStore } from '@/entities/auth'
-import { GuardedRoute } from '@/features/auth'
-import { Show } from '@/shared/ui/Show'
+import { authStore } from "@/entities/auth";
+import { GuardedRoute } from "@/features/auth";
+import { Show } from "@/shared/ui/Show";
 
 // ✅ Внутренний — относительный путь внутри слайса
-import { AuthStore } from './model/auth.store'
-import styles from './LoginPage.module.css'
+import { AuthStore } from "./model/auth.store";
+import styles from "./LoginPage.module.css";
 
 // ❌ Кросс-слойный с относительным путём
-import { authStore } from '../../../entities/auth'
+import { authStore } from "../../../entities/auth";
 
 // ❌ Импорт вглубь чужого слайса (мимо index.ts)
-import { AuthStore } from '@/entities/auth/model/auth.store'
+import { AuthStore } from "@/entities/auth/model/auth.store";
 ```
+
 - State management — **MobX** (`mobx` + `mobx-react-lite`), stores в `model/` внутри слайсов
 - UI-компоненты — **Chakra UI v2** (`@chakra-ui/react`)
 - Таблицы — **TanStack Table** (`@tanstack/react-table`) + Chakra UI Table
@@ -66,14 +67,14 @@ import { AuthStore } from '@/entities/auth/model/auth.store'
 - Chakra-компоненты используем как строительные блоки (`Card`, `Button`, `Input`, `Alert`, `FormControl` и т.д.)
 - **Layout, позиционирование, кастомные отступы** — через CSS Modules (`className={styles.wrapper}`)
 - Chakra-пропы допустимы **только** для встроенной логики компонента: `size`, `variant`, `colorScheme`, `isLoading`, `isInvalid`, `isDisabled`, `status`, `borderRadius`
-- **Запрещены** Chakra style-пропы для цветов, отступов, размеров: `color="gray.500"`, `mt={4}`, `w="full"`, `py={4}`, `fontSize="sm"`
+- **Запрещены** Chakra style-пропы для цветов, отступов, размеров: ``, `mt={4}`, `w="full"`, `py={4}`, `fontSize="sm"`
 - Вместо style-пропов — CSS Modules классы или семантические токены темы (CSS-переменные)
 - У каждого компонента должен быть свой `*.module.css` рядом
 
 ```tsx
 // ❌ Плохо — inline style-пропы
 <Card w="full" maxW="400px">
-  <Text color="gray.500" fontSize="sm" mt={1}>Текст</Text>
+  <Text  fontSize="sm" mt={1}>Текст</Text>
 </Card>
 
 // ✅ Хорошо — Chakra для компонента, CSS Modules для стилей

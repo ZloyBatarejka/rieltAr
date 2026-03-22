@@ -14,11 +14,13 @@ import styles from './TableList.module.css'
 interface TableListProps<TData> {
   table: Table<TData>
   size?: 'sm' | 'md' | 'lg'
+  onRowClick?: (row: TData) => void
 }
 
 export function TableList<TData>({
   table,
   size = 'sm',
+  onRowClick,
 }: TableListProps<TData>): ReactElement {
   return (
     <TableContainer className={styles.tableWrap}>
@@ -39,7 +41,13 @@ export function TableList<TData>({
         </Thead>
         <Tbody>
           {table.getRowModel().rows.map((row) => (
-            <Tr key={row.id} className={styles.tableRow}>
+            <Tr
+              key={row.id}
+              className={styles.tableRow}
+              onClick={onRowClick ? () => onRowClick(row.original) : undefined}
+              cursor={onRowClick ? 'pointer' : undefined}
+              _hover={onRowClick ? { bg: 'blackAlpha.50' } : undefined}
+            >
               {row.getVisibleCells().map((cell) => (
                 <Td key={cell.id} className={styles.tableCell}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}

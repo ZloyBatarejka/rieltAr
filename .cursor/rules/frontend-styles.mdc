@@ -14,7 +14,7 @@ Chakra UI — для компонентов (что рендерить). CSS Mod
 
 - **Запрещено** `style={{ }}` на любых элементах
 - **Запрещены** Chakra style-пропы для визуального оформления:
-  - Цвета: `color="gray.500"`, `bg="white"`, `borderColor="red.200"`
+  - Цвета: ``, `bg="white"`, `borderColor="red.200"`
   - Отступы: `m={4}`, `mt={2}`, `p={3}`, `px={6}`, `py={4}`
   - Размеры: `w="full"`, `maxW="400px"`, `h="100vh"`, `minH="100vh"`
   - Типографика: `fontSize="sm"`, `fontWeight="bold"`, `lineHeight="tall"`
@@ -76,12 +76,12 @@ Chakra UI — для компонентов (что рендерить). CSS Mod
 
 ```tsx
 // ✅ Правильно
-import styles from './LoginPage.module.css'
+import styles from "./LoginPage.module.css";
 
 <Card className={styles.card}>
   <Heading size="lg">Balivi</Heading>
   <Text className={styles.subtitle}>Подзаголовок</Text>
-</Card>
+</Card>;
 ```
 
 ```css
@@ -100,6 +100,8 @@ import styles from './LoginPage.module.css'
 ```tsx
 // ❌ Неправильно — style-пропы вместо CSS Modules
 <Card w="full" maxW="400px">
-  <Text fontSize="sm" color="gray.500" mt={1}>Подзаголовок</Text>
+  <Text fontSize="sm" mt={1}>
+    Подзаголовок
+  </Text>
 </Card>
 ```

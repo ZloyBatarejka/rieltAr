@@ -17,6 +17,7 @@ interface TableCardProps<TData> {
   title: string
   table: Table<TData>
   onAddClick?: () => void
+  onRowClick?: (row: TData) => void
   size?: 'sm' | 'md' | 'lg'
   footer?: ReactNode
   children?: ReactNode
@@ -26,6 +27,7 @@ export function TableCard<TData>({
   title,
   table,
   onAddClick,
+  onRowClick,
   size = 'sm',
   footer,
   children,
@@ -49,7 +51,7 @@ export function TableCard<TData>({
       <CardBody>
         {children}
         <Show when={!isLoading} fallback={loadingFallback}>
-          <TableList table={table} size={size} />
+          <TableList table={table} size={size} onRowClick={onRowClick} />
           {footer}
         </Show>
       </CardBody>

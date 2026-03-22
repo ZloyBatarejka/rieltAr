@@ -1,68 +1,58 @@
-import { type ReactElement } from 'react'
-import { Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
-import { SearchIcon } from '@chakra-ui/icons'
-import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
+import { type ReactElement, useCallback, useEffect } from 'react'
+import { useNavigate } from 'react-router-dom'
+import { observer } from 'mobx-react-lite'
+import { Card, CardBody, CardHeader, Heading, Spinner, Center } from '@chakra-ui/react'
 import type { Owner } from '@/shared/types'
 import { authStore } from '@/entities/auth'
-import { useManagerOwners } from './model/useManagerOwners'
-import { Table } from '@/shared/ui/Table'
+import { DataTable } from '@/shared/ui/DataTable'
+import { ownersColumns } from './model/columns'
+import { managerOwnersStore } from './model/manager-owners.store'
 import { AddOwnerModal } from './ui/AddOwnerModal'
-import { createOwnersColumns } from './helpers'
+import { OwnersTableHeader } from './ui/OwnersTableHeader'
 
-export function ManagerOwnersPage(): ReactElement {
-  const {
-    owners,
-    total,
-    isLoading,
-    search,
-    handleSearch,
-    addOwner,
-    isModalOpen,
-    openModal,
-    closeModal,
-  } = useManagerOwners()
-
+export const ManagerOwnersPage = observer(function ManagerOwnersPage(): ReactElement {
+  const navigate = useNavigate()
   const canCreate = authStore.user?.canCreateOwners === true
 
-  const table = useReactTable<Owner>({
-    data: owners,
-    columns: createOwnersColumns(),
-    getCoreRowModel: getCoreRowModel(),
-  })
+  useEffect(() => {
+    void managerOwnersStore.fetchOwners()
+  }, [])
+
+  const handleRowClick = useCallback(
+    (owner: Owner) => navigate(`/manager/owners/${owner.id}`),
+    [navigate],
+  )
 
   return (
     <>
-      <Table hasData={owners.length > 0} isLoading={isLoading}>
-        <Table.EmptyFallback
-          addText={canCreate ? 'Добавить собственника' : undefined}
-          addAction={canCreate ? openModal : undefined}
-          emptyText="Нет собственников"
-        />
-        <Table.Card
-          title="Собственники"
-          table={table}
-          onAddClick={canCreate ? openModal : undefined}
-          footer={total > 0 ? <p>Всего: {total}</p> : undefined}
-        >
-          <InputGroup size="sm" maxW="300px" mb={4}>
-            <InputLeftElement pointerEvents="none">
-              <SearchIcon color="gray.400" />
-            </InputLeftElement>
-            <Input
-              placeholder="Поиск по имени…"
-              value={search}
-              onChange={(e) => handleSearch(e.target.value)}
+      <Card>
+        <CardHeader pb={2}>
+          <Heading size="md">Собственники</Heading>
+        </CardHeader>
+        <CardBody>
+          <OwnersTableHeader />
+          {managerOwnersStore.isLoading ? (
+            <Center py={8}>
+              <Spinner />
+            </Center>
+          ) : (
+            <DataTable
+              items={managerOwnersStore.filteredOwners}
+              columns={ownersColumns}
+              emptyText="Нет собственников"
+              rowKey={(o) => o.id}
+              onRowClick={handleRowClick}
             />
-          </InputGroup>
-        </Table.Card>
-      </Table>
+          )}
+        </CardBody>
+      </Card>
       {canCreate ? (
         <AddOwnerModal
-          isOpen={isModalOpen}
-          onClose={closeModal}
-          onAddOwner={addOwner}
+          isOpen={managerOwnersStore.isModalOpen}
+          onClose={() => managerOwnersStore.closeModal()}
+          onAddOwner={(v) => managerOwnersStore.addOwner(v)}
         />
       ) : null}
     </>
   )
-}
+})

@@ -20,7 +20,7 @@ export function TableEmptyState({
           {addText}
         </Button>
       ) : (
-        <Text color="gray.500">{emptyText}</Text>
+        <Text>{emptyText}</Text>
       )}
     </div>
   )
