@@ -29,7 +29,7 @@
 
 | Слой | Технологии |
 |------|-----------|
-| **Frontend** | React, TypeScript, Chakra UI, Vite |
+| **Frontend** | React, TypeScript, Consta UI Kit, Vite |
 | **Backend** | Node.js, NestJS, TypeScript |
 | **ORM** | Prisma |
 | **База данных** | PostgreSQL |

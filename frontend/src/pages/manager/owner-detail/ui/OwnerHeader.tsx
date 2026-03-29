@@ -1,8 +1,10 @@
 import { type ReactElement } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Heading, HStack, IconButton, Text } from '@chakra-ui/react'
-import { ArrowBackIcon } from '@chakra-ui/icons'
+import { Button } from '@consta/uikit/Button'
+import { Text } from '@consta/uikit/Text'
+import { IconArrowLeft } from '@consta/icons/IconArrowLeft'
 import type { OwnerDetail } from '@/shared/types'
+import styles from './OwnerHeader.module.css'
 
 interface OwnerHeaderProps {
   owner: OwnerDetail
@@ -12,25 +14,25 @@ export function OwnerHeader({ owner }: OwnerHeaderProps): ReactElement {
   const navigate = useNavigate()
 
   return (
-    <HStack mb={6} spacing={3} align="center">
-      <IconButton
-        aria-label="Назад"
-        icon={<ArrowBackIcon />}
-        variant="ghost"
-        size="sm"
+    <div className={styles.header}>
+      <Button
+        size="s"
+        view="ghost"
+        onlyIcon
+        iconLeft={IconArrowLeft}
         onClick={() => navigate('/manager/owners')}
       />
-      <Heading size="lg" flex={1}>
+      <Text size="2xl" weight="bold" as="h1" view="primary" className={styles.name}>
         {owner.name}
-      </Heading>
+      </Text>
       <Text
-        fontSize="xl"
-        fontWeight="bold"
-        color={owner.balance >= 0 ? 'green.500' : 'red.500'}
-        whiteSpace="nowrap"
+        size="xl"
+        weight="bold"
+        view={owner.balance >= 0 ? 'success' : 'alert'}
+        className={styles.balance}
       >
         {owner.balance.toLocaleString('ru-RU')} ₽
       </Text>
-    </HStack>
+    </div>
   )
 }

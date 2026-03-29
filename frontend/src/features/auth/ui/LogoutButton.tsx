@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
-import { Button } from '@chakra-ui/react'
+import { Button } from '@consta/uikit/Button'
 import { authStore } from '../../../entities/auth'
 
 const LogoutButton = observer(function LogoutButton(): ReactElement {
@@ -14,9 +14,12 @@ const LogoutButton = observer(function LogoutButton(): ReactElement {
   }
 
   return (
-    <Button variant="outline" colorScheme="red" size="sm" onClick={handleLogout}>
-      Выйти
-    </Button>
+    <Button
+      view="ghost"
+      size="s"
+      label="Выйти"
+      onClick={handleLogout}
+    />
   )
 })
 

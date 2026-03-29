@@ -13,11 +13,12 @@ import ManagerDashboardPage from './pages/manager/ManagerDashboardPage'
 import { ManagerOwnersPage } from './pages/manager/owners'
 import { OwnerDetailPage } from './pages/manager/owner-detail'
 import { ManagerPropertiesPage } from './pages/manager/properties'
+import { BookingsPage, CreateStayPage } from './pages/manager/bookings'
 import OwnerDashboardPage from './pages/owner/OwnerDashboardPage'
 import { AdminLayout } from './widgets/admin-layout'
 import { ManagerLayout } from './widgets/manager-layout'
 import { OwnerLayout } from './widgets/owner-layout'
-import { ChakraProvider } from './providers'
+import { ConstaProvider } from './providers'
 
 const AppContent = observer(function AppContent(): ReactElement {
   useEffect(() => {
@@ -25,7 +26,7 @@ const AppContent = observer(function AppContent(): ReactElement {
   }, [])
 
   return (
-    <ChakraProvider>
+    <ConstaProvider>
       <Routes>
         <Route element={<GuardedRoute mode="guest" />}>
           <Route path="/login" element={<LoginPage />} />
@@ -47,6 +48,8 @@ const AppContent = observer(function AppContent(): ReactElement {
             <Route path="owners" element={<ManagerOwnersPage />} />
             <Route path="owners/:id" element={<OwnerDetailPage />} />
             <Route path="properties" element={<ManagerPropertiesPage />} />
+            <Route path="bookings" element={<BookingsPage />} />
+            <Route path="bookings/create" element={<CreateStayPage />} />
           </Route>
         </Route>
 
@@ -59,7 +62,7 @@ const AppContent = observer(function AppContent(): ReactElement {
         <Route path="/" element={<RootRedirect />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
-    </ChakraProvider>
+    </ConstaProvider>
   )
 })
 

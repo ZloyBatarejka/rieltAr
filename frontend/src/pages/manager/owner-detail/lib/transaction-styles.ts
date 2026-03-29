@@ -8,14 +8,14 @@ export const typeLabels: Record<TransactionType, string> = {
   PAYOUT: 'Выплата',
 }
 
-export const typeColors: Record<TransactionType, string> = {
-  INCOME: 'green',
-  COMMISSION: 'orange',
-  CLEANING: 'orange',
-  EXPENSE: 'red',
-  PAYOUT: 'blue',
+export const typeColors: Record<TransactionType, 'success' | 'warning' | 'error' | 'normal'> = {
+  INCOME: 'success',
+  COMMISSION: 'warning',
+  CLEANING: 'warning',
+  EXPENSE: 'error',
+  PAYOUT: 'normal',
 }
 
 export function txAmountColor(type: TransactionType): string {
-  return type === 'INCOME' ? 'green.500' : 'red.500'
+  return type === 'INCOME' ? 'var(--color-typo-success)' : 'var(--color-typo-alert)'
 }

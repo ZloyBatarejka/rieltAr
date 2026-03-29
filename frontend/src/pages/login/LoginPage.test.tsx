@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { MemoryRouter } from 'react-router-dom'
-import { ChakraProvider as ChakraProviderOriginal } from '@chakra-ui/react'
+import { Theme, presetGpnDefault } from '@consta/uikit/Theme'
 import { AuthStore, type AuthApi } from '../../entities/auth'
 import type { LoginResponseDto } from '../../api/generated/Api'
 
@@ -54,9 +54,9 @@ async function renderLoginPage(): Promise<ReturnType<typeof userEvent.setup>> {
 
   render(
     <MemoryRouter>
-      <ChakraProviderOriginal>
+      <Theme preset={presetGpnDefault}>
         <LoginPage />
-      </ChakraProviderOriginal>
+      </Theme>
     </MemoryRouter>,
   )
 

@@ -1,62 +1,50 @@
 import { type ReactElement } from 'react'
-import {
-  Table as ChakraTable,
-  TableContainer,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@chakra-ui/react'
-import { flexRender, type Table } from '@tanstack/react-table'
+import { flexRender, type Table as TanstackTable } from '@tanstack/react-table'
 import styles from './TableList.module.css'
 
 interface TableListProps<TData> {
-  table: Table<TData>
+  table: TanstackTable<TData>
   size?: 'sm' | 'md' | 'lg'
   onRowClick?: (row: TData) => void
 }
 
 export function TableList<TData>({
   table,
-  size = 'sm',
   onRowClick,
 }: TableListProps<TData>): ReactElement {
   return (
-    <TableContainer className={styles.tableWrap}>
-      <ChakraTable size={size}>
-        <Thead>
+    <div className={styles.tableWrap}>
+      <table className={styles.table}>
+        <thead>
           {table.getHeaderGroups().map((headerGroup) => (
-            <Tr key={headerGroup.id} className={styles.tableRow}>
+            <tr key={headerGroup.id} className={styles.tableRow}>
               {headerGroup.headers.map((header) => (
-                <Th key={header.id} textTransform="none">
+                <th key={header.id}>
                   {flexRender(
                     header.column.columnDef.header,
                     header.getContext(),
                   )}
-                </Th>
+                </th>
               ))}
-            </Tr>
+            </tr>
           ))}
-        </Thead>
-        <Tbody>
+        </thead>
+        <tbody>
           {table.getRowModel().rows.map((row) => (
-            <Tr
+            <tr
               key={row.id}
-              className={styles.tableRow}
+              className={`${styles.tableRow} ${onRowClick ? styles.clickableRow : ''}`}
               onClick={onRowClick ? () => onRowClick(row.original) : undefined}
-              cursor={onRowClick ? 'pointer' : undefined}
-              _hover={onRowClick ? { bg: 'blackAlpha.50' } : undefined}
             >
               {row.getVisibleCells().map((cell) => (
-                <Td key={cell.id} className={styles.tableCell}>
+                <td key={cell.id} className={styles.tableCell}>
                   {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </Td>
+                </td>
               ))}
-            </Tr>
+            </tr>
           ))}
-        </Tbody>
-      </ChakraTable>
-    </TableContainer>
+        </tbody>
+      </table>
+    </div>
   )
 }

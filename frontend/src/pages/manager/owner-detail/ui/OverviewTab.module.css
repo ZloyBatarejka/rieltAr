@@ -4,15 +4,28 @@
   gap: 24px;
 }
 
+.txHeading {
+  margin-bottom: 12px;
+}
+
 .statsRow {
   display: flex;
   gap: 16px;
   overflow-x: auto;
 }
 
+.card {
+  background: var(--color-bg-default);
+  border: 1px solid var(--color-bg-border);
+  border-radius: 8px;
+}
+
 .statCard {
   flex: 1 0 220px;
   min-width: 220px;
+  background: var(--color-bg-default);
+  border: 1px solid var(--color-bg-border);
+  border-radius: 8px;
 }
 
 .txList {
@@ -27,6 +40,12 @@
   grid-template-columns: 100px auto 140px;
   gap: 12px;
   align-items: center;
+
+  & :global(.Badge) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
 }
 
 .txAmount {

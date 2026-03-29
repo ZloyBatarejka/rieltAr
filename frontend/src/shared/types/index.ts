@@ -23,6 +23,7 @@ export type {
 export type {
   Stay,
   StaysList,
+  CreateStay,
 } from './stay'
 export type {
   TransactionType,

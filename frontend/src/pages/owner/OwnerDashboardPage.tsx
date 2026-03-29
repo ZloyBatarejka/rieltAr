@@ -1,18 +1,21 @@
 import { type ReactElement } from 'react'
 import { observer } from 'mobx-react-lite'
-import { Heading, Text } from '@chakra-ui/react'
+import { Text } from '@consta/uikit/Text'
 import { authStore } from '../../entities/auth'
+import styles from './OwnerDashboardPage.module.css'
 
 const OwnerDashboardPage = observer(
   function OwnerDashboardPage(): ReactElement {
     return (
-      <>
-        <Heading size="lg" mb={4}>Дашборд</Heading>
-        <Text>
+      <div className={styles.wrapper}>
+        <Text size="2xl" weight="bold" view="primary">
+          Дашборд
+        </Text>
+        <Text view="secondary">
           Добро пожаловать, {authStore.user?.name ?? 'Собственник'}! Здесь будет
           ваш личный кабинет.
         </Text>
-      </>
+      </div>
     )
   },
 )

@@ -1,14 +1,18 @@
 import { type ReactElement, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
-import { Card, CardBody, CardHeader, Heading, Spinner, Center } from '@chakra-ui/react'
+import { Card } from '@consta/uikit/Card'
+import { Text } from '@consta/uikit/Text'
+import { Loader } from '@consta/uikit/Loader'
 import type { Owner } from '@/shared/types'
 import { authStore } from '@/entities/auth'
 import { DataTable } from '@/shared/ui/DataTable'
+import { Show } from '@/shared/ui/Show'
 import { ownersColumns } from './model/columns'
 import { managerOwnersStore } from './model/manager-owners.store'
 import { AddOwnerModal } from './ui/AddOwnerModal'
 import { OwnersTableHeader } from './ui/OwnersTableHeader'
+import styles from './ManagerOwnersPage.module.css'
 
 export const ManagerOwnersPage = observer(function ManagerOwnersPage(): ReactElement {
   const navigate = useNavigate()
@@ -25,34 +29,35 @@ export const ManagerOwnersPage = observer(function ManagerOwnersPage(): ReactEle
 
   return (
     <>
-      <Card>
-        <CardHeader pb={2}>
-          <Heading size="md">Собственники</Heading>
-        </CardHeader>
-        <CardBody>
-          <OwnersTableHeader />
-          {managerOwnersStore.isLoading ? (
-            <Center py={8}>
-              <Spinner />
-            </Center>
-          ) : (
-            <DataTable
-              items={managerOwnersStore.filteredOwners}
-              columns={ownersColumns}
-              emptyText="Нет собственников"
-              rowKey={(o) => o.id}
-              onRowClick={handleRowClick}
-            />
-          )}
-        </CardBody>
+      <Card verticalSpace="2xl" horizontalSpace="2xl" className={styles.tableCard}>
+        <Text size="xl" weight="bold" as="h2" view="primary" className={styles.heading}>
+          Собственники
+        </Text>
+        <OwnersTableHeader />
+        <Show
+          when={!managerOwnersStore.isLoading}
+          fallback={
+            <div className={styles.loaderWrap}>
+              <Loader />
+            </div>
+          }
+        >
+          <DataTable
+            items={managerOwnersStore.filteredOwners}
+            columns={ownersColumns}
+            emptyText="Нет собственников"
+            rowKey={(o) => o.id}
+            onRowClick={handleRowClick}
+          />
+        </Show>
       </Card>
-      {canCreate ? (
+      <Show when={canCreate}>
         <AddOwnerModal
           isOpen={managerOwnersStore.isModalOpen}
           onClose={() => managerOwnersStore.closeModal()}
           onAddOwner={(v) => managerOwnersStore.addOwner(v)}
         />
-      ) : null}
+      </Show>
     </>
   )
 })

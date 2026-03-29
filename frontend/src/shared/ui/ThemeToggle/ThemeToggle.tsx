@@ -1,17 +1,15 @@
 import { type ReactElement } from 'react'
-import { IconButton, useColorMode } from '@chakra-ui/react'
-import { MoonIcon, SunIcon } from '@chakra-ui/icons'
+import { observer } from 'mobx-react-lite'
+import { Switch } from '@consta/uikit/Switch'
+import { themeStore } from '@/shared/model/theme.store'
 
-export function ThemeToggle(): ReactElement {
-  const { colorMode, toggleColorMode } = useColorMode()
-
+export const ThemeToggle: React.FC = observer((): ReactElement => {
   return (
-    <IconButton
-      aria-label="Переключить тему"
-      icon={colorMode === 'light' ? <MoonIcon /> : <SunIcon />}
-      variant="ghost"
-      size="sm"
-      onClick={toggleColorMode}
+    <Switch
+      label="Тёмная тема"
+      checked={themeStore.isDark}
+      onChange={themeStore.toggle}
+      size="s"
     />
   )
-}
+})

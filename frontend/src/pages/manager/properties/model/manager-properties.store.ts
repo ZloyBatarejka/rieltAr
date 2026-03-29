@@ -44,7 +44,6 @@ class ManagerPropertiesStore {
   }
 
   closeEditModal(): void {
-    this.editingProperty = null
     this.isEditModalOpen = false
   }
 

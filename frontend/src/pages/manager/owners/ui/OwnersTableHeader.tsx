@@ -1,43 +1,40 @@
 import { type ReactElement } from 'react'
 import { observer } from 'mobx-react-lite'
-import {
-  HStack,
-  IconButton,
-  Input,
-  InputGroup,
-  InputLeftElement,
-} from '@chakra-ui/react'
-import { AddIcon, SearchIcon } from '@chakra-ui/icons'
+import { TextField } from '@consta/uikit/TextField'
+import { Button } from '@consta/uikit/Button'
+import { IconAdd } from '@consta/icons/IconAdd'
+import { IconSearchStroked } from '@consta/icons/IconSearchStroked'
 import { authStore } from '@/entities/auth'
 import { Show } from '@/shared/ui/Show'
 import { managerOwnersStore } from '../model/manager-owners.store'
+import styles from './OwnersTableHeader.module.css'
+
+const SearchIcon = () => <IconSearchStroked />
 
 export const OwnersTableHeader = observer(
   function OwnersTableHeader(): ReactElement {
     const canCreate = authStore.user?.canCreateOwners === true
 
     return (
-      <HStack mb={4} spacing={2}>
-        <InputGroup size="sm">
-          <InputLeftElement pointerEvents="none">
-            <SearchIcon />
-          </InputLeftElement>
-          <Input
-            placeholder="Поиск по имени…"
-            value={managerOwnersStore.search}
-            onChange={(e) => managerOwnersStore.setSearch(e.target.value)}
-          />
-        </InputGroup>
+      <div className={styles.row}>
+        <TextField
+          className={styles.searchField}
+          size="s"
+          placeholder="Поиск по имени…"
+          value={managerOwnersStore.search}
+          onChange={(v) => managerOwnersStore.setSearch(v ?? '')}
+          leftSide={SearchIcon}
+        />
         <Show when={canCreate}>
-          <IconButton
-            aria-label="Добавить"
-            icon={<AddIcon />}
-            colorScheme="blue"
-            size="sm"
+          <Button
+            size="s"
+            view="primary"
+            onlyIcon
+            iconLeft={IconAdd}
             onClick={() => managerOwnersStore.openModal()}
           />
         </Show>
-      </HStack>
+      </div>
     )
   },
 )

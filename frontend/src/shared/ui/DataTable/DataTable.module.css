@@ -1,0 +1,41 @@
+.scrollArea {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+  color: var(--color-typo-primary);
+}
+
+.table th,
+.table td {
+  padding: 8px 12px;
+  text-align: left;
+  border-bottom: 1px solid var(--color-bg-border);
+}
+
+.table th {
+  font-weight: 600;
+  color: var(--color-typo-secondary);
+  white-space: nowrap;
+}
+
+.numericCell {
+  text-align: right;
+}
+
+.clickableRow {
+  cursor: pointer;
+}
+
+.clickableRow:hover {
+  background: var(--color-bg-stripe);
+}
+
+.emptyText {
+  padding: 24px;
+  text-align: center;
+  color: var(--color-typo-secondary);
+}

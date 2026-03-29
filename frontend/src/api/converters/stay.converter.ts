@@ -1,5 +1,5 @@
-import type { StayListItemDto, StaysListResponseDto } from '../generated/Api'
-import type { Stay, StaysList } from '@/shared/types'
+import type { StayListItemDto, StaysListResponseDto, CreateStayDto } from '../generated/Api'
+import type { Stay, StaysList, CreateStay } from '@/shared/types'
 
 function fromApiStayItem(dto: StayListItemDto): Stay {
   return {
@@ -20,5 +20,20 @@ export function fromApiStaysList(dto: StaysListResponseDto): StaysList {
   return {
     items: dto.items.map(fromApiStayItem),
     total: dto.total,
+  }
+}
+
+export function toApiCreateStay(data: CreateStay): CreateStayDto {
+  return {
+    propertyId: data.propertyId,
+    guestName: data.guestName,
+    checkIn: data.checkIn,
+    checkOut: data.checkOut,
+    totalAmount: data.totalAmount,
+    commissionPercent: data.commissionPercent,
+    cleaningAmount: data.cleaningAmount,
+    incomeComment: data.incomeComment,
+    commissionComment: data.commissionComment,
+    cleaningComment: data.cleaningComment,
   }
 }

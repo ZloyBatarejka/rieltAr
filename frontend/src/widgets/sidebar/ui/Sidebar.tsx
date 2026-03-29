@@ -1,6 +1,6 @@
 import { type ReactElement } from 'react'
 import { NavLink } from 'react-router-dom'
-import { Heading } from '@chakra-ui/react'
+import { Text } from '@consta/uikit/Text'
 import { LogoutButton } from '../../../features/auth'
 import { ThemeToggle } from '../../../shared/ui/ThemeToggle'
 import styles from './Sidebar.module.css'
@@ -33,10 +33,18 @@ export function Sidebar({
       <div className={overlayClass} onClick={onClose} role="presentation" />
       <aside className={sidebarClass}>
         <div className={styles.header}>
-          <Heading size="md" className={styles.brand}>
+          <Text
+            as="h2"
+            size="l"
+            weight="bold"
+            view="primary"
+            className={styles.brand}
+          >
             Balivi
-          </Heading>
-          <span className={styles.role}>{title}</span>
+          </Text>
+          <Text as="span" size="s" view="secondary" className={styles.role}>
+            {title}
+          </Text>
         </div>
 
         <nav className={styles.nav}>

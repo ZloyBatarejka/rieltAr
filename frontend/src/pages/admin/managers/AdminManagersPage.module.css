@@ -29,13 +29,13 @@
 }
 
 .badgeYes {
-  background: var(--chakra-colors-green-100);
-  color: var(--chakra-colors-green-800);
+  background: var(--color-bg-success);
+  color: var(--color-bg-default);
 }
 
 .badgeNo {
-  background: var(--chakra-colors-gray-100);
-  color: var(--chakra-colors-gray-600);
+  background: var(--color-bg-ghost);
+  color: var(--color-typo-secondary);
 }
 
 .formCard {

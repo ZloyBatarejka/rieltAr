@@ -1,57 +1,44 @@
 import { type ReactElement } from 'react'
-import {
-  Stat,
-  StatLabel,
-  StatNumber,
-  Card,
-  CardBody,
-  Text,
-  Badge,
-} from '@chakra-ui/react'
+import { Card } from '@consta/uikit/Card'
+import { Text } from '@consta/uikit/Text'
+import { Badge } from '@consta/uikit/Badge'
+import { Show } from '@/shared/ui/Show'
 import type { OverviewTabProps } from '../model/types'
-import { formatCurrency, formatSignedAmount, typeLabels, typeColors, txAmountColor } from '../lib'
+import { formatCurrency, formatSignedAmount, typeLabels, typeColors } from '../lib'
 import styles from './OverviewTab.module.css'
+
+type TextViewType = 'primary' | 'secondary' | 'ghost' | 'brand' | 'link' | 'success' | 'warning' | 'alert'
 
 export function OverviewTab({ dashboard }: OverviewTabProps): ReactElement {
   return (
     <div className={styles.wrapper}>
       <div className={styles.statsRow}>
-        <StatCard label="Доход" value={dashboard.income} color="green.500" />
-        <StatCard label="Расходы" value={dashboard.expenses} color="red.500" />
-        <StatCard
-          label="Выплачено"
-          value={dashboard.payouts}
-          color="blue.500"
-        />
+        <StatCard label="Доход" value={dashboard.income} view="success" />
+        <StatCard label="Расходы" value={dashboard.expenses} view="alert" />
+        <StatCard label="Выплачено" value={dashboard.payouts} view="link" />
         <StatCard label="Объектов" value={dashboard.propertiesCount} />
       </div>
 
-      <Card>
-        <CardBody>
-          <Text fontWeight="semibold" mb={3}>
-            Последние операции
-          </Text>
-          {dashboard.lastTransactions.length === 0 ? (
-            <Text>Нет операций</Text>
-          ) : (
-            <div className={styles.txList}>
-              {dashboard.lastTransactions.map((tx) => (
-                <div key={tx.id} className={styles.txRow}>
-                  <Badge colorScheme={typeColors[tx.type]} w="fit-content">
-                    {typeLabels[tx.type]}
-                  </Badge>
-                  <Text className={styles.txComment}>{tx.comment ?? ''}</Text>
-                  <Text
-                    className={styles.txAmount}
-                    color={txAmountColor(tx.type)}
-                  >
-                    {formatSignedAmount(tx.type, tx.amount)}
-                  </Text>
-                </div>
-              ))}
-            </div>
-          )}
-        </CardBody>
+      <Card verticalSpace="2xl" horizontalSpace="2xl" className={styles.card}>
+        <Text weight="semibold" view="primary" className={styles.txHeading}>
+          Последние операции
+        </Text>
+        <Show when={dashboard.lastTransactions.length > 0} fallback={<Text view="secondary">Нет операций</Text>}>
+          <div className={styles.txList}>
+            {dashboard.lastTransactions.map((tx) => (
+              <div key={tx.id} className={styles.txRow}>
+                <Badge status={typeColors[tx.type]} label={typeLabels[tx.type]} size="s" />
+                <Text view="primary" className={styles.txComment}>{tx.comment ?? ''}</Text>
+                <Text
+                  className={styles.txAmount}
+                  view={tx.type === 'INCOME' ? 'success' : 'alert'}
+                >
+                  {formatSignedAmount(tx.type, tx.amount)}
+                </Text>
+              </div>
+            ))}
+          </div>
+        </Show>
       </Card>
     </div>
   )
@@ -60,24 +47,22 @@ export function OverviewTab({ dashboard }: OverviewTabProps): ReactElement {
 function StatCard({
   label,
   value,
-  color,
+  view,
 }: {
   label: string
   value: number
-  color?: string
+  view?: TextViewType
 }): ReactElement {
   return (
-    <Card className={styles.statCard}>
-      <CardBody>
-        <Stat>
-          <StatLabel>{label}</StatLabel>
-          <StatNumber fontSize="xl" color={color}>
-            {typeof value === 'number' && label !== 'Объектов'
-              ? formatCurrency(value)
-              : value}
-          </StatNumber>
-        </Stat>
-      </CardBody>
+    <Card className={styles.statCard} verticalSpace="l" horizontalSpace="l">
+      <Text size="s" view="secondary">
+        {label}
+      </Text>
+      <Text size="xl" weight="bold" view={view ?? 'primary'}>
+        {typeof value === 'number' && label !== 'Объектов'
+          ? formatCurrency(value)
+          : value}
+      </Text>
     </Card>
   )
 }

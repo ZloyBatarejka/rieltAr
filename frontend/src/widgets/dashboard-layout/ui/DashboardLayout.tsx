@@ -2,7 +2,7 @@ import {
   type PropsWithChildren,
   type ReactElement,
 } from 'react'
-import { Heading } from '@chakra-ui/react'
+import { Text } from '@consta/uikit/Text'
 import { LogoutButton } from '../../../features/auth'
 import styles from './DashboardLayout.module.css'
 
@@ -17,7 +17,7 @@ export function DashboardLayout({
   return (
     <div className={styles.wrapper}>
       <div className={styles.topBar}>
-        <Heading size="md" className={styles.title}>{title}</Heading>
+        <Text as="h1" size="l" weight="bold" view="primary" className={styles.title}>{title}</Text>
         <LogoutButton />
       </div>
       {children}

@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from 'react'
-import { useToast } from '@chakra-ui/react'
 import { ownerDetailApi } from '../api'
 import type {
   OwnerDetail,
@@ -18,7 +17,6 @@ export function useOwnerDetail(ownerId: string) {
   const [transactions, setTransactions] = useState<Transaction[]>([])
   const [payouts, setPayouts] = useState<Payout[]>([])
   const [isLoading, setIsLoading] = useState(true)
-  const toast = useToast()
 
   const fetchAll = useCallback(async (): Promise<void> => {
     setIsLoading(true)
@@ -39,13 +37,12 @@ export function useOwnerDetail(ownerId: string) {
       setStays(staysData.items)
       setTransactions(txData.items)
       setPayouts(payoutsData.items)
-    } catch (e) {
-      const msg = e instanceof Error ? e.message : 'Ошибка загрузки'
-      toast({ title: msg, status: 'error', isClosable: true })
+    } catch {
+      return
     } finally {
       setIsLoading(false)
     }
-  }, [ownerId, toast])
+  }, [ownerId])
 
   useEffect(() => {
     void fetchAll()

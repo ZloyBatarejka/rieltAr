@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Box, IconButton } from '@chakra-ui/react'
-import { CloseIcon } from '@chakra-ui/icons'
+import { Button } from '@consta/uikit/Button'
+import { IconTrash } from '@consta/icons/IconTrash'
 import type { Assignment } from '@/shared/types'
+import adminStyles from '../../admin.module.css'
 
 interface UnassignCellProps {
   row: { original: Assignment }
@@ -24,15 +25,16 @@ export const UnassignCell: React.FC<UnassignCellProps> = ({
   }
 
   return (
-    <Box display="flex" justifyContent="flex-end">
-      <IconButton
-        aria-label="Снять назначение"
-        icon={<CloseIcon />}
-        size="sm"
-        variant="ghost"
-        isLoading={isRemoving}
+    <div className={adminStyles.actionsEnd}>
+      <Button
+        size="s"
+        view="ghost"
+        onlyIcon
+        iconLeft={IconTrash}
+        loading={isRemoving}
         onClick={handleClick}
+        aria-label="Снять назначение"
       />
-    </Box>
+    </div>
   )
 }

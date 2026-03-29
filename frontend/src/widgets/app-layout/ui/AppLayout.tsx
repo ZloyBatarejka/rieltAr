@@ -1,7 +1,8 @@
 import { type ReactElement, useState, useCallback } from 'react'
 import { Outlet } from 'react-router-dom'
-import { IconButton, Heading } from '@chakra-ui/react'
-import { HamburgerIcon } from '@chakra-ui/icons'
+import { Button } from '@consta/uikit/Button'
+import { Text } from '@consta/uikit/Text'
+import { IconHamburger } from '@consta/icons/IconHamburger'
 import { Sidebar, type NavItem } from '../../sidebar'
 import styles from './AppLayout.module.css'
 
@@ -29,16 +30,17 @@ export function AppLayout({
   return (
     <div className={styles.layout}>
       <div className={styles.topBar}>
-        <IconButton
-          aria-label="Открыть меню"
-          icon={<HamburgerIcon />}
-          variant="ghost"
-          size="sm"
+        <Button
+          onlyIcon
+          iconLeft={IconHamburger}
+          view="clear"
+          size="s"
           onClick={handleOpen}
+          label="Открыть меню"
         />
-        <Heading size="sm" className={styles.topBarTitle}>
+        <Text as="h1" size="m" weight="bold" view="primary" className={styles.topBarTitle}>
           {title}
-        </Heading>
+        </Text>
       </div>
 
       <Sidebar

@@ -55,40 +55,69 @@ import { authStore } from "../../../entities/auth";
 import { AuthStore } from "@/entities/auth/model/auth.store";
 ```
 
+## Стек библиотек
+
 - State management — **MobX** (`mobx` + `mobx-react-lite`), stores в `model/` внутри слайсов
-- UI-компоненты — **Chakra UI v2** (`@chakra-ui/react`)
-- Таблицы — **TanStack Table** (`@tanstack/react-table`) + Chakra UI Table
+- UI-компоненты — **Consta UI Kit** (`@consta/uikit`), тема — `@consta/themes`, иконки — `@consta/icons`
 - Формы — **React Hook Form** + **zod** (`react-hook-form`, `@hookform/resolvers`, `zod`)
 - API-запросы — axios с interceptor для JWT
 - **Mobile first:** базовые стили = мобильные, расширение через `@media (min-width)`. Брейкпоинты: `sm` 480px, `md` 768px, `lg` 992px, `xl` 1280px. Подробности в `frontend-styles.mdc`
 
-## Chakra UI + CSS Modules (гибридный подход)
+## Иконки — только `@consta/icons`
 
-- Chakra-компоненты используем как строительные блоки (`Card`, `Button`, `Input`, `Alert`, `FormControl` и т.д.)
+- **Запрещён** `react-icons` и любые другие библиотеки иконок
+- Все иконки — из `@consta/icons`: `import { IconEdit } from '@consta/icons/IconEdit'`
+- Маппинг частых иконок: `IconAdd` (плюс), `IconEdit` (карандаш), `IconTrash` (удалить), `IconSearchStroked` (поиск), `IconArrowLeft` (назад), `IconHamburger` (меню)
+- Каталог иконок: [consta.design/libs/icons](https://consta.design/libs/icons)
+
+## Никаких кастомных HTML-элементов — только Consta
+
+- **Запрещены** голые HTML-элементы для интерактивных и контентных блоков:
+  - `<button>` → `Button` из `@consta/uikit/Button`
+  - `<input>` / `<textarea>` → `TextField` из `@consta/uikit/TextField`
+  - `<select>` → `Select` из `@consta/uikit/Select`
+  - `<table>` → `DataTable` из `@/shared/ui/DataTable`
+  - `<span>`, `<p>`, `<h1>`–`<h6>` для текста → `Text` из `@consta/uikit/Text`
+- **Допустимы** голые HTML-элементы только для layout-обёрток: `<div>`, `<form>`, `<main>`, `<aside>`, `<nav>`, `<section>` — со стилями через CSS Modules
+- Если нужна кнопка-иконка — `<Button onlyIcon iconLeft={Icon} view="clear" size="xs" />`
+
+## Consta UI Kit + CSS Modules (гибридный подход)
+
+- Consta-компоненты используем как строительные блоки (`Card`, `Button`, `TextField`, `Select`, `Badge`, `Loader`, `Informer`, `Switch`, `Tabs`, `Modal` и т.д.)
 - **Layout, позиционирование, кастомные отступы** — через CSS Modules (`className={styles.wrapper}`)
-- Chakra-пропы допустимы **только** для встроенной логики компонента: `size`, `variant`, `colorScheme`, `isLoading`, `isInvalid`, `isDisabled`, `status`, `borderRadius`
-- **Запрещены** Chakra style-пропы для цветов, отступов, размеров: ``, `mt={4}`, `w="full"`, `py={4}`, `fontSize="sm"`
-- Вместо style-пропов — CSS Modules классы или семантические токены темы (CSS-переменные)
+- Consta-пропы допустимы **только** для встроенной логики компонента: `size`, `view`, `form`, `status`, `label`, `loading`, `disabled`, `onlyIcon`, `iconLeft`
+- **Запрещены** inline `style={{ }}` для layout/цветов/отступов
+- Вместо style-пропов — CSS Modules классы + Consta CSS-переменные (`var(--color-bg-default)`, `var(--color-typo-primary)` и т.д.)
 - У каждого компонента должен быть свой `*.module.css` рядом
 
-```tsx
-// ❌ Плохо — inline style-пропы
-<Card w="full" maxW="400px">
-  <Text  fontSize="sm" mt={1}>Текст</Text>
-</Card>
+## Текст — всегда через `<Text>` с `view`
 
-// ✅ Хорошо — Chakra для компонента, CSS Modules для стилей
-<Card className={styles.card}>
-  <Text className={styles.subtitle}>Текст</Text>
-</Card>
+- **Любой** видимый текст в JSX оборачивать в Consta `<Text>` из `@consta/uikit/Text`
+- **Запрещены** голые `<span>`, `<p>`, `<h1>`–`<h6>` для текста — только `<Text as="h1">`, `<Text as="span">` и т.д.
+- **Обязательно** указывать проп `view` у каждого `<Text>`:
+  - `view="primary"` — заголовки, основной текст
+  - `view="secondary"` — вспомогательный, пустые состояния
+  - `view="ghost"` — подсказки, мелкие пояснения
+  - `view="success"` / `view="alert"` / `view="warning"` — статусный текст
+- Без `view` текст не реагирует на смену темы (тёмная/светлая)
+
+```tsx
+// ❌ Плохо — голый тег, нет view
+<h2>Заголовок</h2>
+<span>Описание</span>
+<Text>Текст без view</Text>
+
+// ✅ Хорошо
+<Text as="h2" size="l" weight="bold" view="primary">Заголовок</Text>
+<Text view="secondary">Описание</Text>
 ```
 
-## Формы — React Hook Form + zod
+## Формы — React Hook Form + zod + Consta TextField
 
 - Валидация через **zod-схемы**, подключённые через `zodResolver`
 - Типы формы выводить из схемы: `type FormValues = z.infer<typeof schema>`
-- Простые поля — через `register()` + Chakra `Input`, сложные — через `<Controller>`
-- Ошибки — через Chakra `FormControl isInvalid` + `FormErrorMessage`
+- Поля ввода — через `<Controller>` + Consta `TextField` / `Select`
+- Ошибки — через Consta `status="alert"` + `caption={errors.field?.message}`
 
 ```tsx
 const schema = z.object({
@@ -96,27 +125,42 @@ const schema = z.object({
 })
 type FormValues = z.infer<typeof schema>
 
-const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
+const { control, handleSubmit, formState: { errors } } = useForm<FormValues>({
   resolver: zodResolver(schema),
   defaultValues: { email: '' },
   mode: 'onChange',
 })
 
-<FormControl isInvalid={!!errors.email}>
-  <Input {...register('email')} type="email" placeholder="Email" />
-  <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
-</FormControl>
+<Controller
+  name="email"
+  control={control}
+  render={({ field }) => (
+    <TextField
+      value={field.value}
+      onChange={(v) => field.onChange(v ?? '')}
+      label="Email"
+      placeholder="user@example.com"
+      status={errors.email ? 'alert' : undefined}
+      caption={errors.email?.message}
+    />
+  )}
+/>
 ```
 
 ## Стилизация — CSS Modules
 
 - **Запрещены** inline-стили (`style={{ }}`)
-- **Запрещены** Chakra style-пропы для layout/цветов/отступов (см. раздел выше)
 - Все кастомные стили — через **CSS Modules** (`*.module.css`) рядом с компонентом
-- Цвета — через CSS-переменные семантических токенов Chakra (`var(--chakra-colors-text-secondary)`)
+- Цвета — через CSS-переменные Consta (`var(--color-bg-default)`, `var(--color-typo-primary)`, `var(--color-bg-border)` и т.д.)
 - Импорт: `import styles from './Component.module.css'`
 - Условные классы — шаблонные строки или `clsx`/`classnames`
 - Именование классов — **camelCase** (`.wrapper`, `.headerIcon`)
+
+## Уведомления / тосты
+
+- **Toaster / toast-уведомления удалены.** Не использовать, аналог не нужен.
+- Ошибки — текст рядом с формой (`status="alert"` + `caption`), `Informer` для блочных ошибок, или тихий fail
+- Успех — закрыть модалку / обновить данные, без всплывающих уведомлений
 
 ## Чистый JSX-шаблон
 
@@ -135,10 +179,10 @@ const { register, handleSubmit, formState: { errors } } = useForm<FormValues>({
 {user ? <Profile /> : <Login />}
 
 // ✅
-import { Show } from 'shared/ui/Show'
+import { Show } from '@/shared/ui/Show'
 
 <Show when={isLoading}>
-  <Spinner />
+  <Loader />
 </Show>
 
 <Show when={user} fallback={<Login />}>
@@ -153,11 +197,11 @@ import { Show } from 'shared/ui/Show'
 - `mode="private"` — только для авторизованных; `requiredRole` для проверки роли
 - `mode="guest"` — только для неавторизованных (логин, регистрация)
 
-## Таблицы — TanStack Table + Chakra UI
+## Таблицы — DataTable (кастомный)
 
-- Использовать **TanStack Table** (`@tanstack/react-table`) + Chakra UI `Table`, `TableContainer`, `Thead`, `Tbody`, `Tr`, `Th`, `Td`
-- Колонки определять через `createColumnHelper<TRow>()`, рендер строк — через Chakra Table-компоненты
-- Пагинация, сортировка, фильтрация — средствами TanStack Table (server-side через API для больших списков)
+- Использовать `DataTable` из `@/shared/ui/DataTable` — обёртка над HTML-таблицей с CSS Modules
+- Колонки определять через массив `DataTableColumn<T>[]`
+- При необходимости сложных таблиц — рассмотреть `@consta/table`
 
 ## Безопасность (XSS)
 

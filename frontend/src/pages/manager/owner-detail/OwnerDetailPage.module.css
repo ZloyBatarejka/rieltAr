@@ -1,0 +1,21 @@
+.loaderWrap {
+  display: flex;
+  justify-content: center;
+  padding: 40px 0;
+}
+
+.tabs [class*='Tabs-Tab'] {
+  flex: 1;
+  justify-content: center;
+}
+
+.tabContent {
+  padding-top: 16px;
+}
+
+.tabTableCard {
+  background: var(--color-bg-default);
+  border: 1px solid var(--color-bg-border);
+  border-radius: 8px;
+  padding: 16px;
+}

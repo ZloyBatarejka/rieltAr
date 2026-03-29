@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter, Routes, Route } from 'react-router-dom'
-import { ChakraProvider as ChakraProviderOriginal } from '@chakra-ui/react'
+import { Theme, presetGpnDefault } from '@consta/uikit/Theme'
 import { AuthStore, type AuthApi } from '../../../entities/auth'
 import type { AuthUserDtoRoleEnum } from '../../../api/generated/Api'
 
@@ -61,7 +61,7 @@ async function renderGuardedRoute({
 
   render(
     <MemoryRouter initialEntries={[initialPath]}>
-      <ChakraProviderOriginal>
+      <Theme preset={presetGpnDefault}>
         <Routes>
           <Route element={<GuardedRoute mode={mode} requiredRole={requiredRole} />}>
             <Route path="/protected" element={<div>Protected Content</div>} />
@@ -70,7 +70,7 @@ async function renderGuardedRoute({
           <Route path="/manager" element={<div>Manager Dashboard</div>} />
           <Route path="/owner" element={<div>Owner Dashboard</div>} />
         </Routes>
-      </ChakraProviderOriginal>
+      </Theme>
     </MemoryRouter>,
   )
 }

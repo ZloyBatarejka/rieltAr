@@ -360,7 +360,7 @@ User 1──1 Owner 1──N Property 1──N Stay 1──N Transaction
 
 ### 7.1 Общее
 
-- **UI-библиотека:** Chakra UI v2
+- **UI-библиотека:** Consta UI Kit (`@consta/uikit`, `@consta/themes`, `@consta/icons`)
 - **Темы:** светлая (по умолчанию) и тёмная
 - **Адаптивность:** десктоп (основной) + базовая мобильная адаптация
 - **Язык интерфейса:** русский
@@ -441,7 +441,7 @@ User 1──1 Owner 1──N Property 1──N Stay 1──N Transaction
 |-----------|-----------|--------|
 | Frontend runtime | React | 18+ |
 | Frontend bundler | Vite | 5+ |
-| Frontend UI | Chakra UI | 2+ |
+| Frontend UI | Consta UI Kit | latest |
 | Frontend state | MobX + mobx-react-lite | 6+ |
 | Frontend архитектура | Feature-Sliced Design (FSD) | — |
 | Frontend язык | TypeScript | 5+ |

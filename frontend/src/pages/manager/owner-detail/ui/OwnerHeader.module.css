@@ -1,0 +1,14 @@
+.header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.name {
+  flex: 1;
+}
+
+.balance {
+  white-space: nowrap;
+}

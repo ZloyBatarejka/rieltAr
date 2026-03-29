@@ -1,19 +1,13 @@
-import { type ReactElement } from 'react'
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  Input,
-  ModalBody,
-  ModalFooter,
-  Select,
-  VStack,
-} from '@chakra-ui/react'
-import { useForm, type SubmitHandler } from 'react-hook-form'
+import { type ReactElement, useMemo } from 'react'
+import { Button } from '@consta/uikit/Button'
+import { TextField } from '@consta/uikit/TextField'
+import { Select } from '@consta/uikit/Select'
+import { useForm, Controller, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { ClosableModal } from '@/shared/ui/ClosableModal'
 import type { Owner } from '@/shared/types'
+import styles from './AddPropertyModal.module.css'
 
 const createPropertySchema = z.object({
   title: z.string().min(1, 'Введите название'),
@@ -22,6 +16,11 @@ const createPropertySchema = z.object({
 })
 
 type CreatePropertyFormValues = z.infer<typeof createPropertySchema>
+
+interface SelectItem {
+  id: string
+  label: string
+}
 
 interface AddPropertyModalProps {
   isOpen: boolean
@@ -37,7 +36,7 @@ export function AddPropertyModal({
   owners,
 }: AddPropertyModalProps): ReactElement {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
     reset,
@@ -46,46 +45,72 @@ export function AddPropertyModal({
     defaultValues: { title: '', address: '', ownerId: '' },
   })
 
+  const ownerItems: SelectItem[] = useMemo(
+    () => owners.map((o) => ({ id: o.id, label: o.name })),
+    [owners],
+  )
+
   const onSubmit: SubmitHandler<CreatePropertyFormValues> = async (values) => {
     await onAdd(values)
     reset()
   }
 
   return (
-    <ClosableModal isOpen={isOpen} onClose={onClose} title="Добавить объект">
+    <ClosableModal open={isOpen} onClose={onClose} title="Добавить объект">
       <form onSubmit={handleSubmit(onSubmit)}>
-        <ModalBody>
-          <VStack spacing={4} align="stretch">
-            <FormControl isInvalid={!!errors.title} isRequired>
-              <Input {...register('title')} placeholder="Название" />
-              <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={!!errors.address} isRequired>
-              <Input {...register('address')} placeholder="Адрес" />
-              <FormErrorMessage>{errors.address?.message}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={!!errors.ownerId} isRequired>
-              <Select {...register('ownerId')} placeholder="Собственник">
-                {owners.map((owner) => (
-                  <option key={owner.id} value={owner.id}>
-                    {owner.name}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>{errors.ownerId?.message}</FormErrorMessage>
-            </FormControl>
-          </VStack>
-        </ModalBody>
-        <ModalFooter gap={3}>
-          <Button variant="ghost" onClick={onClose} type="button">
-            Отмена
-          </Button>
-          <Button colorScheme="blue" type="submit">
-            Создать
-          </Button>
-        </ModalFooter>
+        <ClosableModal.Body>
+          <div className={styles.stack}>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  value={field.value}
+                  onChange={(v) => field.onChange(v ?? '')}
+                  placeholder="Название"
+                  status={errors.title ? 'alert' : undefined}
+                  caption={errors.title?.message}
+                />
+              )}
+            />
+            <Controller
+              name="address"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  value={field.value}
+                  onChange={(v) => field.onChange(v ?? '')}
+                  placeholder="Адрес"
+                  status={errors.address ? 'alert' : undefined}
+                  caption={errors.address?.message}
+                />
+              )}
+            />
+            <Controller
+              name="ownerId"
+              control={control}
+              render={({ field }) => {
+                const selected = ownerItems.find((i) => i.id === field.value) ?? null
+                return (
+                  <Select
+                    items={ownerItems}
+                    value={selected}
+                    onChange={(item) => field.onChange(item?.id ?? '')}
+                    getItemLabel={(i) => i.label}
+                    getItemKey={(i) => i.id}
+                    placeholder="Собственник"
+                    status={errors.ownerId ? 'alert' : undefined}
+                    caption={errors.ownerId?.message}
+                  />
+                )
+              }}
+            />
+          </div>
+        </ClosableModal.Body>
+        <ClosableModal.Footer>
+          <Button view="ghost" label="Отмена" onClick={onClose} type="button" />
+          <Button view="primary" label="Создать" type="submit" />
+        </ClosableModal.Footer>
       </form>
     </ClosableModal>
   )
