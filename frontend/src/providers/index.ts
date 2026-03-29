@@ -1,1 +1,1 @@
-export { ChakraProvider } from './ChakraProvider'
+export { ConstaProvider } from './ConstaProvider'

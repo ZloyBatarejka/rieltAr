@@ -1,7 +1,25 @@
+.card {
+  background: var(--color-bg-default);
+  border: 1px solid var(--color-bg-border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 .cardHeader {
   display: flex;
   flex-direction: row;
   justify-content: space-between;
   align-items: center;
-  padding: 15px 35px !important;
+  padding: 15px 35px;
+}
+
+.cardBody {
+  padding: 0 16px 16px;
+}
+
+.title {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-typo-primary);
+  margin: 0;
 }

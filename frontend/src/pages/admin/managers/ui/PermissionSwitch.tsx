@@ -1,4 +1,4 @@
-import { Switch } from '@chakra-ui/react'
+import { Switch } from '@consta/uikit/Switch'
 
 interface PermissionSwitchProps {
   value: boolean
@@ -11,8 +11,8 @@ export const PermissionSwitch: React.FC<PermissionSwitchProps> = ({
 }) => {
   return (
     <Switch
-      size="sm"
-      isChecked={value}
+      size="s"
+      checked={value}
       onChange={(e) => onChange(e.target.checked)}
     />
   )

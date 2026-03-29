@@ -1,7 +1,9 @@
 import { useState } from 'react'
-import { Box, IconButton } from '@chakra-ui/react'
-import { DeleteIcon, EditIcon } from '@chakra-ui/icons'
+import { Button } from '@consta/uikit/Button'
+import { IconEdit } from '@consta/icons/IconEdit'
+import { IconTrash } from '@consta/icons/IconTrash'
 import type { Property } from '@/shared/types'
+import adminStyles from '../../admin.module.css'
 
 interface PropertyActionsCellProps {
   row: { original: Property }
@@ -26,22 +28,24 @@ export const PropertyActionsCell: React.FC<PropertyActionsCellProps> = ({
   }
 
   return (
-    <Box display="flex" gap={2} justifyContent="flex-end">
-      <IconButton
-        aria-label="Редактировать"
-        icon={<EditIcon />}
-        size="sm"
-        variant="ghost"
+    <div className={adminStyles.actionsRow}>
+      <Button
+        size="s"
+        view="ghost"
+        onlyIcon
+        iconLeft={IconEdit}
         onClick={() => onEdit(row.original)}
+        aria-label="Редактировать"
       />
-      <IconButton
-        aria-label="Удалить"
-        icon={<DeleteIcon />}
-        size="sm"
-        variant="ghost"
-        isLoading={isDeleting}
+      <Button
+        size="s"
+        view="ghost"
+        onlyIcon
+        iconLeft={IconTrash}
+        loading={isDeleting}
         onClick={handleDelete}
+        aria-label="Удалить"
       />
-    </Box>
+    </div>
   )
 }

@@ -1,14 +1,17 @@
 import { type ReactElement } from 'react'
-import { Heading, Text, VStack } from '@chakra-ui/react'
+import { Text } from '@consta/uikit/Text'
+import styles from './AdminDashboardPage.module.css'
 
 function AdminDashboardPage(): ReactElement {
   return (
-    <VStack align="stretch" spacing={4}>
-      <Heading size="lg">Панель администратора</Heading>
-      <Text>
+    <div className={styles.wrapper}>
+      <Text size="2xl" weight="bold" view="primary">
+        Панель администратора
+      </Text>
+      <Text view="secondary">
         Управление менеджерами, собственниками, объектами и назначениями.
       </Text>
-    </VStack>
+    </div>
   )
 }
 

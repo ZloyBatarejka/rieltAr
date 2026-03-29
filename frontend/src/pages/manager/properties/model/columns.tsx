@@ -1,7 +1,9 @@
-import { HStack, IconButton } from '@chakra-ui/react'
-import { EditIcon, DeleteIcon } from '@chakra-ui/icons'
+import { Button } from '@consta/uikit/Button'
+import { IconEdit } from '@consta/icons/IconEdit'
+import { IconTrash } from '@consta/icons/IconTrash'
 import type { DataTableColumn } from '@/shared/ui/DataTable'
 import type { Property } from '@/shared/types'
+import styles from './columns.module.css'
 
 interface ColumnsParams {
   canManage: boolean
@@ -15,9 +17,9 @@ export function createPropertiesColumns({
   onDelete,
 }: ColumnsParams): DataTableColumn<Property>[] {
   const columns: DataTableColumn<Property>[] = [
-    { header: 'Название', minW: '160px', render: (p) => p.title },
-    { header: 'Адрес', minW: '200px', render: (p) => p.address },
-    { header: 'Собственник', minW: '140px', render: (p) => p.ownerName },
+    { header: 'Название', minW: '200px', render: (p) => p.title },
+    { header: 'Адрес', minW: '260px', render: (p) => p.address },
+    { header: 'Собственник', minW: '180px', render: (p) => p.ownerName },
   ]
 
   if (canManage) {
@@ -25,28 +27,28 @@ export function createPropertiesColumns({
       header: '',
       minW: '80px',
       render: (p) => (
-        <HStack spacing={1}>
-          <IconButton
-            aria-label="Редактировать"
-            icon={<EditIcon />}
+        <div className={styles.actions}>
+          <Button
             size="xs"
-            variant="ghost"
+            view="ghost"
+            onlyIcon
+            iconLeft={IconEdit}
             onClick={(e) => {
               e.stopPropagation()
               onEdit(p)
             }}
           />
-          <IconButton
-            aria-label="Удалить"
-            icon={<DeleteIcon />}
+          <Button
             size="xs"
-            variant="ghost"
+            view="ghost"
+            onlyIcon
+            iconLeft={IconTrash}
             onClick={(e) => {
               e.stopPropagation()
               onDelete(p)
             }}
           />
-        </HStack>
+        </div>
       ),
     })
   }

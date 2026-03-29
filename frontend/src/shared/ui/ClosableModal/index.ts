@@ -1,1 +1,1 @@
-export { ClosableModal } from './ClosableModal'
+export { ClosableModal, ModalBody, ModalFooter } from './ClosableModal'

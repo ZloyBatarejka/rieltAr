@@ -1,28 +1,14 @@
-import { type ReactElement, useState } from 'react'
+import { type ReactElement } from 'react'
 import { observer } from 'mobx-react-lite'
-import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useForm, Controller, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import {
-  Card,
-  CardHeader,
-  CardBody,
-  Heading,
-  Text,
-  FormControl,
-  FormErrorMessage,
-  Input,
-  InputGroup,
-  InputRightElement,
-  Button,
-  IconButton,
-  Alert,
-  AlertIcon,
-  AlertDescription,
-  CloseButton,
-  VStack,
-} from '@chakra-ui/react'
-import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import { Card } from '@consta/uikit/Card'
+import { Text } from '@consta/uikit/Text'
+import { TextField } from '@consta/uikit/TextField'
+import { Button } from '@consta/uikit/Button'
+import { Informer } from '@consta/uikit/Informer'
+import { IconClose } from '@consta/icons/IconClose'
 import { authStore } from '../../entities/auth'
 import { Show } from '../../shared/ui/Show'
 import styles from './LoginPage.module.css'
@@ -35,12 +21,10 @@ const loginSchema = z.object({
 type LoginFormValues = z.infer<typeof loginSchema>
 
 const LoginPage = observer(function LoginPage(): ReactElement {
-  const [showPassword, setShowPassword] = useState(false)
-
   const {
-    register,
+    control,
     handleSubmit,
-    formState: { errors, isValid },
+    formState: { isValid },
   } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: { email: '', password: '' },
@@ -51,83 +35,78 @@ const LoginPage = observer(function LoginPage(): ReactElement {
     void authStore.login(values.email, values.password)
   }
 
-  const handleTogglePassword = (): void => {
-    setShowPassword((prev) => !prev)
-  }
-
   const isLoading = authStore.status === 'loading'
 
   return (
     <div className={styles.wrapper}>
       <Card className={styles.card}>
-        <CardHeader className={styles.header}>
-          <Heading size="lg">Balivi</Heading>
-          <Text className={styles.subtitle}>
+        <div className={styles.header}>
+          <Text view="primary" size="2xl" weight="bold">
+            Balivi
+          </Text>
+          <Text className={styles.subtitle} view="secondary" size="s">
             Войдите в систему управления арендой
           </Text>
-        </CardHeader>
+        </div>
 
-        <CardBody>
-          <VStack
-            as="form"
-            spacing={4}
-            onSubmit={handleSubmit(onSubmit)}
-            noValidate
-          >
-            <Show when={authStore.error}>
-              <Alert status="error" className={styles.alert}>
-                <AlertIcon />
-                <AlertDescription className={styles.alertText}>
-                  {authStore.error}
-                </AlertDescription>
-                <CloseButton onClick={authStore.clearError.bind(authStore)} />
-              </Alert>
-            </Show>
-
-            <FormControl isInvalid={!!errors.email}>
-              <Input
-                {...register('email')}
-                type="email"
-                placeholder="Email"
-                autoComplete="email"
+        <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
+          <Show when={authStore.error}>
+            <div className={styles.alert}>
+              <Informer
+                status="alert"
+                label={authStore.error ?? ''}
+                view="bordered"
               />
-              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
-            </FormControl>
+              <Button
+                size="xs"
+                view="clear"
+                onlyIcon
+                iconLeft={IconClose}
+                onClick={authStore.clearError.bind(authStore)}
+                className={styles.alertClose}
+                label="Закрыть"
+              />
+            </div>
+          </Show>
 
-            <FormControl isInvalid={!!errors.password}>
-              <InputGroup>
-                <Input
-                  {...register('password')}
-                  type={showPassword ? 'text' : 'password'}
-                  placeholder="Пароль"
-                  autoComplete="current-password"
-                />
-                <InputRightElement>
-                  <IconButton
-                    aria-label={
-                      showPassword ? 'Скрыть пароль' : 'Показать пароль'
-                    }
-                    icon={showPassword ? <ViewOffIcon /> : <ViewIcon />}
-                    variant="ghost"
-                    size="sm"
-                    onClick={handleTogglePassword}
-                  />
-                </InputRightElement>
-              </InputGroup>
-              <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-            </FormControl>
+          <Controller
+            name="email"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="Email"
+                type="email"
+                status={fieldState.error ? 'alert' : undefined}
+                caption={fieldState.error?.message}
+              />
+            )}
+          />
 
-            <Button
-              type="submit"
-              colorScheme="blue"
-              className={styles.submitButton}
-              isLoading={isLoading}
-              isDisabled={!isValid}
-            >
-              Войти
-            </Button>
-          </VStack>
-        </CardBody>
+          <Controller
+            name="password"
+            control={control}
+            render={({ field, fieldState }) => (
+              <TextField
+                value={field.value}
+                onChange={field.onChange}
+                placeholder="Пароль"
+                type="password"
+                status={fieldState.error ? 'alert' : undefined}
+                caption={fieldState.error?.message}
+              />
+            )}
+          />
+
+          <Button
+            type="submit"
+            label="Войти"
+            className={styles.submitButton}
+            loading={isLoading}
+            disabled={!isValid}
+          />
+        </form>
       </Card>
     </div>
   )

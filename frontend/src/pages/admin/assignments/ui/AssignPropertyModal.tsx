@@ -1,19 +1,12 @@
 import { type ReactElement } from 'react'
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  ModalBody,
-  ModalFooter,
-  Select,
-  VStack,
-} from '@chakra-ui/react'
 import { useForm, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { ClosableModal } from '@/shared/ui/ClosableModal'
+import { Button } from '@consta/uikit/Button'
+import { ClosableModal, ModalBody, ModalFooter } from '@/shared/ui/ClosableModal'
+import { Show } from '@/shared/ui/Show'
 import type { Manager, Property } from '@/shared/types'
+import adminStyles from '../../admin.module.css'
 
 const assignSchema = z.object({
   userId: z.string().min(1, 'Выберите менеджера'),
@@ -54,44 +47,56 @@ export function AssignPropertyModal({
 
   return (
     <ClosableModal
-      isOpen={isOpen}
+      open={isOpen}
       onClose={onClose}
       title="Назначить объект менеджеру"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalBody>
-          <VStack spacing={4} align="stretch">
-            <FormControl isInvalid={!!errors.userId} isRequired>
-              <FormLabel>Менеджер</FormLabel>
-              <Select {...register('userId')} placeholder="Выберите менеджера">
+          <div className={adminStyles.formFields}>
+            <div className={adminStyles.selectWrapper}>
+              <label className={adminStyles.selectLabel}>Менеджер</label>
+              <select
+                className={`${adminStyles.select} ${errors.userId ? adminStyles.selectError : ''}`}
+                {...register('userId')}
+              >
+                <option value="">Выберите менеджера</option>
                 {managers.map((m) => (
                   <option key={m.id} value={m.id}>
                     {m.name} ({m.email})
                   </option>
                 ))}
-              </Select>
-              <FormErrorMessage>{errors.userId?.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={!!errors.propertyId} isRequired>
-              <FormLabel>Объект</FormLabel>
-              <Select {...register('propertyId')} placeholder="Выберите объект">
+              </select>
+              <Show when={errors.userId}>
+                <span className={adminStyles.errorText}>
+                  {errors.userId?.message}
+                </span>
+              </Show>
+            </div>
+            <div className={adminStyles.selectWrapper}>
+              <label className={adminStyles.selectLabel}>Объект</label>
+              <select
+                className={`${adminStyles.select} ${errors.propertyId ? adminStyles.selectError : ''}`}
+                {...register('propertyId')}
+              >
+                <option value="">Выберите объект</option>
                 {properties.map((p) => (
                   <option key={p.id} value={p.id}>
                     {p.title} — {p.address}
                   </option>
                 ))}
-              </Select>
-              <FormErrorMessage>{errors.propertyId?.message}</FormErrorMessage>
-            </FormControl>
-          </VStack>
+              </select>
+              <Show when={errors.propertyId}>
+                <span className={adminStyles.errorText}>
+                  {errors.propertyId?.message}
+                </span>
+              </Show>
+            </div>
+          </div>
         </ModalBody>
-        <ModalFooter gap={3}>
-          <Button variant="ghost" onClick={onClose} type="button">
-            Отмена
-          </Button>
-          <Button colorScheme="blue" type="submit">
-            Назначить
-          </Button>
+        <ModalFooter>
+          <Button view="ghost" label="Отмена" onClick={onClose} type="button" />
+          <Button view="primary" label="Назначить" type="submit" />
         </ModalFooter>
       </form>
     </ClosableModal>

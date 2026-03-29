@@ -1,5 +1,6 @@
 import { type ReactElement } from 'react'
-import { Button, Text } from '@chakra-ui/react'
+import { Text } from '@consta/uikit/Text'
+import { Button } from '@consta/uikit/Button'
 import styles from './TableEmptyState.module.css'
 
 interface TableEmptyStateProps {
@@ -16,11 +17,9 @@ export function TableEmptyState({
   return (
     <div className={styles.wrapper}>
       {addText && addAction ? (
-        <Button colorScheme="blue" onClick={addAction}>
-          {addText}
-        </Button>
+        <Button label={addText} view="primary" onClick={addAction} />
       ) : (
-        <Text>{emptyText}</Text>
+        <Text view="secondary">{emptyText}</Text>
       )}
     </div>
   )

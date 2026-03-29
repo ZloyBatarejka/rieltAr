@@ -1,20 +1,13 @@
 import { type ReactElement } from 'react'
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  FormLabel,
-  Input,
-  ModalBody,
-  ModalFooter,
-  Select,
-  VStack,
-} from '@chakra-ui/react'
-import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useForm, Controller, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { ClosableModal } from '@/shared/ui/ClosableModal'
+import { TextField } from '@consta/uikit/TextField'
+import { Button } from '@consta/uikit/Button'
+import { ClosableModal, ModalBody, ModalFooter } from '@/shared/ui/ClosableModal'
+import { Show } from '@/shared/ui/Show'
 import type { Owner } from '@/shared/types'
+import adminStyles from '../../admin.module.css'
 
 const createPropertySchema = z.object({
   title: z.string().min(1, 'Введите название'),
@@ -38,6 +31,7 @@ export function AddPropertyModal({
   onAddProperty,
 }: AddPropertyModalProps): ReactElement {
   const {
+    control,
     register,
     handleSubmit,
     formState: { errors },
@@ -53,49 +47,62 @@ export function AddPropertyModal({
   }
 
   return (
-    <ClosableModal isOpen={isOpen} onClose={onClose} title="Добавить объект">
+    <ClosableModal open={isOpen} onClose={onClose} title="Добавить объект">
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalBody>
-          <VStack spacing={4} align="stretch">
-            <FormControl isInvalid={!!errors.title} isRequired>
-              <FormLabel>Название</FormLabel>
-              <Input
-                {...register('title')}
-                placeholder="Квартира на Тверской"
-              />
-              <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={!!errors.address} isRequired>
-              <FormLabel>Адрес</FormLabel>
-              <Input
-                {...register('address')}
-                placeholder="ул. Тверская, д. 1"
-              />
-              <FormErrorMessage>{errors.address?.message}</FormErrorMessage>
-            </FormControl>
-            <FormControl isInvalid={!!errors.ownerId} isRequired>
-              <FormLabel>Собственник</FormLabel>
-              <Select
+          <div className={adminStyles.formFields}>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  label="Название"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Квартира на Тверской"
+                  status={fieldState.error ? 'alert' : undefined}
+                  caption={fieldState.error?.message}
+                />
+              )}
+            />
+            <Controller
+              name="address"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  label="Адрес"
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="ул. Тверская, д. 1"
+                  status={fieldState.error ? 'alert' : undefined}
+                  caption={fieldState.error?.message}
+                />
+              )}
+            />
+            <div className={adminStyles.selectWrapper}>
+              <label className={adminStyles.selectLabel}>Собственник</label>
+              <select
+                className={`${adminStyles.select} ${errors.ownerId ? adminStyles.selectError : ''}`}
                 {...register('ownerId')}
-                placeholder="Выберите собственника"
               >
+                <option value="">Выберите собственника</option>
                 {owners.map((o) => (
                   <option key={o.id} value={o.id}>
                     {o.name}
                   </option>
                 ))}
-              </Select>
-              <FormErrorMessage>{errors.ownerId?.message}</FormErrorMessage>
-            </FormControl>
-          </VStack>
+              </select>
+              <Show when={errors.ownerId}>
+                <span className={adminStyles.errorText}>
+                  {errors.ownerId?.message}
+                </span>
+              </Show>
+            </div>
+          </div>
         </ModalBody>
-        <ModalFooter gap={3}>
-          <Button variant="ghost" onClick={onClose} type="button">
-            Отмена
-          </Button>
-          <Button colorScheme="blue" type="submit">
-            Создать
-          </Button>
+        <ModalFooter>
+          <Button view="ghost" label="Отмена" onClick={onClose} type="button" />
+          <Button view="primary" label="Создать" type="submit" />
         </ModalFooter>
       </form>
     </ClosableModal>

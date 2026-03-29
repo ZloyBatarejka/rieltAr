@@ -1,17 +1,11 @@
 import { type ReactElement } from 'react'
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  Input,
-  ModalBody,
-  ModalFooter,
-  VStack,
-} from '@chakra-ui/react'
-import { useForm, type SubmitHandler } from 'react-hook-form'
+import { useForm, Controller, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { ClosableModal } from '@/shared/ui/ClosableModal'
+import { TextField } from '@consta/uikit/TextField'
+import { Button } from '@consta/uikit/Button'
+import { ClosableModal, ModalBody, ModalFooter } from '@/shared/ui/ClosableModal'
+import adminStyles from '../../admin.module.css'
 
 const createOwnerSchema = z.object({
   email: z.string().min(1, 'Введите email').email('Некорректный email'),
@@ -34,9 +28,8 @@ export function AddOwnerModal({
   onAddOwner,
 }: AddOwnerModalProps): ReactElement {
   const {
-    register,
+    control,
     handleSubmit,
-    formState: { errors },
     reset,
   } = useForm<CreateOwnerFormValues>({
     resolver: zodResolver(createOwnerSchema),
@@ -50,45 +43,72 @@ export function AddOwnerModal({
 
   return (
     <ClosableModal
-      isOpen={isOpen}
+      open={isOpen}
       onClose={onClose}
       title="Добавить собственника"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalBody>
-          <VStack spacing={4} align="stretch">
-            <FormControl isInvalid={!!errors.email} isRequired>
-              <Input {...register('email')} type="email" placeholder="Email" />
-              <FormErrorMessage>{errors.email?.message}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={!!errors.password} isRequired>
-              <Input
-                {...register('password')}
-                type="password"
-                placeholder="Пароль"
-              />
-              <FormErrorMessage>{errors.password?.message}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={!!errors.name} isRequired>
-              <Input {...register('name')} placeholder="Имя" />
-              <FormErrorMessage>{errors.name?.message}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={!!errors.phone}>
-              <Input {...register('phone')} placeholder="Телефон (необязательно)" />
-              <FormErrorMessage>{errors.phone?.message}</FormErrorMessage>
-            </FormControl>
-          </VStack>
+          <div className={adminStyles.formFields}>
+            <Controller
+              name="email"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  value={field.value}
+                  onChange={field.onChange}
+                  type="email"
+                  placeholder="Email"
+                  status={fieldState.error ? 'alert' : undefined}
+                  caption={fieldState.error?.message}
+                />
+              )}
+            />
+            <Controller
+              name="password"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  value={field.value}
+                  onChange={field.onChange}
+                  type="password"
+                  placeholder="Пароль"
+                  status={fieldState.error ? 'alert' : undefined}
+                  caption={fieldState.error?.message}
+                />
+              )}
+            />
+            <Controller
+              name="name"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  value={field.value}
+                  onChange={field.onChange}
+                  placeholder="Имя"
+                  status={fieldState.error ? 'alert' : undefined}
+                  caption={fieldState.error?.message}
+                />
+              )}
+            />
+            <Controller
+              name="phone"
+              control={control}
+              render={({ field, fieldState }) => (
+                <TextField
+                  value={field.value ?? ''}
+                  onChange={field.onChange}
+                  placeholder="Телефон (необязательно)"
+                  status={fieldState.error ? 'alert' : undefined}
+                  caption={fieldState.error?.message}
+                />
+              )}
+            />
+          </div>
         </ModalBody>
-        <ModalFooter gap={3}>
-          <Button variant="ghost" onClick={onClose} type="button">
-            Отмена
-          </Button>
-          <Button colorScheme="blue" type="submit">
-            Создать
-          </Button>
+        <ModalFooter>
+          <Button view="ghost" label="Отмена" onClick={onClose} type="button" />
+          <Button view="primary" label="Создать" type="submit" />
         </ModalFooter>
       </form>
     </ClosableModal>

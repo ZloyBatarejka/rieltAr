@@ -15,6 +15,7 @@ import {
   fromApiAssignment,
   toApiAssignProperty,
   fromApiStaysList,
+  toApiCreateStay,
   fromApiTransactionsList,
   fromApiPayoutsList,
   fromApiDashboard,
@@ -34,6 +35,7 @@ import type {
   Assignment,
   AssignProperty,
   StaysList,
+  CreateStay,
   TransactionsList,
   PayoutsList,
   Dashboard,
@@ -172,6 +174,10 @@ class ApiClient {
   // Stays
   getStays(params?: StaysControllerFindAllParams): Promise<StaysList> {
     return this.api.stays.staysControllerFindAll(params ?? {}).then(fromApiStaysList)
+  }
+
+  createStay(data: CreateStay): Promise<void> {
+    return this.api.stays.staysControllerCreate(toApiCreateStay(data)).then(() => undefined)
   }
 
   // Transactions

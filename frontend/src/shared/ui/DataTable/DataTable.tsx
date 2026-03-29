@@ -1,14 +1,6 @@
 import { type ReactElement, type ReactNode } from 'react'
-import {
-  Table,
-  TableContainer,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  Text,
-} from '@chakra-ui/react'
+import { Text } from '@consta/uikit/Text'
+import styles from './DataTable.module.css'
 
 export interface DataTableColumn<T> {
   header: string
@@ -34,42 +26,45 @@ export function DataTable<T>({
   onRowClick,
 }: DataTableProps<T>): ReactElement {
   if (items.length === 0) {
-    return <Text>{emptyText}</Text>
+    return <Text view="secondary" className={styles.emptyText}>{emptyText}</Text>
   }
 
   return (
-    <TableContainer>
-      <Table size="sm">
-        <Thead>
-          <Tr>
+    <div className={styles.scrollArea}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
             {columns.map((col, i) => (
-              <Th key={i} minW={col.minW} isNumeric={col.isNumeric}>
+              <th
+                key={i}
+                className={col.isNumeric ? styles.numericCell : undefined}
+                style={col.minW ? { minWidth: col.minW } : undefined}
+              >
                 {col.header}
-              </Th>
+              </th>
             ))}
-          </Tr>
-        </Thead>
-        <Tbody>
+          </tr>
+        </thead>
+        <tbody>
           {items.map((item) => (
-            <Tr
+            <tr
               key={rowKey(item)}
+              className={onRowClick ? styles.clickableRow : undefined}
               onClick={onRowClick ? () => onRowClick(item) : undefined}
-              cursor={onRowClick ? 'pointer' : undefined}
-              _hover={onRowClick ? { bg: 'blackAlpha.50' } : undefined}
             >
               {columns.map((col, i) => (
-                <Td
+                <td
                   key={i}
-                  isNumeric={col.isNumeric}
-                  color={col.cellColor?.(item)}
+                  className={col.isNumeric ? styles.numericCell : undefined}
+                  style={col.cellColor?.(item) ? { color: col.cellColor(item) } : undefined}
                 >
                   {col.render(item)}
-                </Td>
+                </td>
               ))}
-            </Tr>
+            </tr>
           ))}
-        </Tbody>
-      </Table>
-    </TableContainer>
+        </tbody>
+      </table>
+    </div>
   )
 }

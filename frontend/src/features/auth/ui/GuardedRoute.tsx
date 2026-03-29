@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react'
 import { Navigate, Outlet } from 'react-router-dom'
 import { observer } from 'mobx-react-lite'
-import { Spinner } from '@chakra-ui/react'
+import { Loader } from '@consta/uikit/Loader'
 import { authStore } from '../../../entities/auth'
 import type { AuthUserDtoRoleEnum } from '../../../api/generated/Api'
 import styles from './GuardedRoute.module.css'
@@ -24,7 +24,7 @@ const GuardedRoute = observer(function GuardedRoute({
   if (authStore.isLoading) {
     return (
       <div className={styles.spinnerWrapper}>
-        <Spinner size="xl" />
+        <Loader size="m" />
       </div>
     )
   }

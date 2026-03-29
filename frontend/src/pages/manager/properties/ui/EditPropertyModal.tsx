@@ -1,19 +1,13 @@
-import { type ReactElement, useEffect } from 'react'
-import {
-  Button,
-  FormControl,
-  FormErrorMessage,
-  Input,
-  ModalBody,
-  ModalFooter,
-  Select,
-  VStack,
-} from '@chakra-ui/react'
-import { useForm, type SubmitHandler } from 'react-hook-form'
+import { type ReactElement, useEffect, useMemo } from 'react'
+import { Button } from '@consta/uikit/Button'
+import { TextField } from '@consta/uikit/TextField'
+import { Select } from '@consta/uikit/Select'
+import { useForm, Controller, type SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { ClosableModal } from '@/shared/ui/ClosableModal'
+import { ClosableModal, ModalBody, ModalFooter } from '@/shared/ui/ClosableModal'
 import type { Property, Owner } from '@/shared/types'
+import styles from './EditPropertyModal.module.css'
 
 const editPropertySchema = z.object({
   title: z.string().min(1, 'Введите название'),
@@ -22,6 +16,11 @@ const editPropertySchema = z.object({
 })
 
 type EditPropertyFormValues = z.infer<typeof editPropertySchema>
+
+interface SelectItem {
+  id: string
+  label: string
+}
 
 interface EditPropertyModalProps {
   isOpen: boolean
@@ -39,7 +38,7 @@ export function EditPropertyModal({
   owners,
 }: EditPropertyModalProps): ReactElement {
   const {
-    register,
+    control,
     handleSubmit,
     formState: { errors },
     reset,
@@ -51,6 +50,11 @@ export function EditPropertyModal({
       ownerId: property.ownerId,
     },
   })
+
+  const ownerItems: SelectItem[] = useMemo(
+    () => owners.map((o) => ({ id: o.id, label: o.name })),
+    [owners],
+  )
 
   useEffect(() => {
     reset({
@@ -66,42 +70,63 @@ export function EditPropertyModal({
 
   return (
     <ClosableModal
-      isOpen={isOpen}
+      open={isOpen}
       onClose={onClose}
       title="Редактировать объект"
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <ModalBody>
-          <VStack spacing={4} align="stretch">
-            <FormControl isInvalid={!!errors.title} isRequired>
-              <Input {...register('title')} placeholder="Название" />
-              <FormErrorMessage>{errors.title?.message}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={!!errors.address} isRequired>
-              <Input {...register('address')} placeholder="Адрес" />
-              <FormErrorMessage>{errors.address?.message}</FormErrorMessage>
-            </FormControl>
-
-            <FormControl isInvalid={!!errors.ownerId} isRequired>
-              <Select {...register('ownerId')} placeholder="Собственник">
-                {owners.map((o) => (
-                  <option key={o.id} value={o.id}>
-                    {o.name}
-                  </option>
-                ))}
-              </Select>
-              <FormErrorMessage>{errors.ownerId?.message}</FormErrorMessage>
-            </FormControl>
-          </VStack>
+          <div className={styles.stack}>
+            <Controller
+              name="title"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  value={field.value}
+                  onChange={(v) => field.onChange(v ?? '')}
+                  placeholder="Название"
+                  status={errors.title ? 'alert' : undefined}
+                  caption={errors.title?.message}
+                />
+              )}
+            />
+            <Controller
+              name="address"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  value={field.value}
+                  onChange={(v) => field.onChange(v ?? '')}
+                  placeholder="Адрес"
+                  status={errors.address ? 'alert' : undefined}
+                  caption={errors.address?.message}
+                />
+              )}
+            />
+            <Controller
+              name="ownerId"
+              control={control}
+              render={({ field }) => {
+                const selected = ownerItems.find((i) => i.id === field.value) ?? null
+                return (
+                  <Select
+                    items={ownerItems}
+                    value={selected}
+                    onChange={(item) => field.onChange(item?.id ?? '')}
+                    getItemLabel={(i) => i.label}
+                    getItemKey={(i) => i.id}
+                    placeholder="Собственник"
+                    status={errors.ownerId ? 'alert' : undefined}
+                    caption={errors.ownerId?.message}
+                  />
+                )
+              }}
+            />
+          </div>
         </ModalBody>
-        <ModalFooter gap={3}>
-          <Button variant="ghost" onClick={onClose} type="button">
-            Отмена
-          </Button>
-          <Button colorScheme="blue" type="submit">
-            Сохранить
-          </Button>
+        <ModalFooter>
+          <Button view="ghost" label="Отмена" onClick={onClose} type="button" />
+          <Button view="primary" label="Сохранить" type="submit" />
         </ModalFooter>
       </form>
     </ClosableModal>

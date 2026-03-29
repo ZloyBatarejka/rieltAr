@@ -1,31 +1,54 @@
-import type { ReactNode } from 'react'
-import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-} from '@chakra-ui/react'
+import type { ReactNode, ReactElement } from 'react'
+import { Modal } from '@consta/uikit/Modal'
+import { ModalHeader } from '@consta/uikit/Modal'
+import { ModalLayout } from '@consta/uikit/Modal'
+import { Text } from '@consta/uikit/Text'
+import styles from './ClosableModal.module.css'
 
 interface ClosableModalProps {
-  isOpen: boolean
+  open: boolean
   onClose: () => void
   title: string
   children: ReactNode
 }
 
-export const ClosableModal: React.FC<ClosableModalProps> = ({
-  isOpen,
+export function ClosableModal({
+  open,
   onClose,
   title,
   children,
-}) => (
-  <Modal isOpen={isOpen} onClose={onClose}>
-    <ModalOverlay />
-    <ModalContent>
-      <ModalHeader>{title}</ModalHeader>
-      <ModalCloseButton />
+}: ClosableModalProps): ReactElement {
+  return (
+    <Modal
+      isOpen={open}
+      onClose={onClose}
+      onClickOutside={onClose}
+      onEsc={onClose}
+      hasOverlay
+      position="center"
+    >
+      <ModalHeader onClose={onClose}>
+        <Text as="h2" size="l" weight="bold" view="primary">{title}</Text>
+      </ModalHeader>
       {children}
-    </ModalContent>
-  </Modal>
-)
+    </Modal>
+  )
+}
+
+export function ModalBody({ children }: { children: ReactNode }): ReactElement {
+  return (
+    <ModalLayout space={{ pH: 'xl', pV: 'l' }}>
+      {children}
+    </ModalLayout>
+  )
+}
+
+export function ModalFooter({ children }: { children: ReactNode }): ReactElement {
+  return (
+    <ModalLayout space={{ pH: 'xl', pV: 'm' }} border={[true, false]}>
+      <div className={styles.footer}>
+        {children}
+      </div>
+    </ModalLayout>
+  )
+}

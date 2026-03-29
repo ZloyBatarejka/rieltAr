@@ -1,12 +1,6 @@
 import type { ReactElement, ReactNode } from 'react'
-import {
-  Card,
-  CardBody,
-  CardHeader,
-  Heading,
-  IconButton,
-} from '@chakra-ui/react'
-import { AddIcon } from '@chakra-ui/icons'
+import { Button } from '@consta/uikit/Button'
+import { IconAdd } from '@consta/icons/IconAdd'
 import { type Table } from '@tanstack/react-table'
 import { Show } from '@/shared/ui/Show'
 import { TableList } from './TableList'
@@ -35,26 +29,27 @@ export function TableCard<TData>({
   const { hasData, isLoading, loadingFallback } = useTableContext()
   if (!hasData) return null
   return (
-    <Card>
-      <CardHeader className={styles.cardHeader}>
-        <Heading size="md">{title}</Heading>
+    <div className={styles.card}>
+      <div className={styles.cardHeader}>
+        <h3 className={styles.title}>{title}</h3>
         {onAddClick ? (
-          <IconButton
-            aria-label="Добавить"
-            icon={<AddIcon />}
-            colorScheme="blue"
-            size="sm"
+          <Button
+            label="Добавить"
+            view="primary"
+            size="s"
+            iconLeft={IconAdd}
+            onlyIcon
             onClick={onAddClick}
           />
         ) : null}
-      </CardHeader>
-      <CardBody>
+      </div>
+      <div className={styles.cardBody}>
         {children}
         <Show when={!isLoading} fallback={loadingFallback}>
           <TableList table={table} size={size} onRowClick={onRowClick} />
           {footer}
         </Show>
-      </CardBody>
-    </Card>
+      </div>
+    </div>
   )
 }

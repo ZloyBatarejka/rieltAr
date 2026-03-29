@@ -1,7 +1,8 @@
 import { useState } from 'react'
-import { Box, IconButton } from '@chakra-ui/react'
-import { DeleteIcon } from '@chakra-ui/icons'
+import { Button } from '@consta/uikit/Button'
+import { IconTrash } from '@consta/icons/IconTrash'
 import type { Manager } from '@/shared/types'
+import adminStyles from '../../admin.module.css'
 
 interface RemoveManagerCellProps {
   row: { original: Manager }
@@ -24,15 +25,16 @@ export const RemoveManagerCell: React.FC<RemoveManagerCellProps> = ({
   }
 
   return (
-    <Box display="flex" justifyContent="flex-end">
-      <IconButton
-        aria-label="Удалить"
-        icon={<DeleteIcon />}
-        size="sm"
-        variant="ghost"
-        isLoading={isDeleting}
+    <div className={adminStyles.actionsEnd}>
+      <Button
+        size="s"
+        view="ghost"
+        onlyIcon
+        iconLeft={IconTrash}
+        loading={isDeleting}
         onClick={handleClick}
+        aria-label="Удалить"
       />
-    </Box>
+    </div>
   )
 }
