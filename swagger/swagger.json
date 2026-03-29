@@ -722,7 +722,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Создать объект (только Admin)",
+        "summary": "Создать объект (Admin или Manager с canCreateProperties)",
         "tags": [
           "Properties"
         ]
@@ -875,7 +875,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Обновить объект (только Admin)",
+        "summary": "Обновить объект (Admin или Manager с canCreateProperties)",
         "tags": [
           "Properties"
         ]
@@ -911,7 +911,7 @@
             "JWT-auth": []
           }
         ],
-        "summary": "Удалить объект (только Admin)",
+        "summary": "Удалить объект (Admin или Manager с canCreateProperties)",
         "tags": [
           "Properties"
         ]

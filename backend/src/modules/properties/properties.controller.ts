@@ -39,8 +39,10 @@ export class PropertiesController {
   constructor(private readonly propertiesService: PropertiesService) {}
 
   @Post()
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Создать объект (только Admin)' })
+  @Roles(Role.ADMIN, Role.MANAGER)
+  @ApiOperation({
+    summary: 'Создать объект (Admin или Manager с canCreateProperties)',
+  })
   @ApiResponse({
     status: 201,
     description: 'Объект создан',
@@ -94,8 +96,10 @@ export class PropertiesController {
   }
 
   @Patch(':id')
-  @Roles(Role.ADMIN)
-  @ApiOperation({ summary: 'Обновить объект (только Admin)' })
+  @Roles(Role.ADMIN, Role.MANAGER)
+  @ApiOperation({
+    summary: 'Обновить объект (Admin или Manager с canCreateProperties)',
+  })
   @ApiResponse({
     status: 200,
     description: 'Объект обновлён',
@@ -114,9 +118,11 @@ export class PropertiesController {
   }
 
   @Delete(':id')
-  @Roles(Role.ADMIN)
+  @Roles(Role.ADMIN, Role.MANAGER)
   @HttpCode(HttpStatus.NO_CONTENT)
-  @ApiOperation({ summary: 'Удалить объект (только Admin)' })
+  @ApiOperation({
+    summary: 'Удалить объект (Admin или Manager с canCreateProperties)',
+  })
   @ApiResponse({ status: 204, description: 'Объект удалён' })
   @ApiResponse({ status: 401, description: 'Необходима авторизация' })
   @ApiResponse({ status: 403, description: 'Недостаточно прав' })

@@ -12,6 +12,7 @@ import { AdminAssignmentsPage } from './pages/admin/assignments'
 import ManagerDashboardPage from './pages/manager/ManagerDashboardPage'
 import { ManagerOwnersPage } from './pages/manager/owners'
 import { OwnerDetailPage } from './pages/manager/owner-detail'
+import { ManagerPropertiesPage } from './pages/manager/properties'
 import OwnerDashboardPage from './pages/owner/OwnerDashboardPage'
 import { AdminLayout } from './widgets/admin-layout'
 import { ManagerLayout } from './widgets/manager-layout'
@@ -45,6 +46,7 @@ const AppContent = observer(function AppContent(): ReactElement {
             <Route index element={<ManagerDashboardPage />} />
             <Route path="owners" element={<ManagerOwnersPage />} />
             <Route path="owners/:id" element={<OwnerDetailPage />} />
+            <Route path="properties" element={<ManagerPropertiesPage />} />
           </Route>
         </Route>
 

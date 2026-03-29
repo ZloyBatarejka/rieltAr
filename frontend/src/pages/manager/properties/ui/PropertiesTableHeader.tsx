@@ -10,11 +10,11 @@ import {
 import { AddIcon, SearchIcon } from '@chakra-ui/icons'
 import { authStore } from '@/entities/auth'
 import { Show } from '@/shared/ui/Show'
-import { managerOwnersStore } from '../model/manager-owners.store'
+import { managerPropertiesStore } from '../model/manager-properties.store'
 
-export const OwnersTableHeader = observer(
-  function OwnersTableHeader(): ReactElement {
-    const canCreate = authStore.user?.canCreateOwners === true
+export const PropertiesTableHeader = observer(
+  function PropertiesTableHeader(): ReactElement {
+    const canManage = authStore.user?.canCreateProperties === true
 
     return (
       <HStack mb={4} spacing={2}>
@@ -23,18 +23,18 @@ export const OwnersTableHeader = observer(
             <SearchIcon />
           </InputLeftElement>
           <Input
-            placeholder="Поиск по имени…"
-            value={managerOwnersStore.search}
-            onChange={(e) => managerOwnersStore.setSearch(e.target.value)}
+            placeholder="Поиск по названию или адресу…"
+            value={managerPropertiesStore.search}
+            onChange={(e) => managerPropertiesStore.setSearch(e.target.value)}
           />
         </InputGroup>
-        <Show when={canCreate}>
+        <Show when={canManage}>
           <IconButton
             aria-label="Добавить"
             icon={<AddIcon />}
             colorScheme="blue"
             size="sm"
-            onClick={() => managerOwnersStore.openModal()}
+            onClick={() => managerPropertiesStore.openAddModal()}
           />
         </Show>
       </HStack>

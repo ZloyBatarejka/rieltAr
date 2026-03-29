@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import type { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { PropertyScopeService } from '../property-scope/property-scope.service';
@@ -105,9 +109,11 @@ export class PropertiesService {
   }
 
   async create(
-    _user: AuthUser,
+    user: AuthUser,
     dto: CreatePropertyDto,
   ): Promise<PropertyDetail> {
+    this.ensureCanManageProperties(user);
+
     const owner = await this.prisma.owner.findUnique({
       where: { id: dto.ownerId },
       include: { user: { select: { name: true } } },
@@ -127,6 +133,12 @@ export class PropertiesService {
       },
     });
 
+    if (user.role === 'MANAGER') {
+      await this.prisma.managerProperty.create({
+        data: { userId: user.id, propertyId: property.id },
+      });
+    }
+
     return {
       id: property.id,
       title: property.title,
@@ -138,11 +150,12 @@ export class PropertiesService {
   }
 
   async update(
-    _user: AuthUser,
+    user: AuthUser,
     id: string,
     dto: UpdatePropertyDto,
   ): Promise<PropertyDetail> {
-    await this.ensurePropertyExists(id);
+    this.ensureCanManageProperties(user);
+    await this.ensurePropertyInScope(user, id);
 
     if (dto.ownerId) {
       const owner = await this.prisma.owner.findUnique({
@@ -176,16 +189,27 @@ export class PropertiesService {
     };
   }
 
-  async remove(_user: AuthUser, id: string): Promise<void> {
-    await this.ensurePropertyExists(id);
+  async remove(user: AuthUser, id: string): Promise<void> {
+    this.ensureCanManageProperties(user);
+    await this.ensurePropertyInScope(user, id);
     await this.prisma.property.delete({ where: { id } });
   }
 
-  private async ensurePropertyExists(id: string): Promise<void> {
-    const exists = await this.prisma.property.findUnique({
-      where: { id },
+  private ensureCanManageProperties(user: AuthUser): void {
+    if (user.role === 'ADMIN') return;
+    if (user.role === 'MANAGER' && user.canCreateProperties) return;
+    throw new ForbiddenException('Недостаточно прав для управления объектами');
+  }
+
+  private async ensurePropertyInScope(
+    user: AuthUser,
+    id: string,
+  ): Promise<void> {
+    const scopeWhere = await this.propertyScope.getPropertyWhere(user);
+    const property = await this.prisma.property.findFirst({
+      where: { ...scopeWhere, id },
     });
-    if (!exists) {
+    if (!property) {
       throw new NotFoundException('Объект не найден');
     }
   }
