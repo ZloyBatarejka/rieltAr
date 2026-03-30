@@ -30,9 +30,19 @@ export const transactionsColumns: DataTableColumn<Transaction>[] = [
   },
   {
     header: 'Тип',
-    minW: '130px',
+    minW: '100px',
     render: (tx) => (
-      <Badge status={typeColors[tx.type]} label={typeLabels[tx.type]} size="s" />
+      <Badge
+        status={typeColors[tx.type]}
+        label={typeLabels[tx.type]}
+        style={{
+          width: '100px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+        size="s"
+      />
     ),
   },
   { header: 'Объект', minW: '200px', render: (tx) => tx.propertyTitle },

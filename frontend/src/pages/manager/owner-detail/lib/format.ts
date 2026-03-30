@@ -5,10 +5,13 @@ export function formatDate(iso: string): string {
 }
 
 export function formatCurrency(value: number): string {
-  return `${value.toLocaleString('ru-RU')} ₽`
+  return `${(+value.toFixed(0)).toLocaleString('ru-RU')} ₽`
 }
 
-export function formatSignedAmount(type: TransactionType, amount: number): string {
+export function formatSignedAmount(
+  type: TransactionType,
+  amount: number,
+): string {
   const sign = type === 'INCOME' ? '+' : '−'
   return `${sign}${formatCurrency(amount)}`
 }

@@ -1,13 +1,16 @@
 import { type ReactElement } from 'react'
 import { Card } from '@consta/uikit/Card'
-import { Text } from '@consta/uikit/Text'
-import { Badge } from '@consta/uikit/Badge'
+import { Text, type TextPropView } from '@consta/uikit/Text'
 import { Show } from '@/shared/ui/Show'
 import type { OverviewTabProps } from '../model/types'
-import { formatCurrency, formatSignedAmount, typeLabels, typeColors } from '../lib'
+import {
+  formatCurrency,
+  formatSignedAmount,
+  typeLabels,
+  typeColors,
+} from '../lib'
 import styles from './OverviewTab.module.css'
-
-type TextViewType = 'primary' | 'secondary' | 'ghost' | 'brand' | 'link' | 'success' | 'warning' | 'alert'
+import { StyledBadge } from '@/shared/ui/StyledBadge'
 
 export function OverviewTab({ dashboard }: OverviewTabProps): ReactElement {
   return (
@@ -23,12 +26,21 @@ export function OverviewTab({ dashboard }: OverviewTabProps): ReactElement {
         <Text weight="semibold" view="primary" className={styles.txHeading}>
           Последние операции
         </Text>
-        <Show when={dashboard.lastTransactions.length > 0} fallback={<Text view="secondary">Нет операций</Text>}>
+        <Show
+          when={dashboard.lastTransactions.length > 0}
+          fallback={<Text view="secondary">Нет операций</Text>}
+        >
           <div className={styles.txList}>
             {dashboard.lastTransactions.map((tx) => (
               <div key={tx.id} className={styles.txRow}>
-                <Badge status={typeColors[tx.type]} label={typeLabels[tx.type]} size="s" />
-                <Text view="primary" className={styles.txComment}>{tx.comment ?? ''}</Text>
+                <StyledBadge
+                  status={typeColors[tx.type]}
+                  label={typeLabels[tx.type]}
+                  size="s"
+                />
+                <Text view="primary" className={styles.txComment}>
+                  {tx.comment ?? ''}
+                </Text>
                 <Text
                   className={styles.txAmount}
                   view={tx.type === 'INCOME' ? 'success' : 'alert'}
@@ -51,7 +63,7 @@ function StatCard({
 }: {
   label: string
   value: number
-  view?: TextViewType
+  view?: TextPropView
 }): ReactElement {
   return (
     <Card className={styles.statCard} verticalSpace="l" horizontalSpace="l">

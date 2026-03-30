@@ -40,12 +40,6 @@
   grid-template-columns: 100px auto 140px;
   gap: 12px;
   align-items: center;
-
-  & :global(.Badge) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
 }
 
 .txAmount {

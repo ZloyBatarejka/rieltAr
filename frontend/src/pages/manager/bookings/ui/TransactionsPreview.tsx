@@ -1,7 +1,7 @@
 import { type ReactElement } from 'react'
-import { Badge } from '@consta/uikit/Badge'
 import { Text } from '@consta/uikit/Text'
 import styles from './TransactionsPreview.module.css'
+import { StyledBadge } from '@/shared/ui/StyledBadge'
 
 type BadgeStatus = 'success' | 'warning' | 'error' | 'normal'
 
@@ -35,7 +35,8 @@ export function TransactionsPreview({
   }
 
   if (commissionPercent > 0 && totalAmount > 0) {
-    const commission = Math.round((totalAmount * commissionPercent) / 100 * 100) / 100
+    const commission =
+      Math.round(((totalAmount * commissionPercent) / 100) * 100) / 100
     transactions.push({
       type: 'COMMISSION',
       label: 'Комиссия',
@@ -54,7 +55,11 @@ export function TransactionsPreview({
   }
 
   if (transactions.length === 0) {
-    return <Text view="secondary" size="s">Заполните форму для предпросмотра</Text>
+    return (
+      <Text view="secondary" size="s">
+        Заполните форму для предпросмотра
+      </Text>
+    )
   }
 
   return (
@@ -64,7 +69,7 @@ export function TransactionsPreview({
       </Text>
       {transactions.map((tx) => (
         <div key={tx.type} className={styles.row}>
-          <Badge status={tx.status} label={tx.label} size="s" />
+          <StyledBadge status={tx.status} label={tx.label} size="s" />
           <Text weight="semibold" view="primary">
             {tx.type === 'INCOME' ? '+' : '−'}
             {tx.amount.toLocaleString('ru-RU')} ₽
