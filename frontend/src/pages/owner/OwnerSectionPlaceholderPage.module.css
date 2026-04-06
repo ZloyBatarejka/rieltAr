@@ -1,0 +1,7 @@
+.wrap {
+  max-width: 720px;
+}
+
+.heading {
+  margin: 0 0 var(--space-m);
+}

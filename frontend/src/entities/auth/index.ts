@@ -3,5 +3,6 @@ import { apiClient } from '../../api/api-client'
 
 export { AuthStore } from './model/auth.store'
 export type { AuthApi, AuthStatus } from './model/auth.store'
+export { getOwnerProfileId } from './lib/get-owner-profile-id'
 
 export const authStore = new AuthStore(apiClient)

@@ -1,0 +1,36 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: var(--space-m);
+  align-items: stretch;
+}
+
+.card {
+  min-width: 0;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  background: var(--color-bg-default);
+  border: 1px solid var(--color-bg-border);
+  border-radius: 8px;
+}
+
+.title {
+  margin: 0;
+}
+
+.address {
+  margin: 0;
+  line-height: 1.4;
+}
+
+.staysLine {
+  margin: 0;
+  margin-top: var(--space-2xs);
+}
+
+.action {
+  margin-top: auto;
+  align-self: flex-start;
+}

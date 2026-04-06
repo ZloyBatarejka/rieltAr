@@ -1,0 +1,18 @@
+.wrap {
+  max-width: 1200px;
+}
+
+.heading {
+  margin: 0 0 var(--space-xs);
+}
+
+.lead {
+  margin: 0 0 var(--space-l);
+  max-width: 42rem;
+}
+
+.loaderWrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-3xl);
+}
