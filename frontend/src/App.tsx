@@ -39,8 +39,13 @@ const AppContent = observer(function AppContent(): ReactElement {
             <Route index element={<AdminDashboardPage />} />
             <Route path="managers" element={<AdminManagersPage />} />
             <Route path="owners" element={<AdminOwnersPage />} />
+            <Route path="owners/:id" element={<OwnerDetailPage />} />
             <Route path="properties" element={<AdminPropertiesPage />} />
             <Route path="assignments" element={<AdminAssignmentsPage />} />
+            <Route path="bookings" element={<BookingsPage />} />
+            <Route path="bookings/create" element={<CreateStayPage />} />
+            <Route path="transactions" element={<ManagerTransactionsPage />} />
+            <Route path="payouts" element={<ManagerPayoutsPage />} />
           </Route>
         </Route>
 

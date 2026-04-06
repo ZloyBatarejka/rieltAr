@@ -8,12 +8,16 @@ import { Loader } from '@consta/uikit/Loader'
 import { IconAdd } from '@consta/icons/IconAdd'
 import { DataTable } from '@/shared/ui/DataTable'
 import { Show } from '@/shared/ui/Show'
+import { authStore } from '@/entities/auth'
+import { getCabinetBasePath } from '@/shared/lib/cabinetBasePath'
 import { bookingsPageStore } from './model/bookings-page.store'
 import { staysColumns } from './model/columns'
 import styles from './BookingsPage.module.css'
 
 export const BookingsPage = observer(function BookingsPage(): ReactElement {
   const navigate = useNavigate()
+  const user = authStore.user
+  const cabinetBasePath = user ? getCabinetBasePath(user.role) : '/manager'
 
   useEffect(() => {
     void bookingsPageStore.fetchStays()
@@ -28,7 +32,7 @@ export const BookingsPage = observer(function BookingsPage(): ReactElement {
           view="primary"
           onlyIcon
           iconLeft={IconAdd}
-          onClick={() => navigate('/manager/bookings/create')}
+          onClick={() => navigate(`${cabinetBasePath}/bookings/create`)}
         />
       </div>
       <Show

@@ -10,6 +10,9 @@ const adminNavItems: NavItem[] = [
   { to: '/admin/owners', label: 'Собственники' },
   { to: '/admin/properties', label: 'Объекты' },
   { to: '/admin/assignments', label: 'Назначения' },
+  { to: '/admin/bookings', label: 'Заезды' },
+  { to: '/admin/transactions', label: 'Операции' },
+  { to: '/admin/payouts', label: 'Выплаты' },
 ]
 
 export const AdminLayout = observer(function AdminLayout(): ReactElement {

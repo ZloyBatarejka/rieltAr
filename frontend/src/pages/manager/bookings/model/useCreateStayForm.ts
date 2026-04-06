@@ -1,5 +1,7 @@
 import { useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
+import { authStore } from '@/entities/auth'
+import { getCabinetBasePath } from '@/shared/lib/cabinetBasePath'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
 import { createStayStore } from './create-stay.store'
@@ -82,7 +84,10 @@ export function useCreateStayForm() {
       cleaningAmount: cleaning > 0 ? cleaning : undefined,
     })
     if (ok) {
-      navigate('/manager/bookings')
+      const u = authStore.user
+      if (u) {
+        navigate(`${getCabinetBasePath(u.role)}/bookings`)
+      }
     }
   })
 

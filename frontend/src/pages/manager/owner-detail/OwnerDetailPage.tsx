@@ -1,5 +1,10 @@
 import { type ReactElement, useState } from 'react'
 import { useParams, Navigate } from 'react-router-dom'
+import { authStore } from '@/entities/auth'
+import {
+  getCabinetBasePath,
+  type CabinetBasePath,
+} from '@/shared/lib/cabinetBasePath'
 import { Loader } from '@consta/uikit/Loader'
 import { Tabs } from '@consta/uikit/Tabs'
 import { Show } from '@/shared/ui/Show'
@@ -27,15 +32,32 @@ const tabItems: TabItem[] = [
 
 export function OwnerDetailPage(): ReactElement {
   const { id } = useParams<{ id: string }>()
+  const user = authStore.user
 
-  if (!id) {
-    return <Navigate to="/manager/owners" replace />
+  if (!user) {
+    return <Navigate to="/login" replace />
   }
 
-  return <OwnerDetailContent ownerId={id} />
+  const cabinetBasePath = getCabinetBasePath(user.role)
+
+  if (!id) {
+    return <Navigate to={`${cabinetBasePath}/owners`} replace />
+  }
+
+  return (
+    <OwnerDetailContent ownerId={id} cabinetBasePath={cabinetBasePath} />
+  )
 }
 
-function OwnerDetailContent({ ownerId }: { ownerId: string }): ReactElement {
+interface OwnerDetailContentProps {
+  ownerId: string
+  cabinetBasePath: CabinetBasePath
+}
+
+function OwnerDetailContent({
+  ownerId,
+  cabinetBasePath,
+}: OwnerDetailContentProps): ReactElement {
   const {
     owner,
     dashboard,
@@ -57,12 +79,12 @@ function OwnerDetailContent({ ownerId }: { ownerId: string }): ReactElement {
   }
 
   if (!owner || !dashboard) {
-    return <Navigate to="/manager/owners" replace />
+    return <Navigate to={`${cabinetBasePath}/owners`} replace />
   }
 
   return (
     <div>
-      <OwnerHeader owner={owner} />
+      <OwnerHeader owner={owner} cabinetBasePath={cabinetBasePath} />
       <Tabs
         items={tabItems}
         value={activeTab}

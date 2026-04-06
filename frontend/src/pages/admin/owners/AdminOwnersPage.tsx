@@ -1,4 +1,5 @@
-import { type ReactElement } from 'react'
+import { type ReactElement, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { getCoreRowModel, useReactTable } from '@tanstack/react-table'
 import type { Owner } from '@/shared/types'
 import { useOwners } from './model/useOwners'
@@ -7,8 +8,16 @@ import { AddOwnerModal } from './ui/AddOwnerModal'
 import { createOwnersColumns } from './helpers'
 
 export function AdminOwnersPage(): ReactElement {
+  const navigate = useNavigate()
   const { owners, isLoading, addOwner, isModalOpen, openModal, closeModal } =
     useOwners()
+
+  const handleRowClick = useCallback(
+    (owner: Owner) => {
+      navigate(`/admin/owners/${owner.id}`)
+    },
+    [navigate],
+  )
 
   const table = useReactTable<Owner>({
     data: owners,
@@ -27,6 +36,7 @@ export function AdminOwnersPage(): ReactElement {
           title="Список собственников"
           table={table}
           onAddClick={openModal}
+          onRowClick={handleRowClick}
         />
       </Table>
       <AddOwnerModal
