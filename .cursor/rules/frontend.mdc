@@ -55,6 +55,12 @@ import { authStore } from "../../../entities/auth";
 import { AuthStore } from "@/entities/auth/model/auth.store";
 ```
 
+## Перечисления, `as const` — без деструктуризации
+
+- Для значений из **enum** и из массивов с **`as const`** **не использовать** деструктуризацию по позиции (`const [a, b, c] = ITEMS`).
+- Такой код неочевиден: порядок элементов = скрытый контракт; при перестановке в массиве ломается смысл без ошибки типов.
+- **Допустимо:** явные индексы с комментарием (`ITEMS[1] // COMMISSION`), именованные константы в `shared` (например `TRANSACTION_TYPE_INCOME`), явный объект `Record<...>` или обращение по ключу enum.
+
 ## Стек библиотек
 
 - State management — **MobX** (`mobx` + `mobx-react-lite`), stores в `model/` внутри слайсов

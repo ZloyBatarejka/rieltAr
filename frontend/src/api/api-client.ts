@@ -17,6 +17,8 @@ import {
   fromApiStaysList,
   toApiCreateStay,
   fromApiTransactionsList,
+  fromApiTransactionItem,
+  toApiCreateTransaction,
   fromApiPayoutsList,
   fromApiDashboard,
 } from './converters'
@@ -37,6 +39,8 @@ import type {
   StaysList,
   CreateStay,
   TransactionsList,
+  CreateTransaction,
+  Transaction,
   PayoutsList,
   Dashboard,
 } from '@/shared/types'
@@ -183,6 +187,12 @@ class ApiClient {
   // Transactions
   getTransactions(params?: TransactionsControllerFindAllParams): Promise<TransactionsList> {
     return this.api.transactions.transactionsControllerFindAll(params ?? {}).then(fromApiTransactionsList)
+  }
+
+  createTransaction(data: CreateTransaction): Promise<Transaction> {
+    return this.api.transactions
+      .transactionsControllerCreate(toApiCreateTransaction(data))
+      .then(fromApiTransactionItem)
   }
 
   // Payouts

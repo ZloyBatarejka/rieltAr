@@ -25,10 +25,19 @@ export type {
   StaysList,
   CreateStay,
 } from './stay'
+export {
+  TRANSACTION_TYPES,
+  TRANSACTION_TYPE_INCOME,
+  TRANSACTION_TYPE_COMMISSION,
+  TRANSACTION_TYPE_CLEANING,
+  TRANSACTION_TYPE_EXPENSE,
+  TRANSACTION_TYPE_PAYOUT,
+} from './transaction'
 export type {
   TransactionType,
   Transaction,
   TransactionsList,
+  CreateTransaction,
 } from './transaction'
 export type {
   Payout,

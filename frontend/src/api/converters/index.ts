@@ -20,6 +20,10 @@ export {
   toApiAssignProperty,
 } from './assignment.converter'
 export { fromApiStaysList, toApiCreateStay } from './stay.converter'
-export { fromApiTransactionsList } from './transaction.converter'
+export {
+  fromApiTransactionsList,
+  fromApiTransactionItem,
+  toApiCreateTransaction,
+} from './transaction.converter'
 export { fromApiPayoutsList } from './payout.converter'
 export { fromApiDashboard } from './dashboard.converter'

@@ -29,5 +29,6 @@
       "@/*": ["src/*"]
     }
   },
+  "files": ["src/app.d.ts"],
   "include": ["src"]
 }

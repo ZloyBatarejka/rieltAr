@@ -9,7 +9,7 @@ const managerNavItems: NavItem[] = [
   { to: '/manager/owners', label: 'Собственники' },
   { to: '/manager/properties', label: 'Объекты' },
   { to: '/manager/bookings', label: 'Заезды' },
-  { to: '/manager/operations', label: 'Операции' },
+  { to: '/manager/transactions', label: 'Операции' },
   { to: '/manager/payouts', label: 'Выплаты' },
 ]
 

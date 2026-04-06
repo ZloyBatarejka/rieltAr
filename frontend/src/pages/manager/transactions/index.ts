@@ -1,0 +1,1 @@
+export { ManagerTransactionsPage } from './ManagerTransactionsPage'

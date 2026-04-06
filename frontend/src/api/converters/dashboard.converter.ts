@@ -3,14 +3,26 @@ import type {
   DashboardTransactionDto,
   DashboardTransactionDtoTypeEnum,
 } from '../generated/Api'
-import type { Dashboard, DashboardTransaction, TransactionType } from '@/shared/types'
+import {
+  TRANSACTION_TYPE_CLEANING,
+  TRANSACTION_TYPE_COMMISSION,
+  TRANSACTION_TYPE_EXPENSE,
+  TRANSACTION_TYPE_INCOME,
+  TRANSACTION_TYPE_PAYOUT,
+  type Dashboard,
+  type DashboardTransaction,
+  type TransactionType,
+} from '@/shared/types'
 
-const TRANSACTION_TYPES: Record<DashboardTransactionDtoTypeEnum, TransactionType> = {
-  INCOME: 'INCOME',
-  COMMISSION: 'COMMISSION',
-  CLEANING: 'CLEANING',
-  EXPENSE: 'EXPENSE',
-  PAYOUT: 'PAYOUT',
+const DASHBOARD_TRANSACTION_DTO_TO_DOMAIN: Record<
+  DashboardTransactionDtoTypeEnum,
+  TransactionType
+> = {
+  INCOME: TRANSACTION_TYPE_INCOME,
+  COMMISSION: TRANSACTION_TYPE_COMMISSION,
+  CLEANING: TRANSACTION_TYPE_CLEANING,
+  EXPENSE: TRANSACTION_TYPE_EXPENSE,
+  PAYOUT: TRANSACTION_TYPE_PAYOUT,
 }
 
 function fromApiDashboardTransaction(
@@ -18,7 +30,7 @@ function fromApiDashboardTransaction(
 ): DashboardTransaction {
   return {
     id: dto.id,
-    type: TRANSACTION_TYPES[dto.type],
+    type: DASHBOARD_TRANSACTION_DTO_TO_DOMAIN[dto.type],
     amount: dto.amount,
     comment: typeof dto.comment === 'string' ? dto.comment : null,
     createdAt: dto.createdAt,

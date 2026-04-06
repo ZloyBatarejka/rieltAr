@@ -11,6 +11,7 @@ import {
 } from '../lib'
 import styles from './OverviewTab.module.css'
 import { StyledBadge } from '@/shared/ui/StyledBadge'
+import { TRANSACTION_TYPE_INCOME } from '@/shared/types'
 
 export function OverviewTab({ dashboard }: OverviewTabProps): ReactElement {
   return (
@@ -43,7 +44,7 @@ export function OverviewTab({ dashboard }: OverviewTabProps): ReactElement {
                 </Text>
                 <Text
                   className={styles.txAmount}
-                  view={tx.type === 'INCOME' ? 'success' : 'alert'}
+                  view={tx.type === TRANSACTION_TYPE_INCOME ? 'success' : 'alert'}
                 >
                   {formatSignedAmount(tx.type, tx.amount)}
                 </Text>

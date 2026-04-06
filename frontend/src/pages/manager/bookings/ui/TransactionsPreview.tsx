@@ -2,6 +2,11 @@ import { type ReactElement } from 'react'
 import { Text } from '@consta/uikit/Text'
 import styles from './TransactionsPreview.module.css'
 import { StyledBadge } from '@/shared/ui/StyledBadge'
+import {
+  TRANSACTION_TYPE_CLEANING,
+  TRANSACTION_TYPE_COMMISSION,
+  TRANSACTION_TYPE_INCOME,
+} from '@/shared/types'
 
 type BadgeStatus = 'success' | 'warning' | 'error' | 'normal'
 
@@ -27,7 +32,7 @@ export function TransactionsPreview({
 
   if (totalAmount > 0) {
     transactions.push({
-      type: 'INCOME',
+      type: TRANSACTION_TYPE_INCOME,
       label: 'Доход',
       amount: totalAmount,
       status: 'success',
@@ -38,7 +43,7 @@ export function TransactionsPreview({
     const commission =
       Math.round(((totalAmount * commissionPercent) / 100) * 100) / 100
     transactions.push({
-      type: 'COMMISSION',
+      type: TRANSACTION_TYPE_COMMISSION,
       label: 'Комиссия',
       amount: commission,
       status: 'warning',
@@ -47,7 +52,7 @@ export function TransactionsPreview({
 
   if (cleaningAmount > 0) {
     transactions.push({
-      type: 'CLEANING',
+      type: TRANSACTION_TYPE_CLEANING,
       label: 'Уборка',
       amount: cleaningAmount,
       status: 'warning',
@@ -71,7 +76,7 @@ export function TransactionsPreview({
         <div key={tx.type} className={styles.row}>
           <StyledBadge status={tx.status} label={tx.label} size="s" />
           <Text weight="semibold" view="primary">
-            {tx.type === 'INCOME' ? '+' : '−'}
+            {tx.type === TRANSACTION_TYPE_INCOME ? '+' : '−'}
             {tx.amount.toLocaleString('ru-RU')} ₽
           </Text>
         </div>
