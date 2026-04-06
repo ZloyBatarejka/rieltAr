@@ -63,6 +63,7 @@ import type {
   TransactionsControllerFindAllParams,
   PayoutsControllerFindAllParams,
   DashboardControllerGetForOwnerParams,
+  DashboardControllerGetForCurrentUserParams,
 } from './generated/Api'
 
 /**
@@ -211,6 +212,10 @@ class ApiClient {
   }
 
   // Dashboard
+  getMyDashboard(params?: DashboardControllerGetForCurrentUserParams): Promise<Dashboard> {
+    return this.api.dashboard.dashboardControllerGetForCurrentUser(params ?? {}).then(fromApiDashboard)
+  }
+
   getOwnerDashboard(ownerId: string, params?: Omit<DashboardControllerGetForOwnerParams, 'id'>): Promise<Dashboard> {
     return this.api.dashboard.dashboardControllerGetForOwner({ id: ownerId, ...params }).then(fromApiDashboard)
   }

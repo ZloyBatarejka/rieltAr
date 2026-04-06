@@ -1,0 +1,7 @@
+.commentText {
+  display: block;
+  max-width: min(100%, 320px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

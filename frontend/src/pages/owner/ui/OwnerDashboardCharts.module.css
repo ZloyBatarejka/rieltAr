@@ -1,0 +1,29 @@
+.chartsGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-m);
+  align-items: stretch;
+}
+
+.chartCard {
+  min-width: 0;
+  background: var(--color-bg-default);
+  border: 1px solid var(--color-bg-border);
+  border-radius: 8px;
+}
+
+.chartTitle {
+  margin-bottom: var(--space-s);
+}
+
+.chartBox {
+  width: 100%;
+  min-height: 280px;
+}
+
+.emptyCard {
+  grid-column: 1 / -1;
+  background: var(--color-bg-default);
+  border: 1px solid var(--color-bg-border);
+  border-radius: 8px;
+}

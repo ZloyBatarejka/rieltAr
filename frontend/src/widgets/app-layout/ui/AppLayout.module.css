@@ -32,7 +32,7 @@
   flex: 1;
   padding: 16px;
   overflow-y: auto;
-  background: var(--color-bg-secondary);
+  background: var(--color-bg-default);
 }
 
 @media (min-width: 768px) {
