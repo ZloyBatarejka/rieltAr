@@ -15,6 +15,7 @@ import { OwnerDetailPage } from './pages/manager/owner-detail'
 import { ManagerPropertiesPage } from './pages/manager/properties'
 import { BookingsPage, CreateStayPage } from './pages/manager/bookings'
 import { ManagerTransactionsPage } from './pages/manager/transactions'
+import { ManagerPayoutsPage } from './pages/manager/payouts'
 import OwnerDashboardPage from './pages/owner/OwnerDashboardPage'
 import { AdminLayout } from './widgets/admin-layout'
 import { ManagerLayout } from './widgets/manager-layout'
@@ -52,6 +53,7 @@ const AppContent = observer(function AppContent(): ReactElement {
             <Route path="bookings" element={<BookingsPage />} />
             <Route path="bookings/create" element={<CreateStayPage />} />
             <Route path="transactions" element={<ManagerTransactionsPage />} />
+            <Route path="payouts" element={<ManagerPayoutsPage />} />
           </Route>
         </Route>
 

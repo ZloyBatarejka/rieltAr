@@ -20,6 +20,8 @@ import {
   fromApiTransactionItem,
   toApiCreateTransaction,
   fromApiPayoutsList,
+  fromApiPayoutItem,
+  toApiCreatePayout,
   fromApiDashboard,
 } from './converters'
 import type {
@@ -42,6 +44,8 @@ import type {
   CreateTransaction,
   Transaction,
   PayoutsList,
+  Payout,
+  CreatePayout,
   Dashboard,
 } from '@/shared/types'
 import type {
@@ -198,6 +202,12 @@ class ApiClient {
   // Payouts
   getPayouts(params?: PayoutsControllerFindAllParams): Promise<PayoutsList> {
     return this.api.payouts.payoutsControllerFindAll(params ?? {}).then(fromApiPayoutsList)
+  }
+
+  createPayout(data: CreatePayout): Promise<Payout> {
+    return this.api.payouts
+      .payoutsControllerCreate(toApiCreatePayout(data))
+      .then(fromApiPayoutItem)
   }
 
   // Dashboard

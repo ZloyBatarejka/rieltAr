@@ -1,0 +1,17 @@
+.stack {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-m);
+}
+
+.balanceRow {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2xs);
+}
+
+.confirmBlock {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-s);
+}

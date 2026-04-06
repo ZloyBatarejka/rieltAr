@@ -1,10 +1,11 @@
 import type {
+  CreatePayoutDto,
   PayoutListItemDto,
   PayoutsListResponseDto,
 } from '../generated/Api'
-import type { Payout, PayoutsList } from '@/shared/types'
+import type { CreatePayout, Payout, PayoutsList } from '@/shared/types'
 
-function fromApiPayoutItem(dto: PayoutListItemDto): Payout {
+export function fromApiPayoutItem(dto: PayoutListItemDto): Payout {
   return {
     id: dto.id,
     ownerId: dto.ownerId,
@@ -23,4 +24,15 @@ export function fromApiPayoutsList(dto: PayoutsListResponseDto): PayoutsList {
     items: dto.items.map(fromApiPayoutItem),
     total: dto.total,
   }
+}
+
+export function toApiCreatePayout(data: CreatePayout): CreatePayoutDto {
+  const dto: CreatePayoutDto = {
+    propertyId: data.propertyId,
+    amount: data.amount,
+  }
+  if (data.comment && data.comment.trim() !== '') {
+    dto.comment = data.comment.trim()
+  }
+  return dto
 }

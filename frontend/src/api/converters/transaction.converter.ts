@@ -27,7 +27,9 @@ const TRANSACTION_LIST_ITEM_DTO_TO_DOMAIN: Record<
   PAYOUT: TRANSACTION_TYPE_PAYOUT,
 }
 
-export function fromApiTransactionItem(dto: TransactionListItemDto): Transaction {
+export function fromApiTransactionItem(
+  dto: TransactionListItemDto,
+): Transaction {
   return {
     id: dto.id,
     type: TRANSACTION_LIST_ITEM_DTO_TO_DOMAIN[dto.type],
@@ -50,13 +52,15 @@ export function fromApiTransactionsList(
   }
 }
 
-export function toApiCreateTransaction(data: CreateTransaction): CreateTransactionDto {
+export function toApiCreateTransaction(
+  data: CreateTransaction,
+): CreateTransactionDto {
   const dto: CreateTransactionDto = {
     propertyId: data.propertyId,
     type: data.type,
     amount: data.amount,
   }
-  if (data.comment !== undefined && data.comment.trim() !== '') {
+  if (data.comment && data.comment.trim() !== '') {
     dto.comment = data.comment.trim()
   }
   return dto

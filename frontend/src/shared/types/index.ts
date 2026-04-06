@@ -42,6 +42,7 @@ export type {
 export type {
   Payout,
   PayoutsList,
+  CreatePayout,
 } from './payout'
 export type {
   DashboardTransaction,

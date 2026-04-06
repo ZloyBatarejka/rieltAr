@@ -14,3 +14,9 @@ export interface PayoutsList {
   items: Payout[]
   total: number
 }
+
+export interface CreatePayout {
+  propertyId: string
+  amount: number
+  comment?: string
+}

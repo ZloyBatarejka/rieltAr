@@ -25,5 +25,9 @@ export {
   fromApiTransactionItem,
   toApiCreateTransaction,
 } from './transaction.converter'
-export { fromApiPayoutsList } from './payout.converter'
+export {
+  fromApiPayoutsList,
+  fromApiPayoutItem,
+  toApiCreatePayout,
+} from './payout.converter'
 export { fromApiDashboard } from './dashboard.converter'
