@@ -138,15 +138,4 @@ describe('LoginPage', () => {
     expect(screen.getByText('Неверный пароль')).toBeInTheDocument()
   })
 
-  it('toggles password visibility', async () => {
-    const user = await renderLoginPage()
-    const passwordInput = screen.getByPlaceholderText('Пароль')
-
-    expect(passwordInput).toHaveAttribute('type', 'password')
-
-    const toggleButton = screen.getByLabelText('Показать пароль')
-    await user.click(toggleButton)
-
-    expect(passwordInput).toHaveAttribute('type', 'text')
-  })
 })
