@@ -1,0 +1,2 @@
+export { OwnerPayoutsPage } from './OwnerPayoutsPage'
+

@@ -20,7 +20,7 @@ import OwnerDashboardPage from './pages/owner/OwnerDashboardPage'
 import { OwnerPropertiesPage } from './pages/owner/properties'
 import { OwnerStaysPage } from './pages/owner/stays'
 import { OwnerTransactionsPage } from './pages/owner/transactions'
-import { OwnerSectionPlaceholderPage } from './pages/owner/OwnerSectionPlaceholderPage'
+import { OwnerPayoutsPage } from './pages/owner/payouts'
 import { AdminLayout } from './widgets/admin-layout'
 import { ManagerLayout } from './widgets/manager-layout'
 import { OwnerLayout } from './widgets/owner-layout'
@@ -74,7 +74,7 @@ const AppContent = observer(function AppContent(): ReactElement {
             <Route path="bookings" element={<Navigate to="/owner/stays" replace />} />
             <Route path="transactions" element={<OwnerTransactionsPage />} />
             <Route path="operations" element={<Navigate to="/owner/transactions" replace />} />
-            <Route path="payouts" element={<OwnerSectionPlaceholderPage title="Выплаты" />} />
+            <Route path="payouts" element={<OwnerPayoutsPage />} />
           </Route>
         </Route>
 
