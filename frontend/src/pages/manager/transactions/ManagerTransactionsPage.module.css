@@ -16,28 +16,6 @@
   margin-bottom: var(--space-l);
 }
 
-.filters {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-  gap: var(--space-m);
-  margin-bottom: var(--space-l);
-}
-
-.filterField {
-  flex: 1 1 160px;
-  min-width: 140px;
-}
-
-.filterActions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--space-xs);
-  flex: 0 0 auto;
-  padding-bottom: 2px;
-}
-
 .loaderWrap {
   display: flex;
   justify-content: center;

@@ -1,13 +1,11 @@
 import { type ReactElement, useEffect } from 'react'
 import { observer } from 'mobx-react-lite'
 import { Card } from '@consta/uikit/Card'
-import { DatePicker } from '@consta/uikit/DatePicker'
 import { Loader } from '@consta/uikit/Loader'
-import { Select } from '@consta/uikit/Select'
-import { Button } from '@consta/uikit/Button'
 import { Text } from '@consta/uikit/Text'
 import { DataTable } from '@/shared/ui/DataTable'
 import { Show } from '@/shared/ui/Show'
+import { RecordsFilters } from '@/features/records-filters'
 import { ownerPayoutsStore } from './model/owner-payouts.store'
 import { ownerPayoutsColumns } from './model/columns'
 import styles from './OwnerPayoutsPage.module.css'
@@ -30,9 +28,6 @@ export const OwnerPayoutsPage = observer(function OwnerPayoutsPage(): ReactEleme
 
   const propertyId = ownerPayoutsStore.filterPropertyId
 
-  const selectedPropertyItem: SelectItem | null =
-    propertyId === null ? null : (propertyFilterItems.find((i) => i.id === propertyId) ?? null)
-
   return (
     <Card verticalSpace="2xl" horizontalSpace="2xl" className={styles.tableCard}>
       <div className={styles.titleRow}>
@@ -41,55 +36,17 @@ export const OwnerPayoutsPage = observer(function OwnerPayoutsPage(): ReactEleme
         </Text>
       </div>
 
-      <div className={styles.filters}>
-        <div className={styles.filterField}>
-          <Select<SelectItem>
-            size="s"
-            items={propertyFilterItems}
-            value={selectedPropertyItem}
-            onChange={(item) => ownerPayoutsStore.setFilterPropertyId(item?.id ?? null)}
-            getItemLabel={(i) => i.label}
-            getItemKey={(i) => i.id}
-            label="Объект"
-            labelPosition="top"
-            placeholder="Все объекты"
-          />
-        </div>
-        <div className={styles.filterField}>
-          <DatePicker
-            type="date"
-            size="s"
-            labelPosition="top"
-            label="Период с"
-            value={ownerPayoutsStore.periodFrom}
-            onChange={(d) => ownerPayoutsStore.setPeriodFrom(d)}
-          />
-        </div>
-        <div className={styles.filterField}>
-          <DatePicker
-            type="date"
-            size="s"
-            labelPosition="top"
-            label="по"
-            value={ownerPayoutsStore.periodTo}
-            onChange={(d) => ownerPayoutsStore.setPeriodTo(d)}
-          />
-        </div>
-        <div className={styles.filterActions}>
-          <Button
-            size="s"
-            view="ghost"
-            label="Сбросить"
-            onClick={() => void ownerPayoutsStore.resetFilters()}
-          />
-          <Button
-            size="s"
-            view="primary"
-            label="Применить"
-            onClick={() => void ownerPayoutsStore.applyFilters()}
-          />
-        </div>
-      </div>
+      <RecordsFilters
+        propertyItems={propertyFilterItems}
+        propertyId={propertyId}
+        onPropertyChange={(id) => ownerPayoutsStore.setFilterPropertyId(id)}
+        from={ownerPayoutsStore.periodFrom}
+        to={ownerPayoutsStore.periodTo}
+        onFromChange={(d) => ownerPayoutsStore.setPeriodFrom(d)}
+        onToChange={(d) => ownerPayoutsStore.setPeriodTo(d)}
+        onReset={() => void ownerPayoutsStore.resetFilters()}
+        onApply={() => void ownerPayoutsStore.applyFilters()}
+      />
 
       <Show when={ownerPayoutsStore.error}>
         {(message) => (

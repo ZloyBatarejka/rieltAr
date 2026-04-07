@@ -4,16 +4,20 @@ import { Card } from '@consta/uikit/Card'
 import { Text } from '@consta/uikit/Text'
 import { Loader } from '@consta/uikit/Loader'
 import { Button } from '@consta/uikit/Button'
-import { Select } from '@consta/uikit/Select'
-import { DatePicker } from '@consta/uikit/DatePicker'
 import { IconAdd } from '@consta/icons/IconAdd'
 import { DataTable } from '@/shared/ui/DataTable'
 import { Show } from '@/shared/ui/Show'
+import { RecordsFilters } from '@/features/records-filters'
 import { transactionsPageStore } from './model/transactions-page.store'
 import { managerTransactionsColumns } from './model/columns'
 import { TYPE_FILTER_ITEMS, type OwnerPropertySelectItem } from './model/filters'
+import type { TransactionType } from '@/shared/types'
 import { AddTransactionModal } from './ui/AddTransactionModal'
 import styles from './ManagerTransactionsPage.module.css'
+
+function isTransactionType(value: string): value is TransactionType {
+  return TYPE_FILTER_ITEMS.some((i) => i.id === value)
+}
 
 export const ManagerTransactionsPage = observer(
   function ManagerTransactionsPage(): ReactElement {
@@ -64,97 +68,28 @@ export const ManagerTransactionsPage = observer(
             />
           </div>
 
-          <div className={styles.filters}>
-            <div className={styles.filterField}>
-              <Select
-                size="s"
-                items={ownerFilterItems}
-                value={
-                  ownerId === null
-                    ? null
-                    : (ownerFilterItems.find((i) => i.id === ownerId) ?? null)
-                }
-                onChange={(item) => transactionsPageStore.setFilterOwnerId(item?.id ?? null)}
-                getItemLabel={(i) => i.label}
-                getItemKey={(i) => i.id}
-                label="Собственник"
-                labelPosition="top"
-                placeholder="Не выбран"
-              />
-            </div>
-            <div className={styles.filterField}>
-              <Select
-                size="s"
-                items={propertyFilterItems}
-                value={
-                  propertyId === null
-                    ? null
-                    : (propertyFilterItems.find((i) => i.id === propertyId) ?? null)
-                }
-                onChange={(item) =>
-                  transactionsPageStore.setFilterPropertyId(item?.id ?? null)
-                }
-                getItemLabel={(i) => i.label}
-                getItemKey={(i) => i.id}
-                label="Объект"
-                labelPosition="top"
-                placeholder="Не выбран"
-              />
-            </div>
-            <div className={styles.filterField}>
-              <Select
-                size="s"
-                items={TYPE_FILTER_ITEMS}
-                value={
-                  typeFilter === null
-                    ? null
-                    : (TYPE_FILTER_ITEMS.find((i) => i.id === typeFilter) ?? null)
-                }
-                onChange={(item) =>
-                  transactionsPageStore.setFilterType(item?.id ?? null)
-                }
-                getItemLabel={(i) => i.label}
-                getItemKey={(i) => i.id}
-                label="Тип"
-                labelPosition="top"
-                placeholder="Не выбран"
-              />
-            </div>
-            <div className={styles.filterField}>
-              <DatePicker
-                type="date"
-                size="s"
-                labelPosition="top"
-                label="Период с"
-                value={transactionsPageStore.periodFrom}
-                onChange={(d) => transactionsPageStore.setPeriodFrom(d)}
-              />
-            </div>
-            <div className={styles.filterField}>
-              <DatePicker
-                type="date"
-                size="s"
-                labelPosition="top"
-                label="по"
-                value={transactionsPageStore.periodTo}
-                onChange={(d) => transactionsPageStore.setPeriodTo(d)}
-              />
-            </div>
-            <div className={styles.filterActions}>
-              <Button
-                size="s"
-                view="ghost"
-                label="Сбросить"
-                onClick={() => void transactionsPageStore.resetFilters()}
-              />
-              <Button
-                size="s"
-                view="primary"
-                label="Применить"
-                onClick={() => void transactionsPageStore.applyFilters()}
-              />
-            </div>
-          </div>
+          <RecordsFilters
+            ownerItems={ownerFilterItems}
+            ownerId={ownerId}
+            onOwnerChange={(id) => transactionsPageStore.setFilterOwnerId(id)}
+            ownerPlaceholder="Не выбран"
+            propertyItems={propertyFilterItems}
+            propertyId={propertyId}
+            onPropertyChange={(id) => transactionsPageStore.setFilterPropertyId(id)}
+            propertyPlaceholder="Не выбран"
+            typeItems={TYPE_FILTER_ITEMS}
+            typeId={typeFilter}
+            onTypeChange={(t) =>
+              transactionsPageStore.setFilterType(t !== null && isTransactionType(t) ? t : null)
+            }
+            typePlaceholder="Не выбран"
+            from={transactionsPageStore.periodFrom}
+            to={transactionsPageStore.periodTo}
+            onFromChange={(d) => transactionsPageStore.setPeriodFrom(d)}
+            onToChange={(d) => transactionsPageStore.setPeriodTo(d)}
+            onReset={() => void transactionsPageStore.resetFilters()}
+            onApply={() => void transactionsPageStore.applyFilters()}
+          />
 
           <Show
             when={!transactionsPageStore.isLoading}
