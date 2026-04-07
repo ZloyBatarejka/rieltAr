@@ -9,53 +9,64 @@ import { ownerPropertiesStore } from './model/owner-properties.store'
 import { OwnerPropertiesGrid } from './ui/OwnerPropertiesGrid'
 import styles from './OwnerPropertiesPage.module.css'
 
-export const OwnerPropertiesPage = observer(function OwnerPropertiesPage(): ReactElement {
-  const navigate = useNavigate()
+export const OwnerPropertiesPage = observer(
+  function OwnerPropertiesPage(): ReactElement {
+    const navigate = useNavigate()
 
-  useEffect(() => {
-    void ownerPropertiesStore.fetch()
-  }, [])
+    useEffect(() => {
+      void ownerPropertiesStore.fetch()
+    }, [])
 
-  const { properties, isLoading, error } = ownerPropertiesStore
+    const { properties, isLoading, error } = ownerPropertiesStore
 
-  return (
-    <Card verticalSpace="2xl" horizontalSpace="2xl" className={styles.wrap}>
-      <Text size="xl" weight="bold" as="h1" view="primary" className={styles.heading}>
-        Мои объекты
-      </Text>
-      <Text view="secondary" size="m" className={styles.lead}>
-        Квартиры и дома, по которым ведётся учёт. Заезды открываются отдельно по каждому объекту.
-      </Text>
-
-      <Show when={error}>
-        {(message) => (
-          <Text view="alert" size="m">
-            {message}
-          </Text>
-        )}
-      </Show>
-
-      <Show when={isLoading}>
-        <div className={styles.loaderWrap}>
-          <Loader size="m" />
-        </div>
-      </Show>
-
-      <Show when={!isLoading && error === null && properties.length === 0}>
-        <Text view="secondary" size="m">
-          У вас пока нет объектов.
+    return (
+      <Card verticalSpace="2xl" horizontalSpace="2xl">
+        <Text
+          size="xl"
+          weight="bold"
+          as="h1"
+          view="primary"
+          className={styles.heading}
+        >
+          Мои объекты
         </Text>
-      </Show>
+        <Text view="secondary" size="m" className={styles.lead}>
+          Квартиры и дома, по которым ведётся учёт. Заезды открываются отдельно
+          по каждому объекту.
+        </Text>
 
-      <Show when={!isLoading && properties.length > 0}>
-        <OwnerPropertiesGrid
-          properties={properties}
-          staysCountFor={(id) => ownerPropertiesStore.staysCountFor(id)}
-          onOpenStays={(propertyId) => {
-            navigate(`/owner/stays?propertyId=${encodeURIComponent(propertyId)}`)
-          }}
-        />
-      </Show>
-    </Card>
-  )
-})
+        <Show when={error}>
+          {(message) => (
+            <Text view="alert" size="m">
+              {message}
+            </Text>
+          )}
+        </Show>
+
+        <Show when={isLoading}>
+          <div className={styles.loaderWrap}>
+            <Loader size="m" />
+          </div>
+        </Show>
+
+        <Show when={!isLoading && error === null && properties.length === 0}>
+          <Text view="secondary" size="m">
+            У вас пока нет объектов.
+          </Text>
+        </Show>
+
+        <Show when={!isLoading && properties.length > 0}>
+          <OwnerPropertiesGrid
+            properties={properties}
+            staysCountFor={(id) => ownerPropertiesStore.staysCountFor(id)}
+            onOpenStays={(propertyId) => {
+              navigate(
+                `/owner/stays?propertyId=${encodeURIComponent(propertyId)}`,
+              )
+            }}
+          />
+        </Show>
+      </Card>
+    )
+  },
+)

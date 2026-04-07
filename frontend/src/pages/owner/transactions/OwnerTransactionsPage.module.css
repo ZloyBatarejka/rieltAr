@@ -1,0 +1,52 @@
+.tableCard {
+  width: 100%;
+}
+
+.titleRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-m);
+  margin-bottom: var(--space-l);
+}
+
+.heading {
+  margin: 0;
+}
+
+.filters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-m);
+  margin-bottom: var(--space-l);
+}
+
+@media (min-width: 768px) {
+  .filters {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr;
+    align-items: end;
+  }
+}
+
+.filterField {
+  min-width: 0;
+}
+
+.filterActions {
+  display: flex;
+  gap: var(--space-s);
+  justify-content: flex-start;
+}
+
+@media (min-width: 768px) {
+  .filterActions {
+    justify-content: flex-end;
+  }
+}
+
+.loaderWrap {
+  display: flex;
+  justify-content: center;
+  padding: var(--space-xl) 0;
+}
+

@@ -8,7 +8,7 @@ const ownerNavItems: NavItem[] = [
   { to: '/owner', label: 'Дашборд' },
   { to: '/owner/properties', label: 'Объекты' },
   { to: '/owner/stays', label: 'Заезды' },
-  { to: '/owner/operations', label: 'Операции' },
+  { to: '/owner/transactions', label: 'Операции' },
   { to: '/owner/payouts', label: 'Выплаты' },
 ]
 

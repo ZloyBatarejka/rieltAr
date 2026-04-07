@@ -70,13 +70,19 @@ export const OwnerStaysPage = observer(function OwnerStaysPage(): ReactElement {
   }
 
   return (
-    <Card verticalSpace="2xl" horizontalSpace="2xl" className={styles.wrap}>
-      <Text size="xl" weight="bold" as="h1" view="primary" className={styles.heading}>
+    <Card verticalSpace="2xl" horizontalSpace="2xl">
+      <Text
+        size="xl"
+        weight="bold"
+        as="h1"
+        view="primary"
+        className={styles.heading}
+      >
         Заезды
       </Text>
       <Text view="secondary" size="m" className={styles.lead}>
-        Выберите заезд в таблице — ниже появятся операции по нему. Повторный клик по строке
-        сворачивает блок.
+        Выберите заезд в таблице — ниже появятся операции по нему. Повторный
+        клик по строке сворачивает блок.
       </Text>
 
       <div className={styles.filterRow}>
@@ -159,7 +165,12 @@ export const OwnerStaysPage = observer(function OwnerStaysPage(): ReactElement {
                   {stayDetailErrors[stayId] ?? ''}
                 </Text>
               </Show>
-              <Show when={loadingDetailId !== stayId && stayDetailErrors[stayId] === undefined}>
+              <Show
+                when={
+                  loadingDetailId !== stayId &&
+                  stayDetailErrors[stayId] === undefined
+                }
+              >
                 <DataTable
                   items={ownerStaysStore.getStayTransactions(stayId)}
                   columns={ownerStayTransactionsColumns}
