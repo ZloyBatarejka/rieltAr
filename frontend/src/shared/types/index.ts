@@ -22,6 +22,8 @@ export type {
 } from './assignment'
 export type {
   Stay,
+  StayDetail,
+  StayTransaction,
   StaysList,
   CreateStay,
 } from './stay'

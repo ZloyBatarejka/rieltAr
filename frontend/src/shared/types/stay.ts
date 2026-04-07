@@ -1,3 +1,5 @@
+import type { TransactionType } from './transaction'
+
 export interface Stay {
   id: string
   propertyId: string
@@ -9,6 +11,18 @@ export interface Stay {
   checkOut: string
   totalAmount: number
   createdAt: string
+}
+
+export interface StayTransaction {
+  id: string
+  type: TransactionType
+  amount: number
+  comment: string | null
+  createdAt: string
+}
+
+export interface StayDetail extends Stay {
+  transactions: StayTransaction[]
 }
 
 export interface StaysList {

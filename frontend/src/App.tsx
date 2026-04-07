@@ -17,8 +17,8 @@ import { BookingsPage, CreateStayPage } from './pages/manager/bookings'
 import { ManagerTransactionsPage } from './pages/manager/transactions'
 import { ManagerPayoutsPage } from './pages/manager/payouts'
 import OwnerDashboardPage from './pages/owner/OwnerDashboardPage'
-import OwnerPropertiesPage from './pages/owner/OwnerPropertiesPage'
-import { OwnerBookingsPlaceholderPage } from './pages/owner/OwnerBookingsPlaceholderPage'
+import { OwnerPropertiesPage } from './pages/owner/properties'
+import { OwnerStaysPage } from './pages/owner/stays'
 import { OwnerSectionPlaceholderPage } from './pages/owner/OwnerSectionPlaceholderPage'
 import { AdminLayout } from './widgets/admin-layout'
 import { ManagerLayout } from './widgets/manager-layout'
@@ -69,7 +69,8 @@ const AppContent = observer(function AppContent(): ReactElement {
           <Route path="/owner" element={<OwnerLayout />}>
             <Route index element={<OwnerDashboardPage />} />
             <Route path="properties" element={<OwnerPropertiesPage />} />
-            <Route path="bookings" element={<OwnerBookingsPlaceholderPage />} />
+            <Route path="stays" element={<OwnerStaysPage />} />
+            <Route path="bookings" element={<Navigate to="/owner/stays" replace />} />
             <Route path="operations" element={<OwnerSectionPlaceholderPage title="Операции" />} />
             <Route path="payouts" element={<OwnerSectionPlaceholderPage title="Выплаты" />} />
           </Route>

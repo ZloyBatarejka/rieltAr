@@ -1,0 +1,1 @@
+export { OwnerStaysPage } from './OwnerStaysPage'

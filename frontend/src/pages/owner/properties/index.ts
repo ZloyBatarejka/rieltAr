@@ -1,0 +1,1 @@
+export { OwnerPropertiesPage } from './OwnerPropertiesPage'

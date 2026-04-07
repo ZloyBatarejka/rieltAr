@@ -19,7 +19,7 @@ export {
   fromApiAssignment,
   toApiAssignProperty,
 } from './assignment.converter'
-export { fromApiStaysList, toApiCreateStay } from './stay.converter'
+export { fromApiStaysList, fromApiStayDetail, toApiCreateStay } from './stay.converter'
 export {
   fromApiTransactionsList,
   fromApiTransactionItem,

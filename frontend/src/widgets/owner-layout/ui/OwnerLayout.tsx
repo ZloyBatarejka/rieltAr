@@ -7,7 +7,7 @@ import type { NavItem } from '../../sidebar'
 const ownerNavItems: NavItem[] = [
   { to: '/owner', label: 'Дашборд' },
   { to: '/owner/properties', label: 'Объекты' },
-  { to: '/owner/bookings', label: 'Заезды' },
+  { to: '/owner/stays', label: 'Заезды' },
   { to: '/owner/operations', label: 'Операции' },
   { to: '/owner/payouts', label: 'Выплаты' },
 ]

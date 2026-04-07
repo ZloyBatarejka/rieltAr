@@ -9,7 +9,7 @@ import { ownerPropertiesStore } from './model/owner-properties.store'
 import { OwnerPropertiesGrid } from './ui/OwnerPropertiesGrid'
 import styles from './OwnerPropertiesPage.module.css'
 
-const OwnerPropertiesPage = observer(function OwnerPropertiesPage(): ReactElement {
+export const OwnerPropertiesPage = observer(function OwnerPropertiesPage(): ReactElement {
   const navigate = useNavigate()
 
   useEffect(() => {
@@ -52,12 +52,10 @@ const OwnerPropertiesPage = observer(function OwnerPropertiesPage(): ReactElemen
           properties={properties}
           staysCountFor={(id) => ownerPropertiesStore.staysCountFor(id)}
           onOpenStays={(propertyId) => {
-            navigate(`/owner/bookings?propertyId=${encodeURIComponent(propertyId)}`)
+            navigate(`/owner/stays?propertyId=${encodeURIComponent(propertyId)}`)
           }}
         />
       </Show>
     </Card>
   )
 })
-
-export default OwnerPropertiesPage
